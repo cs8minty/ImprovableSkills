@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "improvableskills:item/scroll_ability",
+    "layer1": "improvableskills:item/scroll_ability_overlay"
+  }
+}

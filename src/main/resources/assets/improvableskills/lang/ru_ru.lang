@@ -1,0 +1,144 @@
+
+itemGroup.improvableskills=Improvable Skills
+jei.improvableskills:parchf=Drop together
+
+#ITEMS#
+item.improvableskills.skills_book=Книга навыков
+item.improvableskills.scroll_normal=Страница с навыком
+item.improvableskills.scroll_creative=Творческая страница с навыками
+item.improvableskills.scroll_creative.tooltip0=Разблокирует все скрытые навыки.
+item.improvableskills.scroll_creative.tooltip1=Во время использование помните, что вы §kжульник§7
+item.improvableskills.parchment_fragment=Фрагмент пергамента
+item.improvableskills.scroll_ability=Страница с способностью
+
+#SKILLS#
+skill.improvableskills:accelerated_furnace.name=Ускоренная печь
+skill.improvableskills:accelerated_furnace.desc=Это умение увеличивает скорость переплавки в печи. Чтобы ваши печи стали быстрее, вы должны стоять в радиусе 5 блоков от них.
+
+skill.improvableskills:mining.name=Добыча
+skill.improvableskills:mining.desc=Это умение увеличивает скорость добычи киркой.
+
+skill.improvableskills:digging.name=Рытьё
+skill.improvableskills:digging.desc=Это умение увеличивает скорость рытья лопатой.
+
+skill.improvableskills:cutting.name=Рубка
+skill.improvableskills:cutting.desc=Увеличивает скорость рубки топором.
+
+skill.improvableskills:attack_speed.name=Скоростная атака
+skill.improvableskills:attack_speed.desc=Увеличивает скорость удара любого инструмента.
+
+skill.improvableskills:leaper.name=Прыгун
+skill.improvableskills:leaper.desc=Увеличивает высоту прыжка.
+
+skill.improvableskills:soft_landing.name=Мягкое приземление
+skill.improvableskills:soft_landing.desc=Снижает урон от падения. Если игрок с макс. уровнем упадет с высоты, то он выживет.
+
+skill.improvableskills:obsidian_skin.name=Обсидиановый щит
+skill.improvableskills:obsidian_skin.desc=Снижает урон от огня/лавы игроку.
+
+skill.improvableskills:ladder_king.name=Царь горы
+skill.improvableskills:ladder_king.desc=Увеличивает скорость лазанья игрока по лестнице.
+
+skill.improvableskills:treasure_finder.name=Искатель Сокровищ
+skill.improvableskills:treasure_finder.desc=Позволяет находить ценные материалы во время добычи в шахтах.
+
+skill.improvableskills:pvp_protection.name=Защита от PvP
+skill.improvableskills:pvp_protection.desc=Увеличивает уровень защиты от PvP урона.
+
+skill.improvableskills:luck_of_the_sea.name=Морская удача
+skill.improvableskills:luck_of_the_sea.desc=Повышает улов.
+
+skill.improvableskills:item_repair.name=Починка предметов
+skill.improvableskills:item_repair.desc=Медленно чинит предметы. Это работает для обеих рук и одетой брони.
+
+skill.improvableskills:health.name=Дополнительное здоровье
+skill.improvableskills:health.desc=Это умение увеличивает макс. здоровье до +20 HP (10 сердец).
+
+skill.improvableskills:growth.name=Быстрый рост
+skill.improvableskills:growth.desc=Этот навык рандомно применяет костную муку на окружающие растения.
+
+skill.improvableskills:alchemist.name=Алхимик
+skill.improvableskills:alchemist.desc=Ускоряет варочную стойку. Очень хорошо для тех кто занимается алхимией.
+
+skill.improvableskills:generic_protection.name=Плотная кожа
+skill.improvableskills:generic_protection.desc=Делает вашу кожу более надежной против врагов. Попробуйте стать драконом.
+
+skill.improvableskills:treasure_sands.name=Сокровища песков
+skill.improvableskills:treasure_sands.desc=Позволяет найти сокровища из песка.
+
+skill.improvableskills:atkdmg_melee.name=Сильная рука
+skill.improvableskills:atkdmg_melee.desc=Увеличивает урон в ближнем бою.
+
+skill.improvableskills:atkdmg_ranged.name=Острая стрела
+skill.improvableskills:atkdmg_ranged.desc=Увеличивает урон в дальнем бою.
+
+skill.improvableskills:pvp.name=PvP Защита
+skill.improvableskills:pvp.desc=Уменьшает урон наносимый другими игроками.
+
+skill.improvableskills:enchanter.name=Зачарователь
+skill.improvableskills:enchanter.desc=Уменьшает минимальный уровень что бы произвести зачарование. (Эффект увеличивается каждые 4 уровня)
+
+skill.improvableskills:ender_manipulator.name=Эндер-манипулятор
+skill.improvableskills:ender_manipulator.desc=Уменьшает урон от использования эндер-жемчугов. Последний уровень имеет шанс исцелить игрока.
+
+skill.improvableskills:xp_plus.name=Сбор опыта
+skill.improvableskills:xp_plus.desc=Увеличивает получаемый опыт во время добычи, размножения животных, рыбалки и убийства мобов.
+
+pagelet.improvableskills:xp_bank=Хранилище опыта
+
+#ABILITIES#
+ability.improvableskills:enchanting.name=Зачарование
+ability.improvableskills:crafter.name=Крафтер
+ability.improvableskills:anvil.name=Blacksmith
+
+#BUTTONS#
+button.improvableskills:upgrade=Улучшить
+button.improvableskills:degrade=Ухудшить
+
+#TEXTS#
+text.improvableskills:level=Уровень %s/%s
+text.improvableskills:totalXP=Ваш опыт: %s XP
+text.improvableskills:storeall=Слить весь
+text.improvableskills:draw1lvl=Взять 1 ур.
+text.improvableskills:draw10lvls=Взять 10 ур.
+text.improvableskills:enchpower=Уровень чаров: %,d
+chat.improvableskills.guide=Вы только что сделали книгу навыков! Теперь вы можете улучшать некоторые навыки игрока.
+chat.improvableskills.page_unlocked=Новый навык (%s) разблокирован!
+gui.improvableskills.locked=§4Недоступно. Создайте книгу навыков, чтобы разблокировать.
+chat.improvableskills:skill_reset_self=Ваши достижения навыков были сброшены.
+chat.improvableskills:skill_reset_tother=Вы сбросили достижения навыков игрока %s.
+chat.improvableskills:skill_reset_fother=%s сбросил вам достижения в навыках.
+gui.improvableskills:nver=Новая версия
+gui.improvableskills:changes=Изменения
+text.improvableskills:shiftfrecipe=Нажмите &6&lSHIFT&r&7 что бы посмотреть рецепт.
+text.improvableskills:unresolved_item=Предмет не найден
+
+#SUBTITLES#
+subtitles.improvableskills:treasure_found=Найдено сокровище
+subtitles.improvableskills:skill_book_open=Книга статистик открыта
+subtitles.improvableskills:skill_book_closed=Книга статистик закрыта
+
+#PAGELETS#
+pagelet.improvableskills:update=Доступна новая версия!
+pagelet.improvableskills:news=Новости
+pagelet.improvableskills:discord1=Discord
+pagelet.improvableskills:discord2=Нужна помощь? Есть отличная идея? Не стесняйся, заходи на наш Дискорд сейчас! Нам важно ваше мнение по моду, и идеи, т.к. наже воображение не безграничное. Самые лучшие умения и/или способности будут выбраны надобавление голосованием. (Художники очень приветствуются!)
+pagelet.improvableskills:skills=Навыки
+pagelet.improvableskills:abilities=Умения
+
+#RECIPES#
+recipe.improvableskills:skill.luck_of_the_sea=Drops while &bfishing&7 with &410%%&7
+recipe.improvableskills:skill.obsidian_skin=Found in &bnether fortresses&7 with &433,[3]%%&7
+recipe.improvableskills:skill.atkdmg_ranged=Drops from &bSkeletons&7 with &42,5%%&7
+recipe.improvableskills:skill.alchemist=Drops from &bWitches&7 with &410%%&7
+recipe.improvableskills:skill.growth=Found in &bjungle temples&7 with &425%%&7
+recipe.improvableskills:skill.ender_manipulator=Drops from &bEndermen&7 with &45%%&7
+recipe.improvableskills:skill.generic_protection=Found in &bunderground spawner rooms&7 with &425%%&7
+recipe.improvableskills:skill.health=Found in &bend cities&7 with &411,[1]%%&7
+recipe.improvableskills:skill.enchanter=Found in &bend fortresses&7 with &425%%&7
+recipe.improvableskills:skill.treasure_sands=Found in &bdesert temples&7 with &412,5%%&7
+recipe.improvableskills:skill.xp_plus=Drops from &belder guardian&7 with &433,[3]%%&7
+
+recipe.improvableskills:ability.enchanting=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:enchanting_table>&7, &2<minecraft:bookshelf>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
+recipe.improvableskills:ability.crafter=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:crafting_table>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
+recipe.improvableskills:ability.anvil=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:anvil>&7, &2<minecraft:emerald>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.

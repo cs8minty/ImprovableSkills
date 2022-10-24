@@ -1,0 +1,144 @@
+
+itemGroup.improvableskills=Improvable Skills
+jei.improvableskills:parchf=Drop together
+
+#ITEMS#
+item.improvableskills.skills_book=Buch der Fähigkeiten
+item.improvableskills.scroll_normal=Seite mit Fähigkeit
+item.improvableskills.scroll_creative=Kreativ-Seite mit Fähigkeit
+item.improvableskills.scroll_creative.tooltip0=Schaltet alle versteckten Fähigkeiten frei.
+item.improvableskills.scroll_creative.tooltip1=Beachte bei der Verwendung, dass du ein §kCheater§7 bist
+item.improvableskills.parchment_fragment=Parchment Fragment
+item.improvableskills.scroll_ability=Page with Ability
+
+#SKILLS#
+skill.improvableskills:accelerated_furnace.name=Beschleunigter Ofen
+skill.improvableskills:accelerated_furnace.desc=Erhöht die Schmelzgeschwindigkeit des Ofens. Um deinen Ofen schneller werden zu lassen, musst du in einem Radius von 5 Blöcken zu ihm stehen.
+
+skill.improvableskills:mining.name=Abbau
+skill.improvableskills:mining.desc=Erhöht die Abbaugeschwindigkeit der Spitzhacke.
+
+skill.improvableskills:digging.name=Graben
+skill.improvableskills:digging.desc=Erhöht die Grabgeschwindigkeit der Schaufel.
+
+skill.improvableskills:cutting.name=Hacken
+skill.improvableskills:cutting.desc=Erhöht die Hackgeschwindigkeit der Axt.
+
+skill.improvableskills:attack_speed.name=Angriffsgeschwindigkeit
+skill.improvableskills:attack_speed.desc=Erhöht die Schlaggeschwindigkeit aller Werkzeuge.
+
+skill.improvableskills:leaper.name=Springer
+skill.improvableskills:leaper.desc=Erhöht die Sprunghöhe.
+
+skill.improvableskills:soft_landing.name=Sanfte Landung
+skill.improvableskills:soft_landing.desc=Verringert den Fallschaden. Wenn der Spieler von einem hohen Ort (bei Maximalstufe) fällt, wird er überleben.
+
+skill.improvableskills:obsidian_skin.name=Obsidianschild
+skill.improvableskills:obsidian_skin.desc=Verringert den Feuer-/Lavaschaden des Spielers.
+
+skill.improvableskills:ladder_king.name=King of the Ladder
+skill.improvableskills:ladder_king.desc=Erhöht die Klettergeschwindigkeit des Spielers auf der Leiter.
+
+skill.improvableskills:treasure_finder.name=Schatzfinder
+skill.improvableskills:treasure_finder.desc=Ermöglicht Spielern beim Abbau wertvolle Materialien zu finden.
+
+skill.improvableskills:pvp_protection.name=PvP-Schutz
+skill.improvableskills:pvp_protection.desc=Erhöht den Schutz vor PvP-Schaden.
+
+skill.improvableskills:luck_of_the_sea.name=Glück des Meeres
+skill.improvableskills:luck_of_the_sea.desc=Erhöht den Köder-Effekt beim Angeln.
+
+skill.improvableskills:item_repair.name=Item-Reparateur
+skill.improvableskills:item_repair.desc=Repariert langsam Gegenstände. Dies funktioniert sowohl für Hände als auch für getragene Rüstung.
+
+skill.improvableskills:health.name=Extra-Gesundheit
+skill.improvableskills:health.desc=Diese Fähigkeit erhöht deine maximale HP auf +20 HP (10 Herzen).
+
+skill.improvableskills:growth.name=Schnelles Wachstum
+skill.improvableskills:growth.desc=Mit dieser Fertigkeit wird Knochenmehl zufällig auf umliegende Pflanzen angewendet.
+
+skill.improvableskills:alchemist.name=Alchemist
+skill.improvableskills:alchemist.desc=Erhöht die Geschwindigkeit des Braustandes. Sehr gut für diejenigen, die viel Alchemie betreiben.
+
+skill.improvableskills:generic_protection.name=Dichte Haut
+skill.improvableskills:generic_protection.desc=Macht deine Haut härter gegen Feinde. Versuche ein Drache zu werden.
+
+skill.improvableskills:treasure_sands.name=Schatz der Sande
+skill.improvableskills:treasure_sands.desc=Ermöglicht es, Schätze im Sand zu finden.
+
+skill.improvableskills:atkdmg_melee.name=Starke Faust
+skill.improvableskills:atkdmg_melee.desc=Erhöht den Nahkampfschaden, der einem Lebewesen zugefügt wird.
+
+skill.improvableskills:atkdmg_ranged.name=Scharfer Pfeil
+skill.improvableskills:atkdmg_ranged.desc=Erhöht Fernkampfschaden, der einem Lebewesen zugefügt wird.
+
+skill.improvableskills:pvp.name=PvP-Schutz
+skill.improvableskills:pvp.desc=Verringert den von anderen Spielern erlittenen Schaden.
+
+skill.improvableskills:enchanter.name=Verzauberer
+skill.improvableskills:enchanter.desc=Verringert die minimalen Level, die zum Verzaubern benötigt werden. (Effekt vergrößert sich alle 4 Level)
+
+skill.improvableskills:ender_manipulator.name=Ender-Manipulator
+skill.improvableskills:ender_manipulator.desc=Negiert den Schaden, der von einer Enderperle erlitten wird. Das letzte Level ermöglicht es, den Werfer zu heilen.
+
+skill.improvableskills:xp_plus.name=Erfahrungsernte
+skill.improvableskills:xp_plus.desc=Erhöht die erlangbare Erfahrung durch Bergbau, Tierzucht, Angeln und Tötung von Mobs.
+
+pagelet.improvableskills:xp_bank=XP-Bank
+
+#ABILITIES#
+ability.improvableskills:enchanting.name=Enchantment
+ability.improvableskills:crafter.name=Crafter
+ability.improvableskills:anvil.name=Blacksmith
+
+#BUTTONS#
+button.improvableskills:upgrade=Hochstufen
+button.improvableskills:degrade=Runterstufen
+
+#TEXTS#
+text.improvableskills:level=Level %s/%s
+text.improvableskills:totalXP=Deine Erfahrung: %s XP
+text.improvableskills:storeall=Alle lagern
+text.improvableskills:draw1lvl=1 Lvl. nehmen
+text.improvableskills:draw10lvls=10 Lvl. nehmen
+text.improvableskills:enchpower=Enchant Power: %,d
+chat.improvableskills.guide=Du hast gerade das Buch der Fähigkeiten hergestellt! Jetzt kannst du bestimmte Fähigkeiten verbessern.
+chat.improvableskills.page_unlocked=Neue Fähigkeit (%s) freigeschaltet!
+gui.improvableskills.locked=§4Nicht verfügbar. Stelle das Buch der Fähigkeiten her, um es freizuschalten.
+chat.improvableskills:skill_reset_self=Your skill levels and scrolls were reset.
+chat.improvableskills:skill_reset_tother=You reset skill levels and scrolls for %s.
+chat.improvableskills:skill_reset_fother=%s has reset your skill levels and scrolls.
+gui.improvableskills:nver=New version
+gui.improvableskills:changes=Changes
+text.improvableskills:shiftfrecipe=Press &6&lSHIFT&r&7 for recipe.
+text.improvableskills:unresolved_item=Unresolved Item
+
+#SUBTITLES#
+subtitles.improvableskills:treasure_found=Schatz gefunden
+subtitles.improvableskills:skill_book_open=Buch der Fähigkeiten geöffnet
+subtitles.improvableskills:skill_book_closed=Buch der Fähigkeiten geschlossen
+
+#PAGELETS#
+pagelet.improvableskills:update=New Version Available!
+pagelet.improvableskills:news=News
+pagelet.improvableskills:discord1=Discord
+pagelet.improvableskills:discord2=Need help? Have a blazing idea? Then join our discord now!
+pagelet.improvableskills:skills=Skills
+pagelet.improvableskills:abilities=Abitilies
+
+#RECIPES#
+recipe.improvableskills:skill.luck_of_the_sea=Drops while &bfishing&7 with &410%%&7
+recipe.improvableskills:skill.obsidian_skin=Found in &bnether fortresses&7 with &433,[3]%%&7
+recipe.improvableskills:skill.atkdmg_ranged=Drops from &bSkeletons&7 with &42,5%%&7
+recipe.improvableskills:skill.alchemist=Drops from &bWitches&7 with &410%%&7
+recipe.improvableskills:skill.growth=Found in &bjungle temples&7 with &425%%&7
+recipe.improvableskills:skill.ender_manipulator=Drops from &bEndermen&7 with &45%%&7
+recipe.improvableskills:skill.generic_protection=Found in &bunderground spawner rooms&7 with &425%%&7
+recipe.improvableskills:skill.health=Found in &bend cities&7 with &411,[1]%%&7
+recipe.improvableskills:skill.enchanter=Found in &bend fortresses&7 with &425%%&7
+recipe.improvableskills:skill.treasure_sands=Found in &bdesert temples&7 with &412,5%%&7
+recipe.improvableskills:skill.xp_plus=Drops from &belder guardian&7 with &433,[3]%%&7
+
+recipe.improvableskills:ability.enchanting=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:enchanting_table>&7, &2<minecraft:bookshelf>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
+recipe.improvableskills:ability.crafter=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:crafting_table>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
+recipe.improvableskills:ability.anvil=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:anvil>&7, &2<minecraft:emerald>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.

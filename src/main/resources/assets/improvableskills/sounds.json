@@ -1,0 +1,24 @@
+{
+  "page_turns": {
+    "sounds": [
+      "improvableskills:page_turn_1",
+      "improvableskills:page_turn_2",
+      "improvableskills:page_turn_3",
+      "improvableskills:page_turn_4",
+      "improvableskills:page_turn_5"
+    ]
+  },
+  "connect": {
+    "sounds": [
+      "improvableskills:connect"
+    ]
+  },
+  "treasure_found": {
+    "sounds": [
+      "improvableskills:treasure1",
+      "improvableskills:treasure2",
+      "improvableskills:treasure3",
+      "improvableskills:treasure4"
+    ]
+  }
+}
