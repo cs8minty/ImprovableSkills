@@ -9,7 +9,6 @@ public class SkillAttackSpeed
 	public SkillAttackSpeed()
 	{
 		super(25);
-		
 		xpCalculator.setBaseFormula("%lvl%^1.5");
 	}
 	

@@ -102,4 +102,12 @@ public class SkillsIS
 	@RegistryName("dexterous_arms")
 	@OnlyIf(owner = ConfigsIS.class, member = "enableSkill")
 	public static final SkillDexterousArms DEXTEROUS_ARMS = new SkillDexterousArms();
+	
+	@RegistryName("soul_speed")
+	@OnlyIf(owner = ConfigsIS.class, member = "enableSkill")
+	public static final SkillSoulSpeed SOUL_SPEED = new SkillSoulSpeed();
+	
+	@RegistryName("huckster")
+	@OnlyIf(owner = ConfigsIS.class, member = "enableSkill")
+	public static final SkillHuckster HUCKSTER = new SkillHuckster();
 }

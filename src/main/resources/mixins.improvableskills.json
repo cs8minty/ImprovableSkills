@@ -8,9 +8,13 @@
   "mixins": [
     "AbstractFurnaceBlockEntityAccessor",
     "BrewingStandBlockEntityAccessor",
+    "EnchantmentHelperMixin",
     "ServerPlayerGameModeMixin",
     "Vec3Accessor",
-    "VibrationListenerMixin"
+    "VibrationListenerMixin",
+    "VillagerMixin",
+    "WanderingTraderMixin",
+    "jer.LootConditionHelperMixin"
   ],
   "client": [
   ],

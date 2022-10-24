@@ -97,9 +97,9 @@ public class ItemSkillScroll
 			tooltip.add(Component.literal(" - " + base.getRegistryName()).withStyle(ChatFormatting.DARK_GRAY));
 		
 		if(ImprovableSkills.PROXY.hasShiftDown())
-			tooltip.add(Component.literal(I18n.get("recipe." + base.getRegistryName().getNamespace() + ":skill." + base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN)));
+			tooltip.add(Component.literal(I18n.get("recipe." + base.getRegistryName().getNamespace() + ":skill." + base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 		else
-			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)));
+			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 	}
 	
 	@Override

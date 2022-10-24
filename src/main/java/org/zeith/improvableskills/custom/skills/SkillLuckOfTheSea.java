@@ -15,10 +15,7 @@ public class SkillLuckOfTheSea
 	public SkillLuckOfTheSea()
 	{
 		super(15);
-		
-		lockedWithScroll = true;
-		generateScroll = true;
-		
+		setupScroll();
 		getLoot().chance.n = 10;
 		getLoot().setLootTable(BuiltInLootTables.FISHING);
 		setColor(0x4CC8E8);

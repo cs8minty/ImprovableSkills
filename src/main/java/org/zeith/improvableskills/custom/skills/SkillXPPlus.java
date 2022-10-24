@@ -9,8 +9,7 @@ public class SkillXPPlus
 	public SkillXPPlus()
 	{
 		super(10);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		getLoot().chance.n = 3;
 		getLoot().setLootTable(EntityType.ELDER_GUARDIAN.getDefaultLootTable());
 		setColor(0x93DA34);

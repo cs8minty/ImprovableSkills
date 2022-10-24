@@ -141,7 +141,7 @@ public class ISClient
 			);
 			
 			openSkills.setAlpha(0F);
-			openSkills.active = data.hasCraftedSkillBook;
+			openSkills.active = data.hasCraftedSkillsBook();
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class ISClient
 			
 			PlayerSkillData data = SyncSkills.getData();
 			
-			openSkills.active = data.hasCraftedSkillBook;
+			openSkills.active = data.hasCraftedSkillsBook();
 			
 			if(hovered)
 			{

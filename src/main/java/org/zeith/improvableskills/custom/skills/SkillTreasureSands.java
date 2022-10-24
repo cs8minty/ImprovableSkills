@@ -19,9 +19,7 @@ public class SkillTreasureSands
 	public SkillTreasureSands()
 	{
 		super(3);
-		lockedWithScroll = true;
-		generateScroll = true;
-		
+		setupScroll();
 		getLoot().chance.n = 8;
 		getLoot().setLootTable(BuiltInLootTables.DESERT_PYRAMID);
 		setColor(0xCCAC57);

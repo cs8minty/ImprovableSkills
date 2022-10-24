@@ -39,6 +39,11 @@ public class PlayerSkillBase
 		return maxLvl;
 	}
 	
+	public void setupScroll()
+	{
+		lockedWithScroll = generateScroll = true;
+	}
+	
 	public void setColor(int color)
 	{
 		this.color = LazyOptional.of(() -> color);

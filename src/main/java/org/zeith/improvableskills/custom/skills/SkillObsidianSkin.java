@@ -9,8 +9,7 @@ public class SkillObsidianSkin
 	public SkillObsidianSkin()
 	{
 		super(20);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		getLoot().chance.n = 3;
 		getLoot().setLootTable(BuiltInLootTables.NETHER_BRIDGE);
 		setColor(0x9B3EC9);

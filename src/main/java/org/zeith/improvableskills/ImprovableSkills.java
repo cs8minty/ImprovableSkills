@@ -7,8 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -35,7 +37,6 @@ import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
 import org.zeith.improvableskills.init.*;
 import org.zeith.improvableskills.proxy.ISClient;
 import org.zeith.improvableskills.proxy.ISServer;
-import org.zeith.improvableskills.utils.loot.LootEntryItemStack;
 
 import java.util.function.Supplier;
 
@@ -157,15 +158,17 @@ public class ImprovableSkills
 			
 			LOG.info("Injecting parchment into LootTable '" + e.getName() + "'!");
 			
-			var entry = LootEntryItemStack.build(new ItemStack(ItemsIS.PARCHMENT_FRAGMENT));
-			
 			try
 			{
 				var table = e.getTable();
 				table.addPool(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1F))
-						.setBonusRolls(UniformGenerator.between(0F, 1F))
-						.add(LootEntryItemStack.simpleBuilder(entry).setWeight(2).setQuality(60))
+						.add(EmptyLootItem.emptyItem().setWeight(4))
+						.add(LootItem.lootTableItem(ItemsIS.PARCHMENT_FRAGMENT)
+								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)))
+								.setWeight(1)
+								.setQuality(60)
+						)
 						.name("parchment_fragment")
 						.build());
 			} catch(Throwable err)
@@ -230,6 +233,16 @@ public class ImprovableSkills
 						RecipeHelper.fromComponent(Items.ENDER_EYE),
 						RecipeHelper.fromComponent(Items.IRON_INGOT),
 						RecipeHelper.fromComponent(Items.CHAIN)
+				)
+		));
+		
+		e.add(new RecipeParchmentFragment(AbilitiesIS.AUTO_XP_BANK.getRegistryName(),
+				ItemAbilityScroll.of(AbilitiesIS.AUTO_XP_BANK),
+				NonNullList.of(
+						Ingredient.EMPTY,
+						RecipeHelper.fromTag(Tags.Items.ENDER_PEARLS),
+						RecipeHelper.fromComponent(Items.EXPERIENCE_BOTTLE),
+						RecipeHelper.fromComponent(Items.REDSTONE)
 				)
 		));
 	}

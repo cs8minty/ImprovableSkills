@@ -9,8 +9,7 @@ public class SkillDexterousArms
 	public SkillDexterousArms()
 	{
 		super(15);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		getLoot().chance.n = 4;
 		getLoot().setLootTable(BuiltInLootTables.ABANDONED_MINESHAFT);
 		setColor(0xFFC031);

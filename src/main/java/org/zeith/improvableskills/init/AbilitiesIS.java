@@ -18,4 +18,7 @@ public class AbilitiesIS
 	
 	@RegistryName("magnetism")
 	public static final AbilityMagnetism MAGNETISM = new AbilityMagnetism();
+	
+	@RegistryName("auto_xp_bank")
+	public static final AbilityAutoXpBank AUTO_XP_BANK = new AbilityAutoXpBank();
 }

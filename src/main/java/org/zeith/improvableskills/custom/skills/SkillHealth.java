@@ -15,8 +15,7 @@ public class SkillHealth
 	public SkillHealth()
 	{
 		super(20);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		xpCalculator.xpValue = 3;
 		setColor(0xFF3535);
 		getLoot().chance.n = 9;

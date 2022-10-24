@@ -1,7 +1,6 @@
 package org.zeith.improvableskills.net;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.zeith.hammerlib.net.*;
@@ -51,8 +50,8 @@ public class PacketLvlUpSkill
 			{
 				data.setSkillLevel(skill, lvl + 1);
 				skill.onUpgrade(lvl, (short) (lvl + 1), data);
-				player.connection.send(new ClientboundSetExperiencePacket(player.experienceProgress, player.totalExperience, player.experienceLevel));
 				PacketSyncSkillData.sync(player);
+				System.out.println(data.getSkillLevel(skill));
 			}
 		});
 	}

@@ -47,11 +47,17 @@ public class GuiTabbable<P extends PageletBase>
 	protected int liveAnimationTime;
 	protected boolean zeithBDay = false;
 	
+	protected final List<PageletBase> pagelets;
+	
 	public GuiTabbable(P pagelet)
 	{
 		this.pagelet = pagelet;
 		
 		lastPagelet = pagelet;
+		
+		IForgeRegistry<PageletBase> pgreg = ImprovableSkills.PAGELETS();
+		pagelets = new ArrayList<>(pgreg.getValues());
+		pagelets.sort(Comparator.comparing(PageletBase::getRegistryName));
 		
 		xSize = 195;
 		ySize = 168;
@@ -182,9 +188,6 @@ public class GuiTabbable<P extends PageletBase>
 			}
 			pose.popPose();
 		}
-		
-		IForgeRegistry<PageletBase> pgreg = ImprovableSkills.PAGELETS();
-		List<PageletBase> pagelets = new ArrayList<>(pgreg.getValues());
 		
 		selPgl = null;
 		

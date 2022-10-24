@@ -110,9 +110,9 @@ public class ItemAbilityScroll
 				
 				ln = ln.replaceAll("<" + to + ">", t);
 			}
-			tooltip.add(Component.literal(ln));
+			tooltip.add(Component.literal(ln).withStyle(ChatFormatting.GRAY));
 		} else
-			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)));
+			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 	}
 	
 	@Override

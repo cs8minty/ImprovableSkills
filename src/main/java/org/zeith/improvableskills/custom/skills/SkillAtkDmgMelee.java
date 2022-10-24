@@ -8,7 +8,6 @@ public class SkillAtkDmgMelee
 	public SkillAtkDmgMelee()
 	{
 		super(15);
-		
 		xpCalculator.xpValue = 3;
 	}
 }

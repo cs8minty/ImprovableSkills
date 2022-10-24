@@ -16,12 +16,11 @@ public class SkillAlchemist
 	public SkillAlchemist()
 	{
 		super(15);
-		xpCalculator.xpValue = 2;
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		setColor(0xDD783E);
 		getLoot().chance.n = 10;
 		getLoot().setLootTable(EntityType.WITCH.getDefaultLootTable());
+		xpCalculator.xpValue = 2;
 	}
 	
 	public static final DustParticleOptions ALCHEMIST = new DustParticleOptions(new Vector3f(1F, 1F, 0F), 1.0F);

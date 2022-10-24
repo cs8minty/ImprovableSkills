@@ -21,8 +21,7 @@ public class SkillGrowth
 	public SkillGrowth()
 	{
 		super(20);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		getLoot().chance.n = 4;
 		getLoot().setLootTable(BuiltInLootTables.JUNGLE_TEMPLE);
 		setColor(0x00DA7B);

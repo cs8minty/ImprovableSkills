@@ -79,4 +79,9 @@ public class PlayerAbilityBase
 	public void onUnlocked(PlayerSkillData data)
 	{
 	}
+	
+	public void tick(PlayerSkillData data)
+	{
+	
+	}
 }

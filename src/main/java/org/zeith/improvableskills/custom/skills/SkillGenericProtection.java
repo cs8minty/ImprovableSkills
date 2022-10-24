@@ -15,8 +15,7 @@ public class SkillGenericProtection
 	public SkillGenericProtection()
 	{
 		super(20);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		getLoot().chance.n = 4;
 		getLoot().setLootTable(BuiltInLootTables.SIMPLE_DUNGEON);
 		setColor(0x4FFFDE);

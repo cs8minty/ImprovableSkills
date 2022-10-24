@@ -9,8 +9,7 @@ public class SkillEnderManipulator
 	public SkillEnderManipulator()
 	{
 		super(5);
-		lockedWithScroll = true;
-		generateScroll = true;
+		setupScroll();
 		getLoot().chance.n = 20;
 		getLoot().setLootTable(EntityType.ENDERMAN.getDefaultLootTable());
 		setColor(0xD5DA94);

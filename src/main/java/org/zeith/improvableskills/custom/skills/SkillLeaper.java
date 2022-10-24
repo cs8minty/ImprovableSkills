@@ -8,7 +8,6 @@ public class SkillLeaper
 	public SkillLeaper()
 	{
 		super(15);
-		
 		xpCalculator.xpValue = 2;
 	}
 }

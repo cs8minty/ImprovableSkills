@@ -93,6 +93,12 @@ skill.improvableskills:dexterous_arms.desc=Makes all tools last longer by someti
 skill.improvableskills:fast_swimmer.name=Fast Swimmer
 skill.improvableskills:fast_swimmer.desc=Increases the swimming speed of the player in any liquid.
 
+skill.improvableskills:soul_speed.name=Soul Speed
+skill.improvableskills:soul_speed.desc=Increases movement speed on soul sand, without needing Soul Speed boots. As penalty, your boots will get damaged when walking on soul sand.
+
+skill.improvableskills:huckster.name=Huckster
+skill.improvableskills:huckster.desc=Decreases villager special prices, letting you trade for cheaper.
+
 pagelet.improvableskills:xp_bank=XP Bank
 
 #ABILITIES#
@@ -100,6 +106,7 @@ ability.improvableskills:enchanting.name=Enchantment
 ability.improvableskills:crafter.name=Crafter
 ability.improvableskills:anvil.name=Blacksmith
 ability.improvableskills:magnetism.name=Magnetism
+ability.improvableskills:auto_xp_bank.name=Auto XP Bank
 
 #BUTTONS#
 button.improvableskills:upgrade=Upgrade
@@ -125,6 +132,9 @@ text.improvableskills:unresolved_item=Unresolved Item
 
 text.improvableskills.magnetism.off=Magnetism is currently disabled.
 text.improvableskills.magnetism.on=Magnetism is currently enabled. Picking up items within range of %s blocks.
+
+text.improvableskills.auto_xp_bank.off=Auto XP Bank is currently disabled.
+text.improvableskills.auto_xp_bank.on=Auto XP Bank is currently enabled. Keeping %s levels at your disposal.
 
 #SUBTITLES#
 subtitles.improvableskills:treasure_found=Treasure Found
@@ -153,8 +163,14 @@ recipe.improvableskills:skill.treasure_sands=Found in &bdesert temples&7 with &4
 recipe.improvableskills:skill.xp_plus=Drops from &belder guardian&7 with &433,[3]%%&7
 recipe.improvableskills:skill.silent_foot=Found in &bancient cities&7 with &4100%%&7
 recipe.improvableskills:skill.dexterous_arms=Found in &babandoned mineshafts&7 with &425%%&7
+recipe.improvableskills:skill.soul_speed=Bartered with &bpiglins&7 with &414.29%%&7
+recipe.improvableskills:skill.huckster=Gifted by &blibrarian&7 after defeating a raid
 
 recipe.improvableskills:ability.enchanting=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:enchanting_table>&7, &2<minecraft:bookshelf>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
 recipe.improvableskills:ability.crafter=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:crafting_table>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
 recipe.improvableskills:ability.anvil=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:anvil>&7, &2<minecraft:emerald>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
-recipe.improvableskills:ability.magnetism=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:ender_pearl>&7, &2<minecraft:ender_eye>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:chain>&7 close to eachother and wait.
+recipe.improvableskills:ability.magnetism=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:ender_pearl>&7, &2<minecraft:ender_eye>&7, &2<minecraft:iron_ingot>&7 and a &2<minecraft:chain>&7 close to eachother and wait.
+recipe.improvableskills:ability.auto_xp_bank=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:ender_pearl>&7, &2<minecraft:experience_bottle>&7 and &2<minecraft:redstone>&7 close to eachother and wait.
+
+#MISC#
+improvableskills.jer.skill_condition=Only drops if the player has not unlocked '%s' skill.

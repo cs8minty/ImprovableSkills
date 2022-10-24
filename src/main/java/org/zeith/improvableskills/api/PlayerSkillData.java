@@ -4,9 +4,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -28,19 +26,24 @@ public class PlayerSkillData
 	
 	public Player player;
 	
-	private final List<String> skillScrolls = new ArrayList<>();
-	private final List<String> abilities = new ArrayList<>();
+	// PRIMARY DATA
+	private final Map<ResourceLocation, Short> stats = new HashMap<>();
+	private final List<ResourceLocation> skillScrolls = new ArrayList<>();
+	private final List<ResourceLocation> abilities = new ArrayList<>();
+	
 	public BigInteger storageXp = BigInteger.ZERO;
 	public CompoundTag persistedData = new CompoundTag();
 	public boolean hasCraftedSkillBook = false;
 	public boolean enableXPBank = true;
 	private boolean hasCraftedSkillBookPrev = false;
-	public Map<String, Short> stats = new HashMap<>();
 	
 	public float enchantPower = 0;
 	
 	public boolean magnetism;
 	public float magnetismRange;
+	
+	public boolean autoXpBank;
+	public int autoXpBankThreshold;
 	
 	private boolean isInIO = false;
 	
@@ -65,7 +68,7 @@ public class PlayerSkillData
 	
 	public short getSkillLevel(PlayerSkillBase stat)
 	{
-		return stats.getOrDefault(stat.getRegistryName().toString(), (short) 0);
+		return stats.getOrDefault(stat.getRegistryName(), (short) 0);
 	}
 	
 	public ResourceLocation prevDim;
@@ -82,12 +85,25 @@ public class PlayerSkillData
 		Map<ResourceLocation, Long> updates = new HashMap<>();
 		
 		var skillReg = ImprovableSkills.SKILLS();
+		var abilsReg = ImprovableSkills.ABILITIES();
 		
 		for(var value : skillReg.getValues())
 		{
 			long start0 = System.currentTimeMillis();
 			value.tick(this);
 			updates.put(value.getRegistryName(), System.currentTimeMillis() - start0);
+		}
+		
+		for(int i = 0; i < abilities.size(); i++)
+		{
+			long start0 = System.currentTimeMillis();
+			ResourceLocation key = abilities.get(i);
+			var value = abilsReg.getValue(key);
+			if(value != null)
+			{
+				value.tick(this);
+				updates.put(value.getRegistryName(), System.currentTimeMillis() - start0);
+			}
 		}
 		
 		if(!player.level.isClientSide && !Objects.equals(prevDim, player.level.dimension().location()))
@@ -115,24 +131,6 @@ public class PlayerSkillData
 			}
 		}
 		
-		if(magnetism && magnetismRange > 1F)
-		{
-			var pos = player.getBoundingBox().getCenter();
-			for(var ie : player.level.getEntitiesOfClass(ItemEntity.class, new AABB(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z).inflate(magnetismRange)))
-			{
-				ie.setDeltaMovement(
-						ie.getDeltaMovement()
-								.scale(0.98F)
-								.add(
-										player.position()
-												.subtract(ie.position())
-												.normalize()
-												.multiply(0.1F, 0.2F, 0.1F)
-								)
-				);
-			}
-		}
-		
 		long end = System.currentTimeMillis();
 		
 		if(end - start > 50L)
@@ -150,7 +148,7 @@ public class PlayerSkillData
 	
 	public void setSkillLevel(PlayerSkillBase stat, Number lvl)
 	{
-		stats.put(stat.getRegistryName().toString(), lvl.shortValue());
+		stats.put(stat.getRegistryName(), lvl.shortValue());
 		sync();
 	}
 	
@@ -178,19 +176,22 @@ public class PlayerSkillData
 		persistedData.putBoolean("Magnetism", magnetism);
 		persistedData.putFloat("MagnetismRange", magnetismRange);
 		
+		persistedData.putBoolean("AutoXPBank", autoXpBank);
+		persistedData.putInt("AutoXPBankThreshold", autoXpBankThreshold);
+		
 		nbt.putBoolean("EnableXPBank", enableXPBank);
 		
 		IForgeRegistry<PlayerSkillBase> reg = ImprovableSkills.SKILLS();
 		nbt.put("Persisted", persistedData);
 		nbt.putFloat("EnchantPower", enchantPower);
 		ListTag list = new ListTag();
-		for(String sstat : stats.keySet())
+		for(var skillKey : stats.keySet())
 		{
-			PlayerSkillBase stat = reg.getValue(new ResourceLocation(sstat));
+			PlayerSkillBase stat = reg.getValue(skillKey);
 			
 			if(stat == null)
 			{
-				LOG.warn("[SAVE] Skill '" + sstat + "' wasn't found. Maybe you removed the addon? Skipping unregistered skill.");
+				LOG.warn("[SAVE] Skill '" + skillKey + "' wasn't found. Maybe you removed the addon? Skipping unregistered skill.");
 				continue;
 			}
 			
@@ -202,13 +203,13 @@ public class PlayerSkillData
 		nbt.put("Levels", list);
 		
 		list = new ListTag();
-		for(String scroll : skillScrolls)
-			list.add(StringTag.valueOf(scroll));
+		for(var scroll : skillScrolls)
+			list.add(StringTag.valueOf(scroll.toString()));
 		nbt.put("Scrolls", list);
 		
 		list = new ListTag();
-		for(String scroll : abilities)
-			list.add(StringTag.valueOf(scroll));
+		for(var scroll : abilities)
+			list.add(StringTag.valueOf(scroll.toString()));
 		nbt.put("Abilities", list);
 		
 		return nbt;
@@ -240,11 +241,11 @@ public class PlayerSkillData
 		
 		ListTag list = nbt.getList("Scrolls", Tag.TAG_STRING);
 		for(int i = 0; i < list.size(); ++i)
-			skillScrolls.add(list.getString(i));
+			skillScrolls.add(new ResourceLocation(list.getString(i)));
 		
 		list = nbt.getList("Abilities", Tag.TAG_STRING);
 		for(int i = 0; i < list.size(); ++i)
-			abilities.add(list.getString(i));
+			abilities.add(new ResourceLocation(list.getString(i)));
 		
 		enchantPower = nbt.getFloat("EnchantPower");
 		
@@ -264,6 +265,9 @@ public class PlayerSkillData
 		magnetism = persistedData.getBoolean("Magnetism");
 		magnetismRange = persistedData.getFloat("MagnetismRange");
 		
+		autoXpBank = persistedData.getBoolean("AutoXPBank");
+		autoXpBankThreshold = persistedData.getInt("AutoXPBankThreshold");
+		
 		isInIO = false;
 	}
 	
@@ -274,19 +278,19 @@ public class PlayerSkillData
 	
 	public boolean hasAbility(PlayerAbilityBase ability)
 	{
-		return ability != null && abilities.contains(ability.getRegistryName().toString());
+		return ability != null && abilities.contains(ability.getRegistryName());
 	}
 	
 	public boolean hasSkillScroll(PlayerSkillBase skill)
 	{
-		return skill != null && skillScrolls.contains(skill.getRegistryName().toString());
+		return skill != null && skillScrolls.contains(skill.getRegistryName());
 	}
 	
 	public boolean unlockAbility(PlayerAbilityBase ability, boolean sync)
 	{
-		if(ability != null && player != null && !player.level.isClientSide && !abilities.contains(ability.getRegistryName().toString()))
+		if(ability != null && player != null && !player.level.isClientSide && !abilities.contains(ability.getRegistryName()))
 		{
-			abilities.add(ability.getRegistryName().toString());
+			abilities.add(ability.getRegistryName());
 			ability.onUnlocked(this);
 			if(sync) sync();
 			return true;
@@ -297,9 +301,9 @@ public class PlayerSkillData
 	
 	public boolean unlockSkillScroll(PlayerSkillBase skill, boolean sync)
 	{
-		if(skill != null && skill.getScrollState().hasScroll() && player != null && !player.level.isClientSide && !skillScrolls.contains(skill.getRegistryName().toString()))
+		if(skill != null && skill.getScrollState().hasScroll() && player != null && !player.level.isClientSide && !skillScrolls.contains(skill.getRegistryName()))
 		{
-			skillScrolls.add(skill.getRegistryName().toString());
+			skillScrolls.add(skill.getRegistryName());
 			skill.onUnlocked(this);
 			if(sync) sync();
 			return true;
@@ -310,13 +314,13 @@ public class PlayerSkillData
 	
 	public void lockAbility(PlayerAbilityBase ability, boolean sync)
 	{
-		if(ability != null && player != null && !player.level.isClientSide && abilities.remove(ability.getRegistryName().toString()) && sync)
+		if(ability != null && player != null && !player.level.isClientSide && abilities.remove(ability.getRegistryName()) && sync)
 			sync();
 	}
 	
 	public void lockSkillScroll(PlayerSkillBase skill, boolean sync)
 	{
-		if(skill != null && player != null && !player.level.isClientSide && skillScrolls.remove(skill.getRegistryName().toString()) && sync)
+		if(skill != null && player != null && !player.level.isClientSide && skillScrolls.remove(skill.getRegistryName()) && sync)
 			sync();
 	}
 	

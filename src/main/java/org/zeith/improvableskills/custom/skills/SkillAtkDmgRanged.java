@@ -9,12 +9,9 @@ public class SkillAtkDmgRanged
 	public SkillAtkDmgRanged()
 	{
 		super(15);
-		lockedWithScroll = true;
-		generateScroll = true;
-		
+		setupScroll();
 		getLoot().chance.n = 40;
 		getLoot().setLootTable(EntityType.SKELETON.getDefaultLootTable());
-		
 		xpCalculator.xpValue = 3;
 	}
 }
