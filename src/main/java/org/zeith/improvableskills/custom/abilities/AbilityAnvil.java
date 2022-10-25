@@ -26,7 +26,7 @@ public class AbilityAnvil
 			{
 				if(texHov == null || texNorm == null)
 				{
-					ResourceLocation res = skill.getRegistryName();
+					ResourceLocation res = owner.getRegistryName();
 					this.texNorm = new ResourceLocation(res.getNamespace(), "textures/abilities/" + res.getPath() + "_normal.png");
 					this.texHov = new ResourceLocation(res.getNamespace(), "textures/abilities/" + res.getPath() + "_hovered.png");
 				}

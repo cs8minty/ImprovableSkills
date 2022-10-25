@@ -3,18 +3,22 @@ package org.zeith.improvableskills.api.treasures.drops;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.api.treasures.TreasureContext;
 import org.zeith.improvableskills.api.treasures.TreasureDropBase;
 import org.zeith.improvableskills.init.SkillsIS;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class TreasureSandDropItem
 		extends TreasureDropBase
 {
 	public final NonNullList<Stackable> items = NonNullList.create();
 	public int minLvl;
+	
+	public Predicate<PlayerSkillBase> skill = SkillsIS.TREASURE_OF_SANDS::is;
 	
 	public TreasureSandDropItem()
 	{
@@ -68,7 +72,6 @@ public class TreasureSandDropItem
 	@Override
 	public boolean canDrop(TreasureContext ctx)
 	{
-		return ctx.caller() == SkillsIS.TREASURE_OF_SANDS
-				&& ctx.data().getSkillLevel(ctx.caller()) >= minLvl;
+		return skill.test(ctx.caller()) && ctx.data().getSkillLevel(ctx.caller()) >= minLvl;
 	}
 }

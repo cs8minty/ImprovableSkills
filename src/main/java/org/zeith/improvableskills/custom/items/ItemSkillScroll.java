@@ -113,6 +113,9 @@ public class ItemSkillScroll
 		{
 			PlayerSkillBase base = getSkillFromScroll(held);
 			
+			if(base == null)
+				return new InteractionResultHolder<>(InteractionResult.PASS, held);
+			
 			if(!data.hasSkillScroll(base) && data.unlockSkillScroll(base, true))
 			{
 				ItemStack used = held.copy();
@@ -125,7 +128,7 @@ public class ItemSkillScroll
 				Network.sendTo(new PacketScrollUnlockedSkill(slot, used, base.getRegistryName()), playerIn);
 				
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, held);
-			} else if(data.getSkillLevel(base) < base.maxLvl)
+			} else if(data.getSkillLevel(base) < base.getMaxLevel())
 			{
 				data.setSkillLevel(base, data.getSkillLevel(base) + 1);
 				ItemStack used = held.copy();

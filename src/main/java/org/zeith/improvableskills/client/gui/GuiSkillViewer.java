@@ -20,8 +20,7 @@ import org.zeith.improvableskills.client.gui.base.GuiCustomButton;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
 import org.zeith.improvableskills.client.rendering.ote.*;
 import org.zeith.improvableskills.init.SoundsIS;
-import org.zeith.improvableskills.net.PacketLvlDownSkill;
-import org.zeith.improvableskills.net.PacketLvlUpSkill;
+import org.zeith.improvableskills.net.*;
 
 import java.util.Random;
 
@@ -29,6 +28,8 @@ public class GuiSkillViewer
 		extends GuiCentered
 		implements IGuiSkillDataConsumer
 {
+	public static final ResourceLocation TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png");
+	
 	final GuiSkillsBook parent;
 	public PlayerSkillData data;
 	final Style fontStyle;
@@ -50,7 +51,7 @@ public class GuiSkillViewer
 		ySize = 150;
 	}
 	
-	GuiCustomButton btn0, btn1, btn2;
+	GuiCustomButton btnUpgrade, btnDegrade, btnBack, btnToggle;
 	
 	@Override
 	public void init()
@@ -60,9 +61,10 @@ public class GuiSkillViewer
 		
 		int gl = guiLeft, gt = guiTop;
 		
-		btn0 = addRenderableWidget(new GuiCustomButton(0, gl + 10, gt + 124, 75, 20, Component.translatable("button.improvableskills:upgrade"), this::actionPerformed));
-		btn1 = addRenderableWidget(new GuiCustomButton(1, gl + 116, gt + 124, 75, 20, Component.translatable("button.improvableskills:degrade"), this::actionPerformed));
-		btn2 = addRenderableWidget(new GuiCustomButton(2, gl + (xSize - 20) / 2, gt + 124, 20, 20, " ", this::actionPerformed).setCustomClickSound(SoundsIS.PAGE_TURNS));
+		btnUpgrade = addRenderableWidget(new GuiCustomButton(0, gl + 10, gt + 124, 75, 20, Component.translatable("button.improvableskills:upgrade"), this::actionPerformed));
+		btnDegrade = addRenderableWidget(new GuiCustomButton(1, gl + 116, gt + 124, 75, 20, Component.translatable("button.improvableskills:degrade"), this::actionPerformed));
+		btnBack = addRenderableWidget(new GuiCustomButton(2, gl + (xSize - 20) / 2, gt + 124, 20, 20, " ", this::actionPerformed).setCustomClickSound(SoundsIS.PAGE_TURNS));
+		btnToggle = addRenderableWidget(new GuiCustomButton(3, gl + xSize - 30, gt + 14, 20, 20, " ", this::actionPerformed).setCustomClickSound(SoundsIS.PAGE_TURNS));
 	}
 	
 	@Override
@@ -75,33 +77,48 @@ public class GuiSkillViewer
 		
 		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		
-		short nsl = (short) (data.getSkillLevel(skill) + 1);
-		int xp = skill.getXPToUpgrade(data, nsl);
-		int xp2 = skill.getXPToDowngrade(data, (short) (nsl - 2));
+		short nextSkillLevel = (short) (data.getSkillLevel(skill) + 1);
+		int xp = skill.getXPToUpgrade(data, nextSkillLevel);
+		int xp2 = skill.getXPToDowngrade(data, (short) (nextSkillLevel - 2));
+		btnToggle.active = nextSkillLevel > 1;
 		
-		boolean max = nsl <= skill.maxLvl && !forbidden;
-		btn0.active = max && skill.canUpgrade(data);
-		btn1.active = data.getSkillLevel(skill) > 0 && !forbidden;
+		boolean notMaxedOut = nextSkillLevel <= skill.getMaxLevel() && !forbidden;
 		
 		super.render(pose, mouseX, mouseY, partialTicks);
 		
-		FXUtils.bindTexture(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png");
+		FXUtils.bindTexture(TEXTURE);
 		pose.pushPose();
 		pose.translate(guiLeft + (xSize - 20) / 2 + 2, guiTop + 126, 200);
 		pose.scale(1.5F, 1.5F, 1);
 		RenderUtils.drawTexturedModalRect(pose, 0, 0, 195, 10, 10, 11);
 		pose.popPose();
 		
+		var active = data.isSkillActive(skill);
+		
+		pose.pushPose();
+		pose.translate(btnToggle.x + 1, btnToggle.y + 1, 200);
+		pose.scale(18F / 20F, 18F / 20F, 18F / 20F);
+		RenderUtils.drawTexturedModalRect(pose, 0, 0, 195, 24 + (active ? 20 : 0), 20, 20);
+		pose.popPose();
+		
 		drawCenteredString(pose, forbidden ? minecraft.fontFilterFishy : font, I18n.get("text.improvableskills:totalXP", XPUtil.getXPTotal(minecraft.player)), guiLeft + xSize / 2, guiTop + ySize + 2, 0x88FF00);
 		
-		if(btn0.isMouseOver(mouseX, mouseY) && max)
+		btnUpgrade.active = true;
+		
+		if(btnUpgrade.isMouseOver(mouseX, mouseY) && notMaxedOut)
 			OTETooltip.showTooltip(Component.literal("-" + xp + " XP"));
 		
-		if(btn1.isMouseOver(mouseX, mouseY) && btn1.active)
+		if(btnDegrade.isMouseOver(mouseX, mouseY))
 			OTETooltip.showTooltip(Component.literal("+" + xp2 + " XP"));
 		
-		if(btn2.isMouseOver(mouseX, mouseY))
+		btnUpgrade.active = notMaxedOut && skill.canUpgrade(data);
+		btnDegrade.active = data.getSkillLevel(skill) > 0 && !forbidden;
+		
+		if(btnBack.isMouseOver(mouseX, mouseY))
 			OTETooltip.showTooltip(Component.translatable("gui.back"));
+		
+		if(btnToggle.isMouseOver(mouseX, mouseY))
+			OTETooltip.showTooltip(Component.translatable("gui." + ImprovableSkills.MOD_ID + ".toggle_skill." + (active ? "enabled" : "disabled"), skill.getLocalizedName()));
 	}
 	
 	@Override
@@ -121,12 +138,12 @@ public class GuiSkillViewer
 		if(lev > 0)
 		{
 			var hov = skill.tex.toUV(true);
-			RenderSystem.setShaderColor(1, 1, 1, (float) lev / skill.maxLvl);
+			RenderSystem.setShaderColor(1, 1, 1, (float) lev / skill.getMaxLevel());
 			hov.render(pose, 10, 6, 32, 32);
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 		}
 		
-		font.draw(pose, I18n.get("text.improvableskills:level", data.getSkillLevel(skill), skill.maxLvl), 44, 30, 0x555555);
+		font.draw(pose, I18n.get("text.improvableskills:level", data.getSkillLevel(skill), skill.getMaxLevel()), 44, 30, 0x555555);
 		
 		float scale = Math.min((xSize - 48) / font.width(name), 1.5F);
 		double flh = font.lineHeight * scale;
@@ -156,7 +173,15 @@ public class GuiSkillViewer
 		if(b.id == 2)
 		{
 			minecraft.setScreen(parent);
-			new OTEFadeOutUV(new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png"), 195, 10, 10, 11), 10 * 1.5F, 11 * 1.5F, guiLeft + (xSize - 20) / 2 + 2, guiTop + 126, 2);
+			new OTEFadeOutUV(new UV(TEXTURE, 195, 10, 10, 11), 10 * 1.5F, 11 * 1.5F, guiLeft + (xSize - 20) / 2 + 2, guiTop + 126, 2);
+		}
+		
+		if(b.id == 3)
+		{
+			var newState = !data.isSkillActive(skill);
+			data.setSkillState(skill, newState);
+			new OTEFadeOutUV(new UV(TEXTURE, 195, 24 + (newState ? 20 : 0), 20, 20), 18, 18, b.x + 1, b.y + 1, 20);
+			Network.sendToServer(new PacketSetSkillActivity(skill.getRegistryName(), newState));
 		}
 		
 		if(b.id == 0)

@@ -23,7 +23,7 @@ public class SkillLuckOfTheSea
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
 		var player = data.player;
 		var hook = player.fishing;
@@ -32,7 +32,7 @@ public class SkillLuckOfTheSea
 		if(luck != null)
 		{
 			luck.removeModifier(LOTS_LUCK);
-			if((hook != null) && (!hook.isRemoved()))
+			if(isActive && hook != null && !hook.isRemoved())
 				luck.addPermanentModifier(new AttributeModifier(LOTS_LUCK, "IS3 Fishing Luck", level * 2D, AttributeModifier.Operation.ADDITION));
 		}
 	}

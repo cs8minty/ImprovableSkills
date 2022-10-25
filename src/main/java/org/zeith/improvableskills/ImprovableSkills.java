@@ -129,15 +129,15 @@ public class ImprovableSkills
 	{
 		SKILLS = e.create(new RegistryBuilder<PlayerSkillBase>()
 				.setName(new ResourceLocation(MOD_ID, "skills"))
-				.disableSync(), reg -> RegistryMapping.report(PlayerSkillBase.class, reg));
+				.disableSync(), reg -> RegistryMapping.report(PlayerSkillBase.class, reg, false));
 		
 		ABILITIES = e.create(new RegistryBuilder<PlayerAbilityBase>()
 				.setName(new ResourceLocation(MOD_ID, "abilities"))
-				.disableSync(), reg -> RegistryMapping.report(PlayerAbilityBase.class, reg));
+				.disableSync(), reg -> RegistryMapping.report(PlayerAbilityBase.class, reg, false));
 		
 		PAGELETS = e.create(new RegistryBuilder<PageletBase>()
 				.setName(new ResourceLocation(MOD_ID, "pagelets"))
-				.disableSync(), reg -> RegistryMapping.report(PageletBase.class, reg));
+				.disableSync(), reg -> RegistryMapping.report(PageletBase.class, reg, false));
 	}
 	
 	private void addLoot(LootTableLoadEvent e)

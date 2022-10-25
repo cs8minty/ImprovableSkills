@@ -3,7 +3,6 @@ package org.zeith.improvableskills.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
 import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.util.java.tuples.Tuple2;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -21,7 +20,7 @@ public class GuiAbilityBook
 		extends GuiTabbable
 		implements IGuiSkillDataConsumer
 {
-	public final UV gui1, star;
+	public final UV gui1, inactivity;
 	public double scrolledPixels;
 	public double prevScrolledPixels;
 	public int row = 6;
@@ -42,8 +41,8 @@ public class GuiAbilityBook
 		xSize = 195;
 		ySize = 168;
 		
-		gui1 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
-		star = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png"), xSize + 1, 0, 10, 10);
+		gui1 = new UV(GuiSkillsBook.PAPER_TEXTURE, 0, 0, xSize, ySize);
+		inactivity = new UV(GuiSkillViewer.TEXTURE, 195, 24, 20, 20);
 		
 		ImprovableSkills.ABILITIES().getValues()
 				.stream()
@@ -112,6 +111,9 @@ public class GuiAbilityBook
 				setWhiteColor();
 			} else
 				tex.toUV(false).render(pose, x, y, 24, 24);
+			
+			if(tex.owner.showDisabledIcon(data))
+				inactivity.render(pose, x + 9.5F, y + 21, 5, 5);
 		}
 		
 		if(!singleHover)
@@ -126,7 +128,7 @@ public class GuiAbilityBook
 		if(cHover >= 0 && chtni >= 200)
 		{
 			SkillTex<PlayerAbilityBase> tex = texes.get(cHover % co);
-			OTETooltip.showTooltip(tex.skill.getLocalizedName(data));
+			OTETooltip.showTooltip(tex.owner.getLocalizedName(data));
 		}
 	}
 	
@@ -145,8 +147,6 @@ public class GuiAbilityBook
 		super.tick();
 		
 		prevScrolledPixels = scrolledPixels;
-		
-		boolean singleHover = false;
 		
 		int co = texes.size();
 		float maxPixels = 28 * (co / row) - 28 * 7;
@@ -202,7 +202,7 @@ public class GuiAbilityBook
 	{
 		if(cHover >= 0)
 		{
-			PlayerAbilityBase skill = texes.get(cHover % texes.size()).skill;
+			PlayerAbilityBase skill = texes.get(cHover % texes.size()).owner;
 			
 			skill.onClickClient(minecraft.player, mouseButton);
 			

@@ -1,7 +1,6 @@
 package org.zeith.improvableskills.custom.skills;
 
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraftforge.common.MinecraftForge;
 import org.zeith.improvableskills.api.evt.ApplySpecialPricesEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
@@ -17,10 +16,10 @@ public class SkillHuckster
 		getLoot().setLootTable(BuiltInLootTables.LIBRARIAN_GIFT);
 		setColor(0x00FF00);
 		xpCalculator.setBaseFormula("150*(%lvl%+1)+(%lvl%+1)^3");
-		MinecraftForge.EVENT_BUS.addListener(this::specialPrices);
+		addListener(this::hook);
 	}
 	
-	private void specialPrices(ApplySpecialPricesEvent e)
+	private void hook(ApplySpecialPricesEvent e)
 	{
 		float modifier = PlayerDataManager.handleDataSafely(e.getPlayer(), data -> getLevelProgress(data.getSkillLevel(this)), 0F) * 0.25F;
 		

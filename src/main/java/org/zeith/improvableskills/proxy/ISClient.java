@@ -126,11 +126,7 @@ public class ISClient
 	{
 		Minecraft mc = Minecraft.getInstance();
 		
-		if(mc.player == null && SyncSkills.CLIENT_DATA != null)
-		{
-			ImprovableSkills.LOG.info("Reset client skill data.");
-			SyncSkills.CLIENT_DATA = null;
-		}
+		SyncSkills.doCheck(mc.player);
 		
 		if(e.getScreen() instanceof InventoryScreen inv && ConfigsIS.addBookToInv)
 		{
@@ -154,15 +150,16 @@ public class ISClient
 			
 			openSkills.x = inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1;
 			openSkills.y = inv.getGuiTop() + 24;
+			
+			PlayerSkillData data = SyncSkills.getData();
+			
+			openSkills.active = true;
 			hovered = openSkills.isMouseOver(mx, my);
+			openSkills.active = data.hasCraftedSkillsBook();
 			
 			ItemStack book = new ItemStack(ItemsIS.SKILLS_BOOK);
 			
 			RenderUtils.renderItemIntoGui(e.getPoseStack(), book, openSkills.x, openSkills.y);
-			
-			PlayerSkillData data = SyncSkills.getData();
-			
-			openSkills.active = data.hasCraftedSkillsBook();
 			
 			if(hovered)
 			{

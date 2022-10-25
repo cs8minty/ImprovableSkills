@@ -3,7 +3,9 @@ package org.zeith.improvableskills.api.registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.eventbus.api.Event;
 import org.zeith.hammerlib.api.fml.IRegisterListener;
 import org.zeith.hammerlib.util.XPUtil;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -11,15 +13,18 @@ import org.zeith.improvableskills.api.*;
 import org.zeith.improvableskills.api.loot.SkillLoot;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class PlayerSkillBase
 		implements IHasRegistryName, IRegisterListener
 {
 	private SkillLoot loot;
+	private List<Consumer<? extends Event>> forgeEvents = new ArrayList<>();
+	
 	public SkillCostConfig xpCalculator = new SkillCostConfig(1);
 	public SkillTex<PlayerSkillBase> tex = new SkillTex<>(this);
-	public final int maxLvl;
+	protected final int maxLvl;
 	protected boolean lockedWithScroll, generateScroll;
 	
 	protected LazyOptional<Integer> color = LazyOptional.of(() -> getRegistryName().toString().hashCode());
@@ -31,10 +36,10 @@ public class PlayerSkillBase
 	
 	public float getLevelProgress(int level)
 	{
-		return level / (float) getMaxLvl();
+		return level / (float) getMaxLevel();
 	}
 	
-	public int getMaxLvl()
+	public int getMaxLevel()
 	{
 		return maxLvl;
 	}
@@ -49,7 +54,7 @@ public class PlayerSkillBase
 		this.color = LazyOptional.of(() -> color);
 	}
 	
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
 	}
 	
@@ -63,9 +68,14 @@ public class PlayerSkillBase
 		return id;
 	}
 	
+	public String getUnlocalizedName(ResourceLocation id)
+	{
+		return "skill." + id.toString();
+	}
+	
 	public String getUnlocalizedName()
 	{
-		return "skill." + getRegistryName().toString();
+		return getUnlocalizedName(getRegistryName());
 	}
 	
 	public String getUnlocalizedName(PlayerSkillData data)
@@ -130,6 +140,12 @@ public class PlayerSkillBase
 	public void onPostRegistered()
 	{
 		ConfigsIS.reloadCost(this);
+		for(var listener : forgeEvents) MinecraftForge.EVENT_BUS.addListener(listener);
+	}
+	
+	public <T extends Event> void addListener(Consumer<T> consumer)
+	{
+		forgeEvents.add(consumer);
 	}
 	
 	public EnumScrollState getScrollState()
@@ -154,6 +170,11 @@ public class PlayerSkillBase
 	
 	public void onUnlocked(PlayerSkillData data)
 	{
+	}
+	
+	public boolean is(PlayerSkillBase skill)
+	{
+		return skill == this;
 	}
 	
 	public enum EnumScrollState

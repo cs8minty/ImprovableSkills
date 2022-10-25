@@ -130,6 +130,9 @@ gui.improvableskills:changes=Changes
 text.improvableskills:shiftfrecipe=Press &6&lSHIFT&r&7 for recipe.
 text.improvableskills:unresolved_item=Unresolved Item
 
+gui.improvableskills.toggle_skill.disabled=%s is inactive. Click to toggle.
+gui.improvableskills.toggle_skill.enabled=%s is active. Click to toggle.
+
 text.improvableskills.magnetism.off=Magnetism is currently disabled.
 text.improvableskills.magnetism.on=Magnetism is currently enabled. Picking up items within range of %s blocks.
 

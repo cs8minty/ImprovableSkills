@@ -52,7 +52,7 @@ public class ItemCreativeSkillScroll
 				{
 					data.unlockSkillScroll(base, false);
 					given.add(base);
-				} else if(data.getSkillLevel(base) < base.getMaxLvl())
+				} else if(data.getSkillLevel(base) < base.getMaxLevel())
 				{
 					data.setSkillLevel(base, data.getSkillLevel(base) + 1);
 					given.add(base);

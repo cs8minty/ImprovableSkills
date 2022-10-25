@@ -7,22 +7,22 @@ import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 
 public class SkillTex<V extends IHasRegistryName>
 {
-	public final V skill;
+	public final V owner;
 	public ResourceLocation texNorm, texHov;
 	
-	public SkillTex(V skill)
+	public SkillTex(V owner)
 	{
-		this.skill = skill;
+		this.owner = owner;
 	}
 	
 	public UV toUV(boolean hovered)
 	{
 		if(texHov == null || texNorm == null)
 		{
-			ResourceLocation res = skill.getRegistryName();
+			ResourceLocation res = owner.getRegistryName();
 			
 			String sub = "skills";
-			if(skill instanceof PlayerAbilityBase)
+			if(owner instanceof PlayerAbilityBase)
 				sub = "abilities";
 			
 			this.texNorm = new ResourceLocation(res.getNamespace(), "textures/" + sub + "/" + res.getPath() + "_normal.png");

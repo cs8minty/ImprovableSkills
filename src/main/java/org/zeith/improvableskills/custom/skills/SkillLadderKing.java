@@ -15,9 +15,9 @@ public class SkillLadderKing
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
-		if(data.player.onClimbable() && !data.player.isShiftKeyDown())
+		if(isActive && data.player.onClimbable() && !data.player.isShiftKeyDown())
 		{
 			float multiplier = data.getSkillLevel(this) / (float) maxLvl;
 			if(!data.player.horizontalCollision)

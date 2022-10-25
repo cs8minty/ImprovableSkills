@@ -29,10 +29,10 @@ public class SkillGrowth
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
-		short lvl = data.getSkillLevel(this);
-		if(lvl > 0 && data.player.tickCount % ((maxLvl - lvl) * 3 + 80) == 0)
+		short lvl;
+		if(isActive && (lvl = data.getSkillLevel(this)) > 0 && data.player.tickCount % ((maxLvl - lvl) * 3 + 80) == 0)
 			growAround(data.player, 2 + lvl / 4, lvl / 2 + 2);
 	}
 	

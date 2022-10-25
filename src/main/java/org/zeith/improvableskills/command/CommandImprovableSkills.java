@@ -63,8 +63,8 @@ public class CommandImprovableSkills
 																			if(skill == null)
 																				throw new SimpleCommandExceptionType(Component.literal("Skill " + JSONObject.quote(key.location().toString()) + " not found.")).create();
 																			
-																			if(level > skill.maxLvl)
-																				throw new SimpleCommandExceptionType(Component.literal("Unable to set skill level to " + level + ", as the max level for ").append(skill.getLocalizedName()).append(" is " + skill.maxLvl + ".")).create();
+																			if(level > skill.getMaxLevel())
+																				throw new SimpleCommandExceptionType(Component.literal("Unable to set skill level to " + level + ", as the max level for ").append(skill.getLocalizedName()).append(" is " + skill.getMaxLevel() + ".")).create();
 																			
 																			var updated = 0;
 																			
@@ -99,7 +99,7 @@ public class CommandImprovableSkills
 																{
 																	for(var skill : ImprovableSkills.SKILLS().getValues())
 																	{
-																		pd.setSkillLevel(skill, skill.maxLvl);
+																		pd.setSkillLevel(skill, skill.getMaxLevel());
 																		if(skill.getScrollState().hasScroll())
 																			pd.unlockSkillScroll(skill, false);
 																	}

@@ -23,7 +23,7 @@ public class SkillGenericProtection
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
 		if(data.atTickRate(10))
 		{
@@ -31,7 +31,8 @@ public class SkillGenericProtection
 			if(armor != null)
 			{
 				armor.removeModifier(PROTECTION_ID);
-				armor.addPermanentModifier(new AttributeModifier(PROTECTION_ID, "IS3 Protection", data.getSkillLevel(this), AttributeModifier.Operation.ADDITION));
+				if(isActive)
+					armor.addPermanentModifier(new AttributeModifier(PROTECTION_ID, "IS3 Protection", data.getSkillLevel(this), AttributeModifier.Operation.ADDITION));
 			}
 		}
 	}

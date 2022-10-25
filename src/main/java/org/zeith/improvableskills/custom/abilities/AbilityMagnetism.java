@@ -1,20 +1,17 @@
 package org.zeith.improvableskills.custom.abilities;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.zeith.hammerlib.client.utils.UV;
-import org.zeith.improvableskills.SyncSkills;
+import org.zeith.hammerlib.net.Network;
 import org.zeith.improvableskills.api.PlayerSkillData;
-import org.zeith.improvableskills.api.SkillTex;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.client.gui.abil.GuiMagnetism;
 import org.zeith.improvableskills.data.PlayerDataManager;
+import org.zeith.improvableskills.net.PacketSetMagnetismData;
 
 public class AbilityMagnetism
 		extends PlayerAbilityBase
@@ -22,32 +19,6 @@ public class AbilityMagnetism
 	public AbilityMagnetism()
 	{
 		setColor(0xFF00FF);
-		
-		tex = new SkillTex<>(this)
-		{
-			@Override
-			@OnlyIn(Dist.CLIENT)
-			public UV toUV(boolean hovered)
-			{
-				if(texHov == null || texNorm == null)
-				{
-					ResourceLocation res = skill.getRegistryName();
-					this.texNorm = new ResourceLocation(res.getNamespace(), "textures/abilities/" + res.getPath() + "_normal.png");
-					this.texHov = new ResourceLocation(res.getNamespace(), "textures/abilities/" + res.getPath() + "_hovered.png");
-				}
-				
-				return new UVWithMagnet(hovered ? texHov : texNorm);
-			}
-		};
-	}
-	
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void onClickClient(Player player, int mouseButton)
-	{
-		PlayerDataManager.handleDataSafely(player, data ->
-				Minecraft.getInstance().pushGuiLayer(new GuiMagnetism(data))
-		);
 	}
 	
 	@Override
@@ -79,24 +50,22 @@ public class AbilityMagnetism
 		}
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	static class UVWithMagnet
-			extends UV
+	@Override
+	public boolean showDisabledIcon(PlayerSkillData data)
 	{
-		public UVWithMagnet(ResourceLocation path)
+		return !data.magnetism;
+	}
+	
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void onClickClient(Player player, int mouseButton)
+	{
+		PlayerDataManager.handleDataSafely(player, data ->
 		{
-			super(path, 0, 0, 256, 256);
-		}
-		
-		@Override
-		@OnlyIn(Dist.CLIENT)
-		public void render(PoseStack pose, float x, float y)
-		{
-			super.render(pose, x, y);
-			
-			int size = 96;
-			new UV(GuiMagnetism.TEXTURE, 176, SyncSkills.getData().magnetism ? 0 : 20, 20, 20)
-					.render(pose, x + 256 - size, y + 256 - size / 2F, size, size);
-		}
+			if(mouseButton == 1)
+				Network.sendToServer(new PacketSetMagnetismData(data.magnetism = !data.magnetism));
+			else if(mouseButton == 0)
+				Minecraft.getInstance().pushGuiLayer(new GuiMagnetism(data));
+		});
 	}
 }

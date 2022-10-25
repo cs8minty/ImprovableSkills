@@ -1,5 +1,6 @@
 package org.zeith.improvableskills.cfg;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.zeith.hammerlib.annotations.SetupConfigs;
@@ -55,12 +56,14 @@ public class ConfigsIS
 			config.save();
 	}
 	
-	public static boolean enableSkill(PlayerSkillBase skill)
+	public static boolean enableSkill(PlayerSkillBase skill, ResourceLocation id)
 	{
-		return config.getCategory("Skills")
+		var value = config.getCategory("Skills")
 				.setDescription("What skills should be enabled?")
-				.getBooleanEntry(skill.getRegistryName().toString(), true)
-				.setDescription("Should Skill \"" + skill.getUnlocalizedName() + "\" be added to the game?")
+				.getBooleanEntry(id.toString(), true)
+				.setDescription("Should Skill \"" + skill.getUnlocalizedName(id) + "\" be added to the game?")
 				.getValue();
+		if(config.hasChanged()) config.save();
+		return value;
 	}
 }

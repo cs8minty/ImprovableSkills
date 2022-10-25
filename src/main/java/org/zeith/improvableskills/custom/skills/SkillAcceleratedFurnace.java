@@ -24,15 +24,15 @@ public class SkillAcceleratedFurnace
 		xpCalculator.xpValue = 2;
 	}
 	
-	public static final DustParticleOptions ALCHEMIST = new DustParticleOptions(new Vector3f(1F, 1F, 0F), 1.0F);
+	public static final DustParticleOptions FURNACE_DUST = new DustParticleOptions(new Vector3f(1F, 1F, 0F), 1.0F);
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
 		int lvl = data.getSkillLevel(this);
-		boolean acquired = lvl > 0;
+		boolean working = isActive && lvl > 0;
 		
-		if(!acquired || data.player.level.isClientSide)
+		if(!working || data.player.level.isClientSide)
 			return;
 		
 		Level w = data.player.level;
@@ -57,7 +57,8 @@ public class SkillAcceleratedFurnace
 							if(a.getCookingProgress() >= a.getCookingTotalTime())
 							{
 								Recipe<?> recipe = level.getRecipeManager().getRecipeFor(a.getRecipeType(), tef, level).orElse(null);
-								a.callBurn(recipe, a.getItems(), tef.getMaxStackSize());
+								if(a.callBurn(recipe, a.getItems(), tef.getMaxStackSize()))
+									tef.setRecipeUsed(recipe);
 								a.setCookingProgress(0);
 							}
 						} else if(a.getCookingProgress() < 1)
@@ -77,7 +78,7 @@ public class SkillAcceleratedFurnace
 							Vec3 vec = Vec3.atLowerCornerOf(pos.relative(face));
 							face = face.getOpposite();
 							vec = vec.add(.5 + face.getStepX() * .5, .65 + face.getStepY() * .5, .5 + face.getStepZ() * .5);
-							sl.sendParticles(ALCHEMIST, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
+							sl.sendParticles(FURNACE_DUST, vec.x, vec.y, vec.z, 1, 0, 0, 0, 0);
 						}
 					}
 				});

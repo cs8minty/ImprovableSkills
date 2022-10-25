@@ -87,11 +87,11 @@ public class DamageSourceProcessor
 		private static final List<DamageType> TYPES = new ArrayList<>();
 		private static DamageType[] arTypes;
 		
-		public static final DamageType MELEE = new DamageType(d -> d.getEntity() == d.getDirectEntity() && d.getEntity() instanceof Player), //
-				RANGED = new DamageType(DamageSourceProcessor::isRangedDamage), //
-				MINION = new DamageType(d -> isMinionEntity(d.getEntity())), //
-				MAGIC = new DamageType(d -> !isAlchemicalEntity(d.getDirectEntity()) && d.isMagic()), //
-				ALCHEMICAL = new DamageType(d -> isAlchemicalEntity(d.getDirectEntity())), //
+		public static final DamageType MELEE = new DamageType(d -> d.getEntity() == d.getDirectEntity() && d.getEntity() instanceof Player),
+				RANGED = new DamageType(DamageSourceProcessor::isRangedDamage),
+				MINION = new DamageType(d -> isMinionEntity(d.getEntity())),
+				MAGIC = new DamageType(d -> !isAlchemicalEntity(d.getDirectEntity()) && d.isMagic()),
+				ALCHEMICAL = new DamageType(d -> isAlchemicalEntity(d.getDirectEntity())),
 				UNKNOWN = new DamageType(d -> false);
 		
 		private final Predicate<DamageSource> test;

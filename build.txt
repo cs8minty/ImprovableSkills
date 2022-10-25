@@ -2,11 +2,11 @@
 mod_id=improvableskills
 archive_name=ImprovableSkills
 mod_name=Improvable Skills
-mod_version=19.1.1
+mod_version=19.1.2
 
 # Maven Info
 maven_group=org.zeith.improvableskills
-hl_version=19.1.33
+hl_version=19.1.34
 
 # MC Info
 mc_version=1.19.2

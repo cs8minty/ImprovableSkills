@@ -51,7 +51,6 @@ public class PacketLvlUpSkill
 				data.setSkillLevel(skill, lvl + 1);
 				skill.onUpgrade(lvl, (short) (lvl + 1), data);
 				PacketSyncSkillData.sync(player);
-				System.out.println(data.getSkillLevel(skill));
 			}
 		});
 	}

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.zeith.hammerlib.net.*;
@@ -19,12 +20,15 @@ import org.zeith.improvableskills.data.PlayerDataManager;
 public class PacketOpenSkillsBook
 		implements IPacket
 {
-	public CompoundTag nbt;
+	private CompoundTag nbt;
 	
 	public static void sync(ServerPlayer mp)
 	{
 		if(mp != null)
+		{
 			PlayerDataManager.handleDataSafely(mp, data -> Network.sendTo(new PacketOpenSkillsBook(data), mp));
+			mp.level.gameEvent(mp, GameEvent.EQUIP, mp.position());
+		}
 	}
 	
 	PacketOpenSkillsBook(PlayerSkillData data)
@@ -47,9 +51,14 @@ public class PacketOpenSkillsBook
 	public void clientExecute(PacketContext net)
 	{
 		Minecraft mc = Minecraft.getInstance();
-		SyncSkills.CLIENT_DATA = PlayerSkillData.deserialize(Minecraft.getInstance().player, nbt);
+		SyncSkills.handle(mc.player, this);
 		mc.setScreen(GuiTabbable.lastPagelet.createTab(SyncSkills.getData()));
 		Threading.createAndStart(() -> ImprovableSkills.PAGELETS().forEach(PageletBase::reload));
+	}
+	
+	public CompoundTag getNbt()
+	{
+		return nbt;
 	}
 	
 	@Override

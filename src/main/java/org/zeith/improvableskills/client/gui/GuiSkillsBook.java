@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import org.zeith.hammerlib.client.utils.*;
+import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.tuples.Tuple2;
 import org.zeith.hammerlib.util.java.tuples.Tuples;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -16,6 +17,7 @@ import org.zeith.improvableskills.client.rendering.OnTopEffects;
 import org.zeith.improvableskills.client.rendering.ote.*;
 import org.zeith.improvableskills.custom.items.ItemSkillScroll;
 import org.zeith.improvableskills.init.SoundsIS;
+import org.zeith.improvableskills.net.PacketSetSkillActivity;
 
 import java.util.*;
 
@@ -23,7 +25,9 @@ public class GuiSkillsBook
 		extends GuiTabbable
 		implements IGuiSkillDataConsumer
 {
-	public final UV gui1, star;
+	public static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png");
+	
+	public final UV gui1, medal, inactivity;
 	public double scrolledPixels;
 	public double prevScrolledPixels;
 	public int row = 6;
@@ -44,12 +48,9 @@ public class GuiSkillsBook
 		xSize = 195;
 		ySize = 168;
 		
-		gui1 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
-		star = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png"), xSize + 1, 0, 10, 10);
-
-//		skills.remove(SkillsIS.XP_STORAGE);
-
-//		texes.add(SkillsIS.XP_STORAGE.tex);
+		gui1 = new UV(PAPER_TEXTURE, 0, 0, xSize, ySize);
+		medal = new UV(GuiSkillViewer.TEXTURE, xSize + 1, 0, 10, 10);
+		inactivity = new UV(GuiSkillViewer.TEXTURE, 195, 24, 20, 20);
 		
 		ImprovableSkills.SKILLS().getValues()
 				.stream()
@@ -63,8 +64,6 @@ public class GuiSkillsBook
 	{
 		setWhiteColor();
 		gui1.render(pose, guiLeft, guiTop);
-
-//		pose.enableDepth();
 		
 		int co = texes.size();
 		
@@ -116,15 +115,18 @@ public class GuiSkillsBook
 			} else
 				tex.toUV(false).render(pose, x, y, 24, 24);
 			
-			if(data.getSkillLevel(tex.skill) >= tex.skill.maxLvl)
-				star.render(pose, x + 15, y + 17, 10, 10);
+			if(data.getSkillLevel(tex.owner) >= tex.owner.getMaxLevel())
+				medal.render(pose, x + 15, y + 17, 10, 10);
 			
-			if(tex.skill.getScrollState().hasScroll())
+			if(!data.isSkillActive(tex.owner))
+				inactivity.render(pose, x + 9.5F, y + 21, 5, 5);
+			
+			if(tex.owner.getScrollState().hasScroll())
 			{
 				pose.pushPose();
-				pose.translate(x + .5, y + 19.5, 0);
+				pose.translate(x + 0.5F, y + 19.5F, 0);
 				pose.scale(1 / 2F, 1 / 2F, 1);
-				RenderUtils.renderItemIntoGui(pose, ItemSkillScroll.of(tex.skill), 0, 0);
+				RenderUtils.renderItemIntoGui(pose, ItemSkillScroll.of(tex.owner), 0, 0);
 				pose.popPose();
 			}
 		}
@@ -141,7 +143,7 @@ public class GuiSkillsBook
 		setWhiteColor();
 		
 		if(cHover >= 0 && chtni >= 200)
-			OTETooltip.showTooltip(texes.get(cHover % co).skill.getLocalizedName(data));
+			OTETooltip.showTooltip(texes.get(cHover % co).owner.getLocalizedName(data));
 	}
 	
 	protected double dWheel;
@@ -215,11 +217,16 @@ public class GuiSkillsBook
 	{
 		if(cHover >= 0)
 		{
-			PlayerSkillBase skill = texes.get(cHover % texes.size()).skill;
-//			if(skill == SkillsIS.XP_STORAGE)
-//				mc.displayGuiScreen(new GuiXPBank(this));
-//			else
-			minecraft.pushGuiLayer(new GuiSkillViewer(this, skill));
+			PlayerSkillBase skill = texes.get(cHover % texes.size()).owner;
+			
+			if(mouseButton == 0)
+				minecraft.pushGuiLayer(new GuiSkillViewer(this, skill));
+			else if(mouseButton == 1)
+			{
+				var newState = !data.isSkillActive(skill);
+				data.setSkillState(skill, newState);
+				Network.sendToServer(new PacketSetSkillActivity(skill.getRegistryName(), newState));
+			}
 			
 			int co = texes.size();
 			for(int i = 0; i < co; ++i)

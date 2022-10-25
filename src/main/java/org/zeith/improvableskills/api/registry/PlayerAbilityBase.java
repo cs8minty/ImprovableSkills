@@ -84,4 +84,9 @@ public class PlayerAbilityBase
 	{
 	
 	}
+	
+	public boolean showDisabledIcon(PlayerSkillData data)
+	{
+		return false;
+	}
 }

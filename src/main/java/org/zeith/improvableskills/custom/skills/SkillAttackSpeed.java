@@ -13,8 +13,9 @@ public class SkillAttackSpeed
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
-		data.player.attackStrengthTicker += Math.sqrt(data.getSkillLevel(this)) / 2;
+		if(isActive)
+			data.player.attackStrengthTicker += Math.sqrt(data.getSkillLevel(this)) / 2;
 	}
 }

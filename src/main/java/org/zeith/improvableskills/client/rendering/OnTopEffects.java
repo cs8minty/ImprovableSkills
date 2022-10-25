@@ -11,6 +11,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.zeith.hammerlib.util.java.tuples.Tuple2;
 import org.zeith.improvableskills.ImprovableSkills;
+import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.registry.PageletBase;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 import org.zeith.improvableskills.utils.ScaledResolution;
@@ -34,7 +35,8 @@ public class OnTopEffects
 	public void tick(TickEvent.ClientTickEvent e)
 	{
 		var mc = Minecraft.getInstance();
-		var mh = mc.mouseHandler;
+		
+		SyncSkills.doCheck(mc.player);
 		
 		if(e.phase == TickEvent.Phase.END)
 		{

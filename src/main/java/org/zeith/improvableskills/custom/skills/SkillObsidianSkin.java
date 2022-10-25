@@ -1,7 +1,11 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
+import org.zeith.improvableskills.data.PlayerDataManager;
 
 public class SkillObsidianSkin
 		extends PlayerSkillBase
@@ -14,5 +18,17 @@ public class SkillObsidianSkin
 		getLoot().setLootTable(BuiltInLootTables.NETHER_BRIDGE);
 		setColor(0x9B3EC9);
 		xpCalculator.xpValue = 2;
+		addListener(this::damageHook);
+	}
+	
+	private void damageHook(LivingHurtEvent e)
+	{
+		DamageSource ds = e.getSource();
+		if(ds != null && ds.isFire() && e.getEntity() instanceof Player p)
+			PlayerDataManager.handleDataSafely(p, data ->
+			{
+				if(!data.isSkillActive(this)) return;
+				e.setAmount(e.getAmount() * (1F - data.getSkillProgress(this) * 0.5F));
+			});
 	}
 }

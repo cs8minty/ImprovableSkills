@@ -20,7 +20,7 @@ public class SkillFastSwimmer
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
 		if(data.atTickRate(10) && !data.player.level.isClientSide)
 		{
@@ -28,12 +28,13 @@ public class SkillFastSwimmer
 			
 			AttributeModifier mod = hp.getModifier(SWIM_ID);
 			
-			double val = data.getSkillLevel(this) * 1.75F / maxLvl;
+			double val = isActive ? data.getSkillProgress(this) * 1.75F : 0;
 			
 			if(mod == null || mod.getAmount() != val)
 			{
 				if(mod != null) hp.removeModifier(SWIM_ID);
-				hp.addPermanentModifier(new AttributeModifier(SWIM_ID, "IS3 Swim Speed", val, AttributeModifier.Operation.ADDITION));
+				if(val > 0)
+					hp.addPermanentModifier(new AttributeModifier(SWIM_ID, "IS3 Swim Speed", val, AttributeModifier.Operation.ADDITION));
 			}
 		}
 	}

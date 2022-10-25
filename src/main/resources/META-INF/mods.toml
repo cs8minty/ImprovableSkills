@@ -29,6 +29,6 @@ side = "BOTH"
 [[dependencies.improvableskills]]
 modId = "hammerlib"
 mandatory = true
-versionRange = "[19.1.33,)"
+versionRange = "[19.1.34,)"
 ordering = "NONE"
 side = "BOTH"

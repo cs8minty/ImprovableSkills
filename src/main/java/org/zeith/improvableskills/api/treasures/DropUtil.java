@@ -18,11 +18,9 @@ public class DropUtil
 	public static TreasureDropBase chooseDrop(List<TreasureDropBase> allDrops, TreasureContext ctx)
 	{
 		List<TreasureDropBase> preDrops = new ArrayList<>();
-		int lowestLuck = 0;
 		for(TreasureDropBase d : allDrops)
 			if(d.canDrop(ctx))
 				preDrops.add(d.copy());
-		float levelIncrease = 129.87013F;
 		float weightTotal = 0F;
 		ArrayList<Float> weightPoints = new ArrayList<>();
 		weightPoints.add(0F);

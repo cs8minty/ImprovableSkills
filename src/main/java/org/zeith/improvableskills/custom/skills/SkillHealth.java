@@ -23,7 +23,7 @@ public class SkillHealth
 	}
 	
 	@Override
-	public void tick(PlayerSkillData data)
+	public void tick(PlayerSkillData data, boolean isActive)
 	{
 		if(data.atTickRate(10))
 		{
@@ -31,12 +31,13 @@ public class SkillHealth
 			
 			AttributeModifier mod = hp.getModifier(HP_ID);
 			
-			double val = data.getSkillLevel(this);
+			double val = isActive ? data.getSkillLevel(this) : 0;
 			
 			if(mod == null || mod.getAmount() != val)
 			{
 				if(mod != null) hp.removeModifier(HP_ID);
-				hp.addPermanentModifier(new AttributeModifier(HP_ID, "IS3 Health", val, AttributeModifier.Operation.ADDITION));
+				if(val > 0)
+					hp.addPermanentModifier(new AttributeModifier(HP_ID, "IS3 Health", val, AttributeModifier.Operation.ADDITION));
 			}
 			
 			if(data.player.getHealth() > hp.getValue()) data.player.setHealth(data.player.getHealth());

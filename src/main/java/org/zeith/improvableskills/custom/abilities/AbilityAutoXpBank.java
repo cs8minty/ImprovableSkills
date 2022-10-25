@@ -4,11 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.XPUtil;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.client.gui.abil.GuiAutoXpBank;
 import org.zeith.improvableskills.data.PlayerDataManager;
+import org.zeith.improvableskills.net.PacketSetAutoXpBankData;
 
 import java.math.BigInteger;
 
@@ -46,18 +48,28 @@ public class AbilityAutoXpBank
 	}
 	
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void onClickClient(Player player, int mouseButton)
-	{
-		PlayerDataManager.handleDataSafely(player, data ->
-				Minecraft.getInstance().pushGuiLayer(new GuiAutoXpBank(data))
-		);
-	}
-	
-	@Override
 	public void onUnlocked(PlayerSkillData data)
 	{
 		data.autoXpBank = false;
 		data.autoXpBankThreshold = XPUtil.getXPValueFromLevel(30);
+	}
+	
+	@Override
+	public boolean showDisabledIcon(PlayerSkillData data)
+	{
+		return !data.autoXpBank;
+	}
+	
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void onClickClient(Player player, int mouseButton)
+	{
+		PlayerDataManager.handleDataSafely(player, data ->
+		{
+			if(mouseButton == 1)
+				Network.sendToServer(new PacketSetAutoXpBankData(data.autoXpBank = !data.autoXpBank));
+			else if(mouseButton == 0)
+				Minecraft.getInstance().pushGuiLayer(new GuiAutoXpBank(data));
+		});
 	}
 }

@@ -4,6 +4,7 @@ import org.zeith.hammerlib.annotations.*;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.custom.skills.*;
 
+@SuppressWarnings("unused") // We don't care if the is a reference or not, it is there for registration purposes.
 @SimplyRegister
 public class SkillsIS
 {
