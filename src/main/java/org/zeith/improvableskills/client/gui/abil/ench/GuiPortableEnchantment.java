@@ -25,8 +25,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
+import org.zeith.improvableskills.client.rendering.OnTopEffects;
+import org.zeith.improvableskills.client.rendering.ote.OTESparkle;
 
 import java.util.List;
+
+import static org.zeith.improvableskills.client.gui.abil.ench.GuiEnchPowBook.DEFAULT_GLINT_COLOR;
 
 public class GuiPortableEnchantment
 		extends AbstractContainerScreen<ContainerPortableEnchantment>
@@ -62,6 +66,22 @@ public class GuiPortableEnchantment
 	{
 		super.containerTick();
 		this.tickBook();
+		
+		for(int section = 0; section < 3; ++section)
+			if((this.menu).costs[section] > 0 && random.nextInt(6) == 0)
+			{
+				String ln = I18n.get("text.improvableskills:enchpower", (int) SyncSkills.getData().enchantPower);
+				
+				float w = random.nextFloat();
+				
+				float x1 = leftPos + 60 + (108 - this.font.width(ln)) / 2 + w * this.font.width(ln);
+				float y1 = topPos + 3 + this.font.lineHeight;
+				
+				float x2 = leftPos + 60 + w * 108;
+				float y2 = topPos + 14 + 19 * section + random.nextFloat() * 19;
+				
+				OnTopEffects.effects.add(new OTESparkle(x1, y1, x2, y2, 50 + random.nextInt(30), DEFAULT_GLINT_COLOR));
+			}
 	}
 	
 	@Override
@@ -95,6 +115,18 @@ public class GuiPortableEnchantment
 			if(d0 >= 0.0D && d1 >= 0.0D && d0 < 108.0D && d1 < 19.0D && this.menu.clickMenuButton(this.minecraft.player, k))
 			{
 				this.minecraft.gameMode.handleInventoryButtonClick((this.menu).containerId, k);
+				
+				for(int m = 0; m < 10; ++m)
+				{
+					float x1 = i + 23 + random.nextFloat() * 22;
+					float y1 = j + 23 + random.nextFloat() * 12;
+					
+					float x2 = i + menu.slots.get(0).x + random.nextFloat() * 16;
+					float y2 = j + menu.slots.get(0).y + random.nextFloat() * 16;
+					
+					OnTopEffects.effects.add(new OTESparkle(x1, y1, x2, y2, 40 - random.nextInt(30), 0xFF0087FF));
+				}
+				
 				return true;
 			}
 		}
@@ -123,39 +155,39 @@ public class GuiPortableEnchantment
 	}
 	
 	@Override
-	protected void renderBg(PoseStack p_98762_, float p_98763_, int p_98764_, int p_98765_)
+	protected void renderBg(PoseStack pose, float partial, int mouseX, int mouseY)
 	{
 		Lighting.setupForFlatItems();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, ENCHANTING_TABLE_LOCATION);
-		int i = (this.width - this.imageWidth) / 2;
-		int j = (this.height - this.imageHeight) / 2;
-		this.blit(p_98762_, i, j, 0, 0, this.imageWidth, this.imageHeight);
+		int guiLeft = leftPos;
+		int guiTop = topPos;
+		this.blit(pose, guiLeft, guiTop, 0, 0, this.imageWidth, this.imageHeight);
 		int k = (int) this.minecraft.getWindow().getGuiScale();
 		RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
 		Matrix4f matrix4f = Matrix4f.createTranslateMatrix(-0.34F, 0.23F, 0.0F);
 		matrix4f.multiply(Matrix4f.perspective(90.0D, 1.3333334F, 9.0F, 80.0F));
 		RenderSystem.backupProjectionMatrix();
 		RenderSystem.setProjectionMatrix(matrix4f);
-		p_98762_.pushPose();
-		PoseStack.Pose posestack$pose = p_98762_.last();
+		pose.pushPose();
+		PoseStack.Pose posestack$pose = pose.last();
 		posestack$pose.pose().setIdentity();
 		posestack$pose.normal().setIdentity();
-		p_98762_.translate(0.0D, (double) 3.3F, 1984.0D);
+		pose.translate(0.0D, 3.3F, 1984.0D);
 		float f = 5.0F;
-		p_98762_.scale(5.0F, 5.0F, 5.0F);
-		p_98762_.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
-		p_98762_.mulPose(Vector3f.XP.rotationDegrees(20.0F));
-		float f1 = Mth.lerp(p_98763_, this.oOpen, this.open);
-		p_98762_.translate((double) ((1.0F - f1) * 0.2F), (double) ((1.0F - f1) * 0.1F), (double) ((1.0F - f1) * 0.25F));
+		pose.scale(5.0F, 5.0F, 5.0F);
+		pose.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+		pose.mulPose(Vector3f.XP.rotationDegrees(20.0F));
+		float f1 = Mth.lerp(partial, this.oOpen, this.open);
+		pose.translate((1.0F - f1) * 0.2F, (1.0F - f1) * 0.1F, (1.0F - f1) * 0.25F);
 		float f2 = -(1.0F - f1) * 90.0F - 90.0F;
-		p_98762_.mulPose(Vector3f.YP.rotationDegrees(f2));
-		p_98762_.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-		float f3 = Mth.lerp(p_98763_, this.oFlip, this.flip) + 0.25F;
-		float f4 = Mth.lerp(p_98763_, this.oFlip, this.flip) + 0.75F;
-		f3 = (f3 - (float) Mth.fastFloor((double) f3)) * 1.6F - 0.3F;
-		f4 = (f4 - (float) Mth.fastFloor((double) f4)) * 1.6F - 0.3F;
+		pose.mulPose(Vector3f.YP.rotationDegrees(f2));
+		pose.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+		float f3 = Mth.lerp(partial, this.oFlip, this.flip) + 0.25F;
+		float f4 = Mth.lerp(partial, this.oFlip, this.flip) + 0.75F;
+		f3 = (f3 - (float) Mth.fastFloor(f3)) * 1.6F - 0.3F;
+		f4 = (f4 - (float) Mth.fastFloor(f4)) * 1.6F - 0.3F;
 		if(f3 < 0.0F)
 		{
 			f3 = 0.0F;
@@ -182,63 +214,65 @@ public class GuiPortableEnchantment
 		MultiBufferSource.BufferSource buf = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		
 		VertexConsumer vertexconsumer = buf.getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE1));
-		this.bookModel.renderToBuffer(p_98762_, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 0F, 136 / 255F, 1F, 1F);
+		this.bookModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 0F, 136 / 255F, 1F, 1F);
 		
 		vertexconsumer = buf.getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE2));
-		this.bookModel.renderToBuffer(p_98762_, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.bookModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		
 		buf.endBatch();
-		p_98762_.popPose();
+		pose.popPose();
 		RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
 		RenderSystem.restoreProjectionMatrix();
 		Lighting.setupFor3DItems();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		EnchantmentNames.getInstance().initSeed((long) this.menu.getEnchantmentSeed());
+		EnchantmentNames.getInstance().initSeed(this.menu.getEnchantmentSeed());
 		int l = this.menu.getGoldCount();
 		
-		for(int i1 = 0; i1 < 3; ++i1)
+		int leftSectionStart = guiLeft + 60;
+		int leftSectionPadded = leftSectionStart + 20;
+		for(int section = 0; section < 3; ++section)
 		{
-			int j1 = i + 60;
-			int k1 = j1 + 20;
 			this.setBlitOffset(0);
+			
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, ENCHANTING_TABLE_LOCATION);
-			int l1 = (this.menu).costs[i1];
+			int l1 = (this.menu).costs[section];
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			
 			if(l1 == 0)
 			{
-				this.blit(p_98762_, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
+				this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 185, 108, 19);
 			} else
 			{
 				String s = "" + l1;
 				int i2 = 86 - this.font.width(s);
 				FormattedText formattedtext = EnchantmentNames.getInstance().getRandomName(this.font, i2);
 				int j2 = 6839882;
-				if(((l < i1 + 1 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[i1] == -1)
+				if(((l < section + 1 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[section] == -1)
 				{ // Forge: render buttons as disabled when enchantable but enchantability not met on lower levels
-					this.blit(p_98762_, j1, j + 14 + 19 * i1, 0, 185, 108, 19);
-					this.blit(p_98762_, j1 + 1, j + 15 + 19 * i1, 16 * i1, 239, 16, 16);
-					this.font.drawWordWrap(formattedtext, k1, j + 16 + 19 * i1, i2, (j2 & 16711422) >> 1);
+					this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 185, 108, 19);
+					this.blit(pose, leftSectionStart + 1, guiTop + 15 + 19 * section, 16 * section, 239, 16, 16);
+					this.font.drawWordWrap(formattedtext, leftSectionPadded, guiTop + 16 + 19 * section, i2, (j2 & 16711422) >> 1);
 					j2 = 4226832;
 				} else
 				{
-					int k2 = p_98764_ - (i + 60);
-					int l2 = p_98765_ - (j + 14 + 19 * i1);
+					int k2 = mouseX - (guiLeft + 60);
+					int l2 = mouseY - (guiTop + 14 + 19 * section);
 					if(k2 >= 0 && l2 >= 0 && k2 < 108 && l2 < 19)
 					{
-						this.blit(p_98762_, j1, j + 14 + 19 * i1, 0, 204, 108, 19);
+						this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 204, 108, 19);
 						j2 = 16777088;
 					} else
 					{
-						this.blit(p_98762_, j1, j + 14 + 19 * i1, 0, 166, 108, 19);
+						this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 166, 108, 19);
 					}
 					
-					this.blit(p_98762_, j1 + 1, j + 15 + 19 * i1, 16 * i1, 223, 16, 16);
-					this.font.drawWordWrap(formattedtext, k1, j + 16 + 19 * i1, i2, j2);
+					this.blit(pose, leftSectionStart + 1, guiTop + 15 + 19 * section, 16 * section, 223, 16, 16);
+					this.font.drawWordWrap(formattedtext, leftSectionPadded, guiTop + 16 + 19 * section, i2, j2);
 					j2 = 8453920;
 				}
 				
-				this.font.drawShadow(p_98762_, s, (float) (k1 + 86 - this.font.width(s)), (float) (j + 16 + 19 * i1 + 7), j2);
+				this.font.drawShadow(pose, s, (float) (leftSectionPadded + 86 - this.font.width(s)), (float) (guiTop + 16 + 19 * section + 7), j2);
 			}
 		}
 		
@@ -260,7 +294,7 @@ public class GuiPortableEnchantment
 			Enchantment enchantment = Enchantment.byId((this.menu).enchantClue[j]);
 			int l = (this.menu).levelClue[j];
 			int i1 = j + 1;
-			if(this.isHovering(60, 14 + 19 * j, 108, 17, (double) p_98768_, (double) p_98769_) && k > 0)
+			if(this.isHovering(60, 14 + 19 * j, 108, 17, p_98768_, p_98769_) && k > 0)
 			{
 				List<Component> list = Lists.newArrayList();
 				list.add((Component.translatable("container.enchant.clue", enchantment == null ? "" : enchantment.getFullname(l))).withStyle(ChatFormatting.WHITE));
@@ -328,6 +362,7 @@ public class GuiPortableEnchantment
 			if((this.menu).costs[i] != 0)
 			{
 				flag = true;
+				break;
 			}
 		}
 		

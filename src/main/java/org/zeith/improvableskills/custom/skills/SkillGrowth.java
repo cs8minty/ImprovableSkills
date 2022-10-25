@@ -2,8 +2,7 @@ package org.zeith.improvableskills.custom.skills;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BoneMealItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,6 +25,7 @@ public class SkillGrowth
 		getLoot().setLootTable(BuiltInLootTables.JUNGLE_TEMPLE);
 		setColor(0x00DA7B);
 		xpCalculator.xpValue = 3;
+		xpCalculator.setBaseFormula("((%lvl%)^%xpv%)*0.9+32");
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class SkillGrowth
 	{
 		short lvl;
 		if(isActive && (lvl = data.getSkillLevel(this)) > 0 && data.player.tickCount % ((maxLvl - lvl) * 3 + 80) == 0)
-			growAround(data.player, 2 + lvl / 4, lvl / 2 + 2);
+			growAround(data.player, 2 + lvl / 4, (int) Math.sqrt(lvl) / 2 + 1);
 	}
 	
 	public static void growAround(Player ent, int rad, int max)
@@ -60,7 +60,7 @@ public class SkillGrowth
 		for(int i = 0; i < co; ++i)
 		{
 			BlockPos pos = positions.remove(ent.level.random.nextInt(positions.size()));
-			if(BoneMealItem.applyBonemeal(ItemStack.EMPTY, world, pos, ent))
+			if(BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), world, pos, ent))
 				world.levelEvent(2005, pos, 0);
 		}
 	}
