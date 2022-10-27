@@ -18,6 +18,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
 import org.zeith.improvableskills.api.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.loot.RandomBoolean;
 import org.zeith.improvableskills.api.registry.*;
+import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
 import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
 import org.zeith.improvableskills.init.*;
@@ -105,6 +107,7 @@ public class ImprovableSkills
 		
 		modBus.addListener(this::newRegistries);
 		modBus.addListener(this::setup);
+		modBus.addListener(this::loadComplete);
 		PROXY.register(modBus);
 		
 		var mcfBus = MinecraftForge.EVENT_BUS;
@@ -123,6 +126,13 @@ public class ImprovableSkills
 	private void setup(FMLCommonSetupEvent e)
 	{
 		TreasuresIS.register();
+	}
+	
+	private void loadComplete(FMLLoadCompleteEvent e)
+	{
+		ConfigsIS.reloadCosts();
+		if(ConfigsIS.config.hasChanged())
+			ConfigsIS.config.save();
 	}
 	
 	private void newRegistries(NewRegistryEvent e)

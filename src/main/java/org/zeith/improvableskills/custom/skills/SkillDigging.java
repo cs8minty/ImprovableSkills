@@ -24,8 +24,8 @@ public class SkillDigging
 		if(pos == null)
 			return 0F;
 		BlockState b = data.player.level.getBlockState(pos);
-		if(b.canHarvestBlock(data.player.level, pos, data.player) && b.is(BlockTags.MINEABLE_WITH_SHOVEL))
-			return data.getSkillLevel(this) / 28F;
+		if(b.canHarvestBlock(data.player.level, pos, data.player) && b.is(BlockTags.MINEABLE_WITH_SHOVEL) && data.player.getMainHandItem().getDestroySpeed(b) > 0)
+			return data.getSkillLevel(this) / 24F;
 		return 0;
 	}
 }

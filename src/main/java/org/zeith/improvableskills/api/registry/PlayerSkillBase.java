@@ -11,7 +11,6 @@ import org.zeith.hammerlib.util.XPUtil;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.*;
 import org.zeith.improvableskills.api.loot.SkillLoot;
-import org.zeith.improvableskills.cfg.ConfigsIS;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -139,7 +138,6 @@ public class PlayerSkillBase
 	@Override
 	public void onPostRegistered()
 	{
-		ConfigsIS.reloadCost(this);
 		for(var listener : forgeEvents) MinecraftForge.EVENT_BUS.addListener(listener);
 	}
 	

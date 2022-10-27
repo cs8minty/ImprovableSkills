@@ -22,7 +22,7 @@ public class SkillAtkDmgMelee
 		DamageSource ds = e.getSource();
 		if(ds != null && DamageSourceProcessor.getDamageType(ds) == DamageSourceProcessor.DamageType.MELEE)
 		{
-			Player p = DamageSourceProcessor.getAlchemicalOwner(ds.getDirectEntity());
+			Player p = DamageSourceProcessor.getMeleeAttacker(ds);
 			PlayerDataManager.handleDataSafely(p, data ->
 			{
 				if(!data.isSkillActive(this)) return;

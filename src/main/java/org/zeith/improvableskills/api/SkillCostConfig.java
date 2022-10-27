@@ -2,7 +2,8 @@ package org.zeith.improvableskills.api;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import org.zeith.hammerlib.util.cfg.entries.ConfigEntryCategory;
+import org.zeith.hammerlib.util.configured.ConfiguredLib;
+import org.zeith.hammerlib.util.configured.types.ConfigCategory;
 import org.zeith.hammerlib.util.mcf.LogicalSidePredictor;
 import org.zeith.improvableskills.api.math.ExpressionEvaluator;
 import org.zeith.improvableskills.api.math.functions.ExpressionFunction;
@@ -26,9 +27,12 @@ public class SkillCostConfig
 		this.baseFormula = this.serverFormula = this.clientFormula = baseFormula;
 	}
 	
-	public void load(ConfigEntryCategory cfg, String skill)
+	public void load(ConfigCategory cfg, String skill)
 	{
-		serverFormula = cfg.getStringEntry(skill, baseFormula).setDescription("Cost calculator for this skill.\nAvailable variables:\n- %lvl% = the level we want to calculate XP value for.\n- %xpv% preset value (" + xpValue + ") for current skill.").getValue();
+		serverFormula = cfg.getElement(ConfiguredLib.STRING, skill)
+				.withDefault(baseFormula)
+				.withComment("Cost calculator for this skill.\nAvailable variables:\n- %lvl% = the level we want to calculate XP value for.\n- %xpv% preset value (" + xpValue + ") for current skill.")
+				.getValue();
 	}
 	
 	public void writeServerNBT(CompoundTag nbt)

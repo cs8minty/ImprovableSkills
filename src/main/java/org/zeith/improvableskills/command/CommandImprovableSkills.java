@@ -12,7 +12,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.zeith.hammerlib.util.shaded.json.JSONObject;
 import org.zeith.improvableskills.ImprovableSkills;
+import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.data.PlayerDataManager;
+import org.zeith.improvableskills.net.NetSkillCalculator;
 
 public class CommandImprovableSkills
 {
@@ -45,6 +47,25 @@ public class CommandImprovableSkills
 		dispatcher.register(
 				Commands.literal(ImprovableSkills.MOD_ID)
 						.requires(executor -> executor.hasPermission(2))
+						
+						.then(Commands.literal("reload")
+								.executes(src ->
+								{
+									ConfigsIS.config.load();
+									
+									ConfigsIS.reloadCustom(ConfigsIS.config);
+									ConfigsIS.reloadCosts();
+									
+									NetSkillCalculator.pack().build().sendToAll();
+									
+									if(ConfigsIS.config.hasChanged())
+										ConfigsIS.config.save();
+									
+									src.getSource().sendSuccess(Component.literal("Configs have been reloaded."), true);
+									
+									return 1;
+								})
+						)
 						
 						// Skills sub-command
 						.then(Commands.literal("skills")
