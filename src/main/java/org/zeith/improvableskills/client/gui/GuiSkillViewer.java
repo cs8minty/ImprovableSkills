@@ -30,6 +30,9 @@ public class GuiSkillViewer
 {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png");
 	
+	public static final UV CROSS = new UV(TEXTURE, 196, 24, 20, 20);
+	public static final UV TICK = new UV(TEXTURE, 196, 44, 20, 20);
+	
 	final GuiSkillsBook parent;
 	public PlayerSkillData data;
 	final Style fontStyle;
@@ -98,7 +101,7 @@ public class GuiSkillViewer
 		pose.pushPose();
 		pose.translate(btnToggle.x + 1, btnToggle.y + 1, 200);
 		pose.scale(18F / 20F, 18F / 20F, 18F / 20F);
-		RenderUtils.drawTexturedModalRect(pose, 0, 0, 195, 24 + (active ? 20 : 0), 20, 20);
+		RenderUtils.drawTexturedModalRect(pose, 0, 0, CROSS.posX, CROSS.posY + (active ? 20 : 0), 20, 20);
 		pose.popPose();
 		
 		drawCenteredString(pose, forbidden ? minecraft.fontFilterFishy : font, I18n.get("text.improvableskills:totalXP", XPUtil.getXPTotal(minecraft.player)), guiLeft + xSize / 2, guiTop + ySize + 2, 0x88FF00);
@@ -180,7 +183,7 @@ public class GuiSkillViewer
 		{
 			var newState = !data.isSkillActive(skill);
 			data.setSkillState(skill, newState);
-			new OTEFadeOutUV(new UV(TEXTURE, 195, 24 + (newState ? 20 : 0), 20, 20), 18, 18, b.x + 1, b.y + 1, 20);
+			new OTEFadeOutUV(new UV(TEXTURE, CROSS.posX, CROSS.posY + (newState ? 20 : 0), 20, 20), 18, 18, b.x + 1, b.y + 1, 20);
 			Network.sendToServer(new PacketSetSkillActivity(skill.getRegistryName(), newState));
 		}
 		

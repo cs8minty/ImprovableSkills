@@ -7,20 +7,20 @@ import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.util.java.tuples.Tuple2;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.*;
-import org.zeith.improvableskills.api.registry.PageletBase;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
 import org.zeith.improvableskills.client.rendering.ote.*;
+import org.zeith.improvableskills.custom.pagelets.PageletAbilities;
 import org.zeith.improvableskills.init.SoundsIS;
 
 import java.util.*;
 
 public class GuiAbilityBook
-		extends GuiTabbable
+		extends GuiTabbable<PageletAbilities>
 		implements IGuiSkillDataConsumer
 {
-	public final UV gui1, inactivity;
+	public final UV gui1, inactivity = GuiSkillViewer.CROSS;
 	public double scrolledPixels;
 	public double prevScrolledPixels;
 	public int row = 6;
@@ -32,7 +32,7 @@ public class GuiAbilityBook
 	public PlayerSkillData data;
 	public List<SkillTex<PlayerAbilityBase>> texes = new ArrayList<>();
 	
-	public GuiAbilityBook(PageletBase pagelet, PlayerSkillData data)
+	public GuiAbilityBook(PageletAbilities pagelet, PlayerSkillData data)
 	{
 		super(pagelet);
 		
@@ -42,7 +42,6 @@ public class GuiAbilityBook
 		ySize = 168;
 		
 		gui1 = new UV(GuiSkillsBook.PAPER_TEXTURE, 0, 0, xSize, ySize);
-		inactivity = new UV(GuiSkillViewer.TEXTURE, 195, 24, 20, 20);
 		
 		ImprovableSkills.ABILITIES().getValues()
 				.stream()

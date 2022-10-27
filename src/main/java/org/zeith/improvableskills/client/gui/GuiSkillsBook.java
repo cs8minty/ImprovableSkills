@@ -10,19 +10,19 @@ import org.zeith.hammerlib.util.java.tuples.Tuple2;
 import org.zeith.hammerlib.util.java.tuples.Tuples;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.*;
-import org.zeith.improvableskills.api.registry.PageletBase;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
 import org.zeith.improvableskills.client.rendering.ote.*;
 import org.zeith.improvableskills.custom.items.ItemSkillScroll;
+import org.zeith.improvableskills.custom.pagelets.PageletSkills;
 import org.zeith.improvableskills.init.SoundsIS;
 import org.zeith.improvableskills.net.PacketSetSkillActivity;
 
 import java.util.*;
 
 public class GuiSkillsBook
-		extends GuiTabbable
+		extends GuiTabbable<PageletSkills>
 		implements IGuiSkillDataConsumer
 {
 	public static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png");
@@ -39,7 +39,7 @@ public class GuiSkillsBook
 	public PlayerSkillData data;
 	public List<SkillTex<PlayerSkillBase>> texes = new ArrayList<>();
 	
-	public GuiSkillsBook(PageletBase pagelet, PlayerSkillData data)
+	public GuiSkillsBook(PageletSkills pagelet, PlayerSkillData data)
 	{
 		super(pagelet);
 		
@@ -50,7 +50,7 @@ public class GuiSkillsBook
 		
 		gui1 = new UV(PAPER_TEXTURE, 0, 0, xSize, ySize);
 		medal = new UV(GuiSkillViewer.TEXTURE, xSize + 1, 0, 10, 10);
-		inactivity = new UV(GuiSkillViewer.TEXTURE, 195, 24, 20, 20);
+		inactivity = GuiSkillViewer.CROSS;
 		
 		ImprovableSkills.SKILLS().getValues()
 				.stream()
