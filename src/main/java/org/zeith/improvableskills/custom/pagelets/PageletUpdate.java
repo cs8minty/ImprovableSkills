@@ -29,7 +29,7 @@ public class PageletUpdate
 {
 	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/update.png");
 	public static VersionChecker.Status level;
-	public static String changes, latest, discord = "https://dccg.herokuapp.com/invite/zeithdev", homepage;
+	public static String changes, latest, discord = "https://h.zeith.org/invite/zeithdev", homepage;
 	public static String liveURL, liveTitle;
 	
 	{
@@ -79,7 +79,7 @@ public class PageletUpdate
 		{
 			try
 			{
-				JSONObject o = (JSONObject) new JSONTokener(HttpRequest.get("https://dccg.herokuapp.com/api/fmluc/252902?changelog=true&zdev=true").body()).nextValue();
+				JSONObject o = (JSONObject) new JSONTokener(HttpRequest.get("https://h.zeith.org/api/fmluc/252902?changelog=true&zdev=true").body()).nextValue();
 				
 				var mcVersion = FMLLoader.versionInfo().mcVersion();
 				changes = new String(Base64.getDecoder().decode(o.optJSONObject("changelogs64").optString(mcVersion + "-latest")));

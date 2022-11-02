@@ -40,7 +40,7 @@ public class GuiCustomButton
 	
 	public static AbstractTexture getZeithAvatar()
 	{
-		return HttpTextureDownloader.create(texture, "https://dccg.herokuapp.com/discord/fetchAvatar/376091478142746625");
+		return HttpTextureDownloader.create(texture, "https://h.zeith.org/discord/fetchAvatar/376091478142746625");
 	}
 	
 	public GuiCustomButton setCustomClickSound(SoundEvent customClickSound)

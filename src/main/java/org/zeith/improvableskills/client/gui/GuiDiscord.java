@@ -30,10 +30,7 @@ public class GuiDiscord
 	
 	public static AbstractTexture getDiscordServerIdTexture()
 	{
-		return HttpTextureDownloader.create(texture, "http://dccg.herokuapp.com/zmc", () ->
-		{
-			texureLoaded = true;
-		});
+		return HttpTextureDownloader.create(texture, "http://h.zeith.org/zmc", () -> texureLoaded = true);
 	}
 	
 	public GuiDiscord(PageletDiscord pagelet)
