@@ -2,7 +2,7 @@ package org.zeith.improvableskills.client.gui.base;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -144,7 +144,7 @@ public class GuiTabbable<P extends PageletBase>
 			pose.pushPose();
 			pose.translate(width / 2 - 16, guiTop - 36, 350);
 			pose.translate(16, 16, 0);
-			pose.mulPose(Vector3f.ZP.rotationDegrees(6 * OTEConfetti.sineF(System.currentTimeMillis() % 4000L / 1000F)));
+			pose.mulPose(Axis.ZP.rotationDegrees(6 * OTEConfetti.sineF(System.currentTimeMillis() % 4000L / 1000F)));
 			pose.translate(-16, -16, 0);
 			RenderUtils.drawFullTexturedModalRect(pose, 0, 0, 32, 32);
 			pose.popPose();

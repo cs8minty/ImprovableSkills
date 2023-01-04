@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -82,7 +82,7 @@ public class ContainerPortableEnchantment
 						if(!list.isEmpty())
 						{
 							EnchantmentInstance enchantmentinstance = list.get(this.random.nextInt(list.size()));
-							this.enchantClue[l] = Registry.ENCHANTMENT.getId(enchantmentinstance.enchantment);
+							this.enchantClue[l] = BuiltInRegistries.ENCHANTMENT.getId(enchantmentinstance.enchantment);
 							this.levelClue[l] = enchantmentinstance.level;
 						}
 					}

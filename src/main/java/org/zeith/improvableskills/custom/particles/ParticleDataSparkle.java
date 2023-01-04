@@ -2,11 +2,12 @@ package org.zeith.improvableskills.custom.particles;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
+import org.joml.Vector3f;
 import org.zeith.improvableskills.init.ParticleTypesIS;
 
 public class ParticleDataSparkle
@@ -14,7 +15,7 @@ public class ParticleDataSparkle
 {
 	public static final Codec<ParticleDataSparkle> CODEC = RecordCodecBuilder.create((instance) ->
 			instance.group(
-					Vector3f.CODEC.fieldOf("color").forGetter(ParticleDataSparkle::getColor),
+					ExtraCodecs.VECTOR3F.fieldOf("color").forGetter(ParticleDataSparkle::getColor),
 					Codec.FLOAT.fieldOf("scale").forGetter(ParticleDataSparkle::getScale),
 					Codec.INT.fieldOf("age").forGetter(ParticleDataSparkle::getAge)
 			).apply(instance, ParticleDataSparkle::new)

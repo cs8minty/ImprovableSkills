@@ -16,6 +16,8 @@ import net.minecraft.util.Mth;
 import org.zeith.hammerlib.client.texture.HttpTextureDownloader;
 import org.zeith.improvableskills.ImprovableSkills;
 
+import java.util.function.Supplier;
+
 public class GuiCustomButton
 		extends Button
 {
@@ -32,7 +34,7 @@ public class GuiCustomButton
 	
 	public GuiCustomButton(int id, int x, int y, int widthIn, int heightIn, Component buttonText, OnPress action)
 	{
-		super(x, y, widthIn, heightIn, buttonText, action);
+		super(x, y, widthIn, heightIn, buttonText, action, Supplier::get);
 		this.id = id;
 	}
 	
@@ -63,11 +65,11 @@ public class GuiCustomButton
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.enableDepthTest();
-			this.blit(pose, this.x, this.y, 0, i * 20, this.width / 2, this.height);
-			this.blit(pose, this.x + this.width / 2, this.y, 200 - this.width / 2, i * 20, this.width / 2, this.height);
+			this.blit(pose, this.getX(), this.getY(), 0, i * 20, this.width / 2, this.height);
+			this.blit(pose, this.getX() + this.width / 2, this.getY(), 200 - this.width / 2, i * 20, this.width / 2, this.height);
 			this.renderBg(pose, minecraft, mouseX, mouseY);
 			int j = getFGColor();
-			drawCenteredString(pose, font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+			drawCenteredString(pose, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 		}
 	}
 	

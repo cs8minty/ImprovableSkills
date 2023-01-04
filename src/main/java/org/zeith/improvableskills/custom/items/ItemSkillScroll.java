@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import org.zeith.hammerlib.api.items.ITabItem;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.Chars;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -29,12 +30,14 @@ import java.util.*;
 
 public class ItemSkillScroll
 		extends Item
+		implements ITabItem
 {
 	private static final Map<String, PlayerSkillBase> SKILL_MAP = new HashMap<>();
 	
 	public ItemSkillScroll()
 	{
-		super(new Properties().stacksTo(1).tab(ImprovableSkills.TAB));
+		super(new Properties().stacksTo(1));
+		ImprovableSkills.TAB.add(this);
 	}
 	
 	@Nullable
@@ -77,6 +80,12 @@ public class ItemSkillScroll
 				.filter(skill -> skill.getScrollState().hasScroll())
 				.sorted(Comparator.comparing(PlayerSkillBase::getUnlocalizedName))
 				.forEach(skill -> items.add(ItemSkillScroll.of(skill)));
+	}
+	
+	@Override
+	public CreativeModeTab getItemCategory()
+	{
+		return ImprovableSkills.TAB.tab();
 	}
 	
 	@Override

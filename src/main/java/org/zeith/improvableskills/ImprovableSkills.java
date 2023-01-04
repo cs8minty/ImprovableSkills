@@ -1,10 +1,10 @@
 package org.zeith.improvableskills;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
@@ -25,11 +25,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeith.api.registry.RegistryMapping;
 import org.zeith.hammerlib.HammerLib;
-import org.zeith.hammerlib.client.adapter.ChatMessageAdapter;
+import org.zeith.hammerlib.api.items.CreativeTab;
 import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.core.adapter.LanguageAdapter;
-import org.zeith.hammerlib.core.adapter.ModSourceAdapter;
+import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
+import org.zeith.hammerlib.util.CommonMessages;
 import org.zeith.improvableskills.api.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.loot.RandomBoolean;
 import org.zeith.improvableskills.api.registry.*;
@@ -52,14 +53,10 @@ public class ImprovableSkills
 	
 	public static final ISServer PROXY = DistExecutor.unsafeRunForDist(() -> ISClient::new, () -> ISServer::new);
 	
-	public static final CreativeModeTab TAB = new CreativeModeTab(MOD_ID)
-	{
-		@Override
-		public ItemStack makeIcon()
-		{
-			return new ItemStack(ItemsIS.SKILLS_BOOK);
-		}
-	};
+	@CreativeTab.RegisterTab
+	public static final CreativeTab TAB = new CreativeTab(new ResourceLocation(MOD_ID, "root"),
+			b -> b.icon(ItemsIS.SKILLS_BOOK::getDefaultInstance).title(Component.translatable("itemGroup." + MOD_ID))
+	);
 	
 	private static Supplier<IForgeRegistry<PlayerSkillBase>> SKILLS;
 	private static Supplier<IForgeRegistry<PlayerAbilityBase>> ABILITIES;
@@ -67,39 +64,8 @@ public class ImprovableSkills
 	
 	public ImprovableSkills()
 	{
-		var illegalSourceNotice = ModSourceAdapter.getModSource(ImprovableSkills.class)
-				.filter(ModSourceAdapter.ModSource::wasDownloadedIllegally)
-				.orElse(null);
-		
-		if(illegalSourceNotice != null)
-		{
-			LOG.fatal("====================================================");
-			LOG.fatal("WARNING: ImprovableSkills was downloaded from " + illegalSourceNotice.referrerDomain() +
-					", which has been marked as illegal site over at stopmodreposts.org.");
-			LOG.fatal("Please download the mod from https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
-			LOG.fatal("====================================================");
-			
-			var illegalUri = Component.literal(illegalSourceNotice.referrerDomain())
-					.withStyle(s -> s.withColor(ChatFormatting.RED));
-			var smrUri = Component.literal("stopmodreposts.org")
-					.withStyle(s -> s.withColor(ChatFormatting.BLUE)
-							.withUnderlined(true)
-							.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://stopmodreposts.org/"))
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to open webpage."))));
-			var curseforgeUri = Component.literal("curseforge.com")
-					.withStyle(s -> s.withColor(ChatFormatting.BLUE)
-							.withUnderlined(true)
-							.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/improvable-skills"))
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to open webpage."))));
-			ChatMessageAdapter.sendOnFirstWorldLoad(Component.literal("WARNING: ImprovableSkills was downloaded from ")
-					.append(illegalUri)
-					.append(", which has been marked as illegal site over at ")
-					.append(smrUri)
-					.append(". Please download the mod from ")
-					.append(curseforgeUri)
-					.append(".")
-			);
-		}
+		CommonMessages.printMessageOnIllegalRedistribution(ImprovableSkills.class,
+				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
 		
 		LanguageAdapter.registerMod(MOD_ID);
 		
@@ -108,6 +74,7 @@ public class ImprovableSkills
 		modBus.addListener(this::newRegistries);
 		modBus.addListener(this::setup);
 		modBus.addListener(this::loadComplete);
+		modBus.addListener(this::fingerprintCheck);
 		PROXY.register(modBus);
 		
 		var mcfBus = MinecraftForge.EVENT_BUS;
@@ -116,6 +83,12 @@ public class ImprovableSkills
 		mcfBus.addListener(this::addLoot);
 		
 		HammerLib.EVENT_BUS.addListener(this::addRecipes);
+	}
+	
+	private void fingerprintCheck(FMLFingerprintCheckEvent e)
+	{
+		CommonMessages.printMessageOnFingerprintViolation(e, "97e852e9b3f01b83574e8315f7e77651c6605f2b455919a7319e9869564f013c",
+				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
 	}
 	
 	private void registerCommands(RegisterCommandsEvent e)

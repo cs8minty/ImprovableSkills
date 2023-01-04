@@ -25,7 +25,8 @@ public class ItemParchmentFragment
 	
 	public ItemParchmentFragment()
 	{
-		this(new Properties().tab(ImprovableSkills.TAB));
+		this(new Properties());
+		ImprovableSkills.TAB.add(this);
 	}
 	
 	@Override

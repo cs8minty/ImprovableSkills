@@ -23,7 +23,8 @@ public class ItemCreativeSkillScroll
 {
 	public ItemCreativeSkillScroll()
 	{
-		super(new Properties().stacksTo(1).tab(ImprovableSkills.TAB));
+		super(new Properties().stacksTo(1));
+		ImprovableSkills.TAB.add(this);
 	}
 	
 	@Override

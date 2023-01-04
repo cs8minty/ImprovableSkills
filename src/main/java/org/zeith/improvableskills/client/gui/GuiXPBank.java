@@ -66,7 +66,7 @@ public class GuiXPBank
 		
 		var wid = font.width(draw10);
 		addRenderableWidget(btn2 = new GuiCustomButton(3, guiLeft + sizeX + scrW - wid - 13, guiTop + btn.getHeight() + 30, wid + 12, 20, draw10, this::actionPerformed).setCustomClickSound(SoundEvents.EXPERIENCE_ORB_PICKUP));
-		addRenderableWidget(new GuiCustomButton(2, btn2.x, guiTop + 28, btn2.getWidth(), 20, draw1.append(" "), this::actionPerformed).setCustomClickSound(SoundEvents.EXPERIENCE_ORB_PICKUP));
+		addRenderableWidget(new GuiCustomButton(2, btn2.getX(), guiTop + 28, btn2.getWidth(), 20, draw1.append(" "), this::actionPerformed).setCustomClickSound(SoundEvents.EXPERIENCE_ORB_PICKUP));
 	}
 	
 	@Override

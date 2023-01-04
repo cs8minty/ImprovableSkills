@@ -24,7 +24,8 @@ public class ItemSkillsBook
 	
 	public ItemSkillsBook()
 	{
-		this(new Properties().stacksTo(1).tab(ImprovableSkills.TAB));
+		this(new Properties().stacksTo(1));
+		ImprovableSkills.TAB.add(this);
 	}
 	
 	@Override

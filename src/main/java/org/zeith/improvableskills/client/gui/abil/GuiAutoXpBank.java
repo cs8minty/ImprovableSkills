@@ -71,14 +71,14 @@ public class GuiAutoXpBank
 			Network.sendToServer(new PacketSetAutoXpBankData(data.autoXpBank = !data.autoXpBank));
 			new OTEFadeOutButton(btn, 15);
 			for(int i = 0; i < 3; ++i)
-				new OTEFadeOutUV(new UV(TEXTURE, 176, data != null && data.autoXpBank ? 20 : 0, 20, 20), 20, 20, btn.x, btn.y, 15 + i * 10);
+				new OTEFadeOutUV(new UV(TEXTURE, 176, data != null && data.autoXpBank ? 20 : 0, 20, 20), 20, 20, btn.getX(), btn.getY(), 15 + i * 10);
 		})
 		{
 			@Override
 			protected void renderBg(PoseStack pose, Minecraft mc, int x, int y)
 			{
 				FXUtils.bindTexture(TEXTURE);
-				RenderUtils.drawTexturedModalRect(pose, this.x, this.y, 176, data != null && data.autoXpBank ? 0 : 20, 20, 20);
+				RenderUtils.drawTexturedModalRect(pose, this.getX(), this.getY(), 176, data != null && data.autoXpBank ? 0 : 20, 20, 20);
 			}
 		});
 	}

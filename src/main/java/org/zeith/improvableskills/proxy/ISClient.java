@@ -1,6 +1,5 @@
 package org.zeith.improvableskills.proxy;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -73,7 +72,7 @@ public class ISClient
 	@Override
 	public void sparkle(Level level, double x, double y, double z, double xMove, double yMove, double zMove, int color, int maxAge)
 	{
-		level.addParticle(new ParticleDataSparkle(new Vector3f(Vec3.fromRGB24(color)), 1F, maxAge), x, y, z, xMove, yMove, zMove);
+		level.addParticle(new ParticleDataSparkle(Vec3.fromRGB24(color).toVector3f(), 1F, maxAge), x, y, z, xMove, yMove, zMove);
 	}
 	
 	private void registerTooltipImages(RegisterClientTooltipComponentFactoriesEvent e)
@@ -148,8 +147,8 @@ public class ISClient
 			int mx = e.getMouseX();
 			int my = e.getMouseY();
 			
-			openSkills.x = inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1;
-			openSkills.y = inv.getGuiTop() + 24;
+			openSkills.setX(inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1);
+			openSkills.setY(inv.getGuiTop() + 24);
 			
 			PlayerSkillData data = SyncSkills.getData();
 			
@@ -159,7 +158,7 @@ public class ISClient
 			
 			ItemStack book = new ItemStack(ItemsIS.SKILLS_BOOK);
 			
-			RenderUtils.renderItemIntoGui(e.getPoseStack(), book, openSkills.x, openSkills.y);
+			RenderUtils.renderItemIntoGui(e.getPoseStack(), book, openSkills.getX(), openSkills.getY());
 			
 			if(hovered)
 			{
@@ -169,7 +168,7 @@ public class ISClient
 				if(!openSkills.active) arr.add(Component.translatable("gui." + ImprovableSkills.MOD_ID + ".locked"));
 				arr.add(Component.literal(ImprovableSkills.MOD_NAME).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
 				
-				inv.renderTooltip(e.getPoseStack(), arr, Optional.empty(), openSkills.x + 12, openSkills.y + 4);
+				inv.renderTooltip(e.getPoseStack(), arr, Optional.empty(), openSkills.getX() + 12, openSkills.getY() + 4);
 			}
 		}
 	}

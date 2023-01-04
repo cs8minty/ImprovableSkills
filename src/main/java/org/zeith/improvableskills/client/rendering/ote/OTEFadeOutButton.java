@@ -69,10 +69,10 @@ public class OTEFadeOutButton
 			float yo = uv instanceof GuiCustomButton ? 0 : 46;
 			
 			new UV(rl, 0, yo + i * 20, uv.getWidth() / 2 - scale / 2, uv.getHeight()) //
-					.render(pose, uv.x - scale / 2, uv.y - scale / 2, uv.getWidth() / 2 + scale / 2, uv.getHeight() + scale);
+					.render(pose, uv.getX() - scale / 2, uv.getY() - scale / 2, uv.getWidth() / 2 + scale / 2, uv.getHeight() + scale);
 			
 			new UV(rl, 200 - uv.getWidth() / 2 + scale / 2, yo + i * 20, uv.getWidth() / 2 - scale / 2, uv.getHeight()) //
-					.render(pose, uv.x + uv.getWidth() / 2, uv.y - scale / 2, uv.getWidth() / 2 + scale / 2, uv.getHeight() + scale);
+					.render(pose, uv.getX() + uv.getWidth() / 2, uv.getY() - scale / 2, uv.getWidth() / 2 + scale / 2, uv.getHeight() + scale);
 			
 			int j = 14737632;
 			
@@ -84,7 +84,7 @@ public class OTEFadeOutButton
 			
 			setWhiteColor();
 			
-			fontrenderer.drawShadow(pose, uv.getMessage(), uv.x + (uv.getWidth() - fontrenderer.width(uv.getMessage())) / 2, uv.y + (uv.getHeight() - fontrenderer.lineHeight) / 2 + 1, a << 24 | j);
+			fontrenderer.drawShadow(pose, uv.getMessage(), uv.getX() + (uv.getWidth() - fontrenderer.width(uv.getMessage())) / 2, uv.getY() + (uv.getHeight() - fontrenderer.lineHeight) / 2 + 1, a << 24 | j);
 		}
 		
 		setWhiteColor();

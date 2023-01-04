@@ -99,7 +99,7 @@ public class GuiSkillViewer
 		var active = data.isSkillActive(skill);
 		
 		pose.pushPose();
-		pose.translate(btnToggle.x + 1, btnToggle.y + 1, 200);
+		pose.translate(btnToggle.getX() + 1, btnToggle.getY() + 1, 200);
 		pose.scale(18F / 20F, 18F / 20F, 18F / 20F);
 		RenderUtils.drawTexturedModalRect(pose, 0, 0, CROSS.posX, CROSS.posY + (active ? 20 : 0), 20, 20);
 		pose.popPose();
@@ -183,7 +183,7 @@ public class GuiSkillViewer
 		{
 			var newState = !data.isSkillActive(skill);
 			data.setSkillState(skill, newState);
-			new OTEFadeOutUV(new UV(TEXTURE, CROSS.posX, CROSS.posY + (newState ? 20 : 0), 20, 20), 18, 18, b.x + 1, b.y + 1, 20);
+			new OTEFadeOutUV(new UV(TEXTURE, CROSS.posX, CROSS.posY + (newState ? 20 : 0), 20, 20), 18, 18, b.getX() + 1, b.getY() + 1, 20);
 			Network.sendToServer(new PacketSetSkillActivity(skill.getRegistryName(), newState));
 		}
 		
