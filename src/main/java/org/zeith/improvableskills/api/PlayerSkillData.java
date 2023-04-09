@@ -37,7 +37,7 @@ public class PlayerSkillData
 	public CompoundTag persistedData = new CompoundTag();
 	public boolean hasCraftedSkillBook = false;
 	public boolean enableXPBank = true;
-	private boolean hasCraftedSkillBookPrev = false;
+	public boolean hasCraftedSkillBookPrev = false;
 	
 	public float enchantPower = 0;
 	
@@ -148,8 +148,13 @@ public class PlayerSkillData
 	
 	public void setSkillLevel(PlayerSkillBase stat, Number lvl)
 	{
-		stats.put(stat.getRegistryName(), lvl.shortValue());
+		setSkillLevelNoSync(stat, lvl);
 		sync();
+	}
+	
+	public void setSkillLevelNoSync(PlayerSkillBase stat, Number lvl)
+	{
+		stats.put(stat.getRegistryName(), lvl.shortValue());
 	}
 	
 	public boolean hasCraftedSkillsBook()
@@ -198,16 +203,24 @@ public class PlayerSkillData
 		return false;
 	}
 	
-	public void lockAbility(PlayerAbilityBase ability, boolean sync)
+	public boolean lockAbility(PlayerAbilityBase ability, boolean sync)
 	{
-		if(ability != null && player != null && !player.level.isClientSide && abilities.remove(ability.getRegistryName()) && sync)
-			sync();
+		if(ability != null && player != null && !player.level.isClientSide && abilities.remove(ability.getRegistryName()))
+		{
+			if(sync) sync();
+			return true;
+		}
+		return false;
 	}
 	
-	public void lockSkillScroll(PlayerSkillBase skill, boolean sync)
+	public boolean lockSkillScroll(PlayerSkillBase skill, boolean sync)
 	{
-		if(skill != null && player != null && !player.level.isClientSide && skillScrolls.remove(skill.getRegistryName()) && sync)
-			sync();
+		if(skill != null && player != null && !player.level.isClientSide && skillScrolls.remove(skill.getRegistryName()))
+		{
+			if(sync) sync();
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean isSkillActive(PlayerSkillBase skill)
