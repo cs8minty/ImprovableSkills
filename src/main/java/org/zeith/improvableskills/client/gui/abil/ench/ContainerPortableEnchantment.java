@@ -33,9 +33,9 @@ public class ContainerPortableEnchantment
 	
 	public ContainerPortableEnchantment(int windowId, Inventory inv)
 	{
-		super(windowId, inv, ContainerLevelAccess.create(inv.player.level, inv.player.blockPosition()));
+		super(windowId, inv, ContainerLevelAccess.create(inv.player.level(), inv.player.blockPosition()));
 		player = inv.player;
-		worldIn = inv.player.level;
+		worldIn = inv.player.level();
 	}
 	
 	@Override

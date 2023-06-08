@@ -25,7 +25,7 @@ public class AbilityAutoXpBank
 	@Override
 	public void tick(PlayerSkillData data)
 	{
-		if(data.autoXpBank && !data.player.level.isClientSide && data.atTickRate(2))
+		if(data.autoXpBank && !data.player.level().isClientSide && data.atTickRate(2))
 		{
 			var threshold = data.autoXpBankThreshold;
 			

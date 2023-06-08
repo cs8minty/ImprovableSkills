@@ -24,19 +24,19 @@ public class SkillSilentFoot
 	
 	private void hook(VibrationEvent e)
 	{
-		if(e.getContext().sourceEntity() instanceof ServerPlayer mp)
+		if(e.getInfo().entity() instanceof ServerPlayer mp)
 		{
 			PlayerDataManager.handleDataSafely(mp, data ->
 			{
 				if(!data.isSkillActive(this))
 					return;
 				
-				double distance = e.getDistance();
+				double distance = e.getInfo().distance();
 				
 				// Decrease the radius from listener's radius all the way down to just one block.
 				var radius = Mth.lerp(
 						data.getSkillProgress(this),
-						e.getListener().getListenerRadius(),
+						e.getUser().getListenerRadius(),
 						1
 				);
 				

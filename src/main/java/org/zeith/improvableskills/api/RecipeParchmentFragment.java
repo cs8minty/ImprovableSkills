@@ -2,6 +2,7 @@ package org.zeith.improvableskills.api;
 
 import com.google.gson.*;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -44,7 +45,7 @@ public class RecipeParchmentFragment
 	}
 	
 	@Override
-	public ItemStack assemble(Container ctr)
+	public ItemStack assemble(Container ctr, RegistryAccess access)
 	{
 		return result.copy();
 	}
@@ -56,7 +57,7 @@ public class RecipeParchmentFragment
 	}
 	
 	@Override
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return result.copy();
 	}

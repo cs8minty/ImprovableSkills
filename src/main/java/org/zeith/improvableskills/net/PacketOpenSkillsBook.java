@@ -27,7 +27,7 @@ public class PacketOpenSkillsBook
 		if(mp != null)
 		{
 			PlayerDataManager.handleDataSafely(mp, data -> Network.sendTo(new PacketOpenSkillsBook(data), mp));
-			mp.level.gameEvent(mp, GameEvent.EQUIP, mp.position());
+			mp.level().gameEvent(mp, GameEvent.EQUIP, mp.position());
 		}
 	}
 	

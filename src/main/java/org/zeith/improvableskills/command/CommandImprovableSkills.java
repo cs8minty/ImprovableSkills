@@ -9,6 +9,7 @@ import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.hammerlib.util.shaded.json.JSONObject;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.cfg.ConfigsIS;
@@ -65,7 +66,7 @@ public class CommandImprovableSkills
 								}
 							}
 							
-							src.getSource().sendSuccess(Component.literal("Skills Book has been unlocked for " + updated + " players."), true);
+							src.getSource().sendSuccess(Cast.constant(Component.literal("Skills Book has been unlocked for " + updated + " players.")), true);
 							
 							return updated;
 						})
@@ -87,7 +88,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("Skills Book has been unlocked for " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("Skills Book has been unlocked for " + updated + " players.")), true);
 									
 									return updated;
 								})
@@ -114,7 +115,7 @@ public class CommandImprovableSkills
 								}
 							}
 							
-							src.getSource().sendSuccess(Component.literal("Skills Book has been unlocked for " + updated + " players."), true);
+							src.getSource().sendSuccess(Cast.constant(Component.literal("Skills Book has been unlocked for " + updated + " players.")), true);
 							
 							return updated;
 						})
@@ -136,7 +137,7 @@ public class CommandImprovableSkills
 					
 					NetSkillCalculator.pack().build().sendToAll();
 					
-					src.getSource().sendSuccess(Component.literal("Configs have been reloaded."), true);
+					src.getSource().sendSuccess(Cast.constant(Component.literal("Configs have been reloaded.")), true);
 					
 					return 1;
 				});
@@ -166,7 +167,7 @@ public class CommandImprovableSkills
 													++updated;
 											}
 											
-											src.getSource().sendSuccess(Component.literal("Skill ").append(skill.getLocalizedName()).append(" unlocked to " + updated + " players."), true);
+											src.getSource().sendSuccess(Cast.constant(Component.literal("Skill ").append(skill.getLocalizedName()).append(" unlocked to " + updated + " players.")), true);
 											
 											return updated;
 										})
@@ -194,7 +195,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("All skills have been unlocked for " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("All skills have been unlocked for " + updated + " players.")), true);
 									
 									return updated;
 								})
@@ -229,7 +230,7 @@ public class CommandImprovableSkills
 												}
 											}
 											
-											src.getSource().sendSuccess(Component.literal("Skill ").append(skill.getLocalizedName()).append(" locked to " + updated + " players."), true);
+											src.getSource().sendSuccess(Cast.constant(Component.literal("Skill ").append(skill.getLocalizedName()).append(" locked to " + updated + " players.")), true);
 											
 											return updated;
 										})
@@ -260,7 +261,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("All skills have been locked for " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("All skills have been locked for " + updated + " players.")), true);
 									
 									return updated;
 								})
@@ -297,7 +298,7 @@ public class CommandImprovableSkills
 												}
 											}
 											
-											src.getSource().sendSuccess(Component.literal("Skill ").append(skill.getLocalizedName()).append(" revoked from " + updated + " players."), true);
+											src.getSource().sendSuccess(Cast.constant(Component.literal("Skill ").append(skill.getLocalizedName()).append(" revoked from " + updated + " players.")), true);
 											
 											return updated;
 										})
@@ -323,7 +324,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("All skills have been revoked from " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("All skills have been revoked from " + updated + " players.")), true);
 									
 									return updated;
 								})
@@ -365,7 +366,7 @@ public class CommandImprovableSkills
 														}
 													}
 													
-													src.getSource().sendSuccess(Component.literal("Skill ").append(skill.getLocalizedName()).append(" set to level " + level + " for " + updated + " players."), true);
+													src.getSource().sendSuccess(Cast.constant(Component.literal("Skill ").append(skill.getLocalizedName()).append(" set to level " + level + " for " + updated + " players.")), true);
 													
 													return updated;
 												})
@@ -393,7 +394,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("All skills have been given at their max levels for " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("All skills have been given at their max levels for " + updated + " players.")), true);
 									
 									return updated;
 								})
@@ -429,7 +430,7 @@ public class CommandImprovableSkills
 												}
 											}
 											
-											src.getSource().sendSuccess(Component.literal("Ability ").append(abil.getLocalizedName()).append(" revoked for " + updated + " players."), true);
+											src.getSource().sendSuccess(Cast.constant(Component.literal("Ability ").append(abil.getLocalizedName()).append(" revoked for " + updated + " players.")), true);
 											
 											return updated;
 										})
@@ -452,7 +453,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("All abilities have been revoked for " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("All abilities have been revoked for " + updated + " players.")), true);
 									
 									return updated;
 								})
@@ -488,7 +489,7 @@ public class CommandImprovableSkills
 												}
 											}
 											
-											src.getSource().sendSuccess(Component.literal("Ability ").append(abil.getLocalizedName()).append(" unlocked for " + updated + " players."), true);
+											src.getSource().sendSuccess(Cast.constant(Component.literal("Ability ").append(abil.getLocalizedName()).append(" unlocked for " + updated + " players.")), true);
 											
 											return updated;
 										})
@@ -511,7 +512,7 @@ public class CommandImprovableSkills
 										}
 									}
 									
-									src.getSource().sendSuccess(Component.literal("All abilities have been unlocked for " + updated + " players."), true);
+									src.getSource().sendSuccess(Cast.constant(Component.literal("All abilities have been unlocked for " + updated + " players.")), true);
 									
 									return updated;
 								})

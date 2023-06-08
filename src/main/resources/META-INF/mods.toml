@@ -1,38 +1,33 @@
-modLoader = "javafml"
-loaderVersion = "[44,)"
-issueTrackerURL = "https://gitlab.com/DragonForge/ImprovableSkills/issues"
-license = "All rights reserved"
-
+modLoader="javafml"
+loaderVersion="${forge_version_range}"
+issueTrackerURL="${issue_tracker_url}"
+license="${mod_license}"
 [[mods]]
-modId = "improvableskills"
-version = "${file.jarVersion}"
-displayName = "Improvable Skills"
-updateJSONURL = "http://h.zeith.org/api/fmluc/252902"
-displayURL = "http://h.zeith.org/api/fmlhp/252902"
-logoFile = "icon.png"
-authors = "Zeitheron"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+updateJSONURL="https://api.modrinth.com/updates/${modrinth_project}/forge_updates.json"
+displayURL="https://modrinth.com/mod/${modrinth_project}"
+logoFile="examplemod.png"
+credits="None"
+authors="${mod_authors}"
+description='''${mod_description}'''
 
-description = '''
-Boost player's abilities as well as granting useful abilities using single book and your XP. (And more)
-'''
-
-[[dependencies.improvableskills]]
-modId = "forge"
-mandatory = true
-versionRange = "[44.1,)"
-ordering = "NONE" # NONE/BEFORE/AFTER
-side = "BOTH"
-
-[[dependencies.improvableskills]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[1.19.3,1.20)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.improvableskills]]
-modId = "hammerlib"
-mandatory = true
-versionRange = "[19.4.47,)"
-ordering = "NONE"
-side = "BOTH"
+[[dependencies.${mod_id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
+    ordering="NONE" # NONE/BEFORE/AFTER
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${mod_id}]]
+    modId="hammerlib"
+    mandatory=true
+    versionRange="[${hl_version},)"
+    ordering="NONE"
+    side="BOTH"

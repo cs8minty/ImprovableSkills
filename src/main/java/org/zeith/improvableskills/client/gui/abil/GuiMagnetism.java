@@ -1,7 +1,7 @@
 package org.zeith.improvableskills.client.gui.abil;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -62,8 +62,9 @@ public class GuiMagnetism
 		})
 		{
 			@Override
-			protected void renderBg(PoseStack pose, Minecraft mc, int x, int y)
+			protected void renderBg(GuiGraphics pose, Minecraft mc, int x, int y)
 			{
+				super.renderBg(pose, mc, x, y);
 				FXUtils.bindTexture(TEXTURE);
 				RenderUtils.drawTexturedModalRect(pose, this.getX(), this.getY(), 176, data != null && data.magnetism ? 0 : 20, 20, 20);
 			}
@@ -115,11 +116,12 @@ public class GuiMagnetism
 	}
 	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack pose, float partialTime, int mouseX, int mouseY)
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics gfx, float partialTime, int mouseX, int mouseY)
 	{
+		var pose = gfx.pose();
 		float value = data != null ? data.magnetismRange : 0;
 		
-		renderBackground(pose);
+		renderBackground(gfx);
 		
 		toggleButton.active = data != null;
 		
@@ -143,7 +145,7 @@ public class GuiMagnetism
 		int y = 0;
 		for(var comp : font.split(getInformation(value), width))
 		{
-			font.drawShadow(pose, comp, 0, y, 0xFFFFFF);
+			gfx.drawString(font, comp, 0, y, 0xFFFFFF, true);
 			y += 9;
 		}
 		pose.popPose();

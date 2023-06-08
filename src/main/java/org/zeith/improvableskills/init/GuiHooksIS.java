@@ -23,5 +23,5 @@ public class GuiHooksIS
 	public static final MenuType<ContainerEnchPowBook> ENCH_POWER_BOOK_IO = IForgeMenuType.create((windowId, inv, data) -> new ContainerEnchPowBook(windowId, inv));
 	
 	@RegistryName("crafting")
-	public static final MenuType<CraftingMenuPortable> CRAFTING = IForgeMenuType.create((windowId, inv, data) -> new CraftingMenuPortable(windowId, inv, ContainerLevelAccess.create(inv.player.level, inv.player.blockPosition())));
+	public static final MenuType<CraftingMenuPortable> CRAFTING = IForgeMenuType.create((windowId, inv, data) -> new CraftingMenuPortable(windowId, inv, ContainerLevelAccess.create(inv.player.level(), inv.player.blockPosition())));
 }

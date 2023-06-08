@@ -2,6 +2,7 @@ package org.zeith.improvableskills.client.rendering.ote;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.hammerlib.client.utils.RenderUtils;
 import org.zeith.improvableskills.client.gui.GuiXPBank;
@@ -59,8 +60,9 @@ public class OTEXpOrb
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		if(!(currentGui instanceof GuiXPBank))
 			return;
 		

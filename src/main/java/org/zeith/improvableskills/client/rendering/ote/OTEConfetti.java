@@ -1,7 +1,7 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -72,8 +72,9 @@ public class OTEConfetti
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		float alpha = sineF((40F - ticksExisted - partialTime) / 40F);
 		int ma = 160 - (Math.abs(hashCode()) % 40);
 		

@@ -38,7 +38,7 @@ public class SkillGrowth
 	
 	public static void growAround(Player ent, int rad, int max)
 	{
-		var world = ent.level;
+		var world = ent.level();
 		List<BlockPos> positions = new ArrayList<>();
 		
 		for(int x = -rad; x <= rad; ++x)
@@ -56,10 +56,10 @@ public class SkillGrowth
 					}
 				}
 		
-		int co = Math.min(ent.level.random.nextInt(max), positions.size());
+		int co = Math.min(world.random.nextInt(max), positions.size());
 		for(int i = 0; i < co; ++i)
 		{
-			BlockPos pos = positions.remove(ent.level.random.nextInt(positions.size()));
+			BlockPos pos = positions.remove(world.random.nextInt(positions.size()));
 			if(BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), world, pos, ent))
 				world.levelEvent(2005, pos, 0);
 		}

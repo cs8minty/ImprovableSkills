@@ -7,6 +7,7 @@ public class Sys
 {
 	public static void openURL(String url)
 	{
+		if(url == null || url.isBlank()) return;
 		Threading.createAndStart("OpenURL", () ->
 		{
 			try

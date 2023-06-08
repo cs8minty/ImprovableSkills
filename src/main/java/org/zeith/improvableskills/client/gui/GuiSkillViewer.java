@@ -3,6 +3,7 @@ package org.zeith.improvableskills.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -71,8 +72,10 @@ public class GuiSkillViewer
 	}
 	
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics gfx, int mouseX, int mouseY, float partialTicks)
 	{
+		var pose = gfx.pose();
+		
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
 		
@@ -87,7 +90,7 @@ public class GuiSkillViewer
 		
 		boolean notMaxedOut = nextSkillLevel <= skill.getMaxLevel() && !forbidden;
 		
-		super.render(pose, mouseX, mouseY, partialTicks);
+		super.render(gfx, mouseX, mouseY, partialTicks);
 		
 		FXUtils.bindTexture(TEXTURE);
 		pose.pushPose();
@@ -104,7 +107,7 @@ public class GuiSkillViewer
 		RenderUtils.drawTexturedModalRect(pose, 0, 0, CROSS.posX, CROSS.posY + (active ? 20 : 0), 20, 20);
 		pose.popPose();
 		
-		drawCenteredString(pose, forbidden ? minecraft.fontFilterFishy : font, I18n.get("text.improvableskills:totalXP", XPUtil.getXPTotal(minecraft.player)), guiLeft + xSize / 2, guiTop + ySize + 2, 0x88FF00);
+		gfx.drawCenteredString(forbidden ? minecraft.fontFilterFishy : font, Component.translatable("text.improvableskills:totalXP", XPUtil.getXPTotal(minecraft.player)), guiLeft + xSize / 2, guiTop + ySize + 2, 0x88FF00);
 		
 		btnUpgrade.active = true;
 		
@@ -125,11 +128,12 @@ public class GuiSkillViewer
 	}
 	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
+		var pose = gfx.pose();
 		var name = skill.getLocalizedName(data);
 		
-		renderBackground(pose);
+		renderBackground(gfx);
 		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		pose.pushPose();
 		pose.translate(guiLeft, guiTop, 0);
@@ -146,13 +150,13 @@ public class GuiSkillViewer
 			RenderSystem.setShaderColor(1, 1, 1, 1);
 		}
 		
-		font.draw(pose, I18n.get("text.improvableskills:level", data.getSkillLevel(skill), skill.getMaxLevel()), 44, 30, 0x555555);
+		gfx.drawString(font, I18n.get("text.improvableskills:level", data.getSkillLevel(skill), skill.getMaxLevel()), 44, 30, 0x555555, false);
 		
 		float scale = Math.min((xSize - 48) / font.width(name), 1.5F);
 		double flh = font.lineHeight * scale;
 		pose.translate(44, 6 + (24 - flh) / 2, 0);
 		pose.scale(scale, scale, 1);
-		font.draw(pose, name, 0, 0, 0x555555);
+		gfx.drawString(font, name, 0, 0, 0x555555, false);
 		pose.popPose();
 		
 		int maxWid = 176;
@@ -161,7 +165,7 @@ public class GuiSkillViewer
 		pose.translate(0, 2, 0);
 		for(FormattedCharSequence formattedcharsequence : font.split(skill.getLocalizedDesc(data), maxWid))
 		{
-			font.draw(pose, formattedcharsequence, guiLeft + 12, guiTop + 42, 0xFFFFFF);
+			gfx.drawString(font, formattedcharsequence, guiLeft + 12, guiTop + 42, 0xFFFFFF, false);
 			pose.translate(0, 9, 0);
 		}
 		pose.popPose();
@@ -221,10 +225,5 @@ public class GuiSkillViewer
 	{
 		this.data = data;
 		this.parent.data = data;
-	}
-	
-	public void drawHoveringText(PoseStack pose, String text, int x, int y)
-	{
-		renderTooltip(pose, Component.literal(text).withStyle(forbidden ? Style.EMPTY.withFont(ALT_FONT) : Style.EMPTY), x, y);
 	}
 }

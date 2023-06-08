@@ -1,7 +1,7 @@
 package org.zeith.improvableskills.client.gui.abil.ench;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -46,34 +46,33 @@ public class GuiEnchPowBook
 	}
 	
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics gfx, int mouseX, int mouseY, float partialTicks)
 	{
 		Cast.optionally(children().get(0), GuiCustomButton.class)
 				.ifPresent(b -> b.setMessage(Component.literal(hasShiftDown() ? "<-- *" : "--> *")));
 		
-		this.renderBackground(pose);
-		super.render(pose, mouseX, mouseY, partialTicks);
-		this.renderTooltip(pose, mouseX, mouseY);
+		this.renderBackground(gfx);
+		super.render(gfx, mouseX, mouseY, partialTicks);
+		this.renderTooltip(gfx, mouseX, mouseY);
 		
 		Slot slot = getSlotUnderMouse();
 		if(slot != null && slot.container instanceof SimpleInventory && !slot.hasItem())
 		{
-			renderTooltip(pose, Component.literal("Slot for ").withStyle(ChatFormatting.GRAY).append(Items.BOOK.getDescription().copy().withStyle(ChatFormatting.BOLD)), mouseX, mouseY);
+			gfx.renderTooltip(font, Component.literal("Slot for ").withStyle(ChatFormatting.GRAY).append(Items.BOOK.getDescription().copy().withStyle(ChatFormatting.BOLD)), mouseX, mouseY);
 		}
 		
 		String ln = I18n.get("text.improvableskills:enchpower", (int) SyncSkills.getData().enchantPower);
 		
-		font.draw(pose, ln, leftPos + (imageWidth - font.width(ln)) / 2, topPos + 3, 4210752);
+		gfx.drawString(font, ln, leftPos + (imageWidth - font.width(ln)) / 2, topPos + 3, 4210752, false);
 	}
 	
 	@Override
-	protected void renderBackground(PoseStack pose, float partialTime, int mouseX, int mouseY)
+	protected void renderBackground(GuiGraphics gfx, float partialTime, int mouseX, int mouseY)
 	{
-		FXUtils.bindTexture(MAIN_GUI);
-		blit(pose, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		gfx.blit(MAIN_GUI, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
 		FXUtils.bindTexture(OVERLAY);
-		RenderUtils.drawFullTexturedModalRect(pose, leftPos + imageWidth / 2 - 36, topPos + 32, 16, 16);
+		RenderUtils.drawFullTexturedModalRect(gfx, leftPos + imageWidth / 2 - 36, topPos + 32, 16, 16);
 	}
 	
 	private void actionPerformed(Button buttonIn)

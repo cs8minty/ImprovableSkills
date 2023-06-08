@@ -1,3 +1,4 @@
 {
-  "ItemStackTransformer": "META-INF/coremods/ItemStackHurtHook.js"
+  "ItemStackTransformer": "META-INF/coremods/ItemStackHurtHook.js",
+  "VibrationSystemHook": "META-INF/coremods/VibrationSystemHook.js"
 }

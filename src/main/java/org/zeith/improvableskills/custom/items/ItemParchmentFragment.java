@@ -3,17 +3,22 @@ package org.zeith.improvableskills.custom.items;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.api.inv.SimpleInventory;
 import org.zeith.hammerlib.api.items.ConsumableItem;
+import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.RecipeParchmentFragment;
 import org.zeith.improvableskills.init.RecipeTypesIS;
+
+import java.util.List;
 
 public class ItemParchmentFragment
 		extends Item
@@ -30,6 +35,13 @@ public class ItemParchmentFragment
 	}
 	
 	@Override
+	public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> tooltip, TooltipFlag p_41424_)
+	{
+		tooltip.add(HLConstants.CRAFTING_MATERIAL);
+		super.appendHoverText(p_41421_, p_41422_, tooltip, p_41424_);
+	}
+	
+	@Override
 	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity e)
 	{
 		if(e == null)
@@ -43,11 +55,11 @@ public class ItemParchmentFragment
 		int add = 0;
 		RecipeParchmentFragment recipe = null;
 		
-		var itemsNearby = e.level.getEntitiesOfClass(ItemEntity.class, e.getBoundingBox().inflate(1, .1, 1));
+		var itemsNearby = e.level().getEntitiesOfClass(ItemEntity.class, e.getBoundingBox().inflate(1, .1, 1));
 		
 		itemsNearby.remove(e); // Exclude self
 		
-		var recipes = e.level.getRecipeManager();
+		var recipes = e.level().getRecipeManager();
 		
 		rs:
 		for(var r : recipes.getAllRecipesFor(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE))
@@ -105,7 +117,7 @@ public class ItemParchmentFragment
 			float prog = v / (float) (mv + 40);
 			
 			if(v % Math.max(1, 5 - time) == 0)
-				e.level.playSound(null, e.blockPosition(), SoundEvents.UI_TOAST_IN, SoundSource.AMBIENT, 2F, .25F + 1.75F * prog);
+				e.level().playSound(null, e.blockPosition(), SoundEvents.UI_TOAST_IN, SoundSource.AMBIENT, 2F, .25F + 1.75F * prog);
 			
 			nbt.putFloat("IS3ParchDegree", nbt.getFloat("IS3ParchDegree") + (prog + .25F) * 4F);
 			nbt.putFloat("IS3ParchThrowback", prog);
@@ -116,7 +128,7 @@ public class ItemParchmentFragment
 			{
 				if(v > mv + 40 && minDist < 0.5)
 				{
-					if(!e.level.isClientSide)
+					if(!e.level().isClientSide)
 					{
 						NonNullList<ItemStack> origin = NonNullList.create();
 						for(var ei : itemsNearby)
@@ -129,21 +141,21 @@ public class ItemParchmentFragment
 						for(int i = 0; i < origin.size(); i++)
 							id.items.set(i, origin.get(i));
 						
-						var resStack = r.assemble(id);
+						var resStack = r.assemble(id, e.level().registryAccess());
 						
 						for(ConsumableItem ci : r.getConsumableIngredients())
 							if(!ci.consume(id))
 								continue rs;
 						
 						var ep = e.position();
-						var res = new ItemEntity(e.level, ep.x, ep.y, ep.z, resStack);
+						var res = new ItemEntity(e.level(), ep.x, ep.y, ep.z, resStack);
 						
 						res.setDeltaMovement(e.getDeltaMovement());
 						res.bobOffs = e.bobOffs;
 						
-						e.level.playSound(null, e.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.AMBIENT, 1F, 1.6F + e.level.random.nextFloat() * .2F);
+						e.level().playSound(null, e.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.AMBIENT, 1F, 1.6F + e.level().random.nextFloat() * .2F);
 						
-						e.level.addFreshEntity(res);
+						e.level().addFreshEntity(res);
 					}
 					
 					e.getItem().shrink(1);
@@ -159,7 +171,7 @@ public class ItemParchmentFragment
 		if(recipe == null && nbt.contains("IS3ParchCraft"))
 			nbt.remove("IS3ParchCraft");
 		
-		if(fx && recipe != null && e.tickCount % 2 == 0 && e.isOnGround())
+		if(fx && recipe != null && e.tickCount % 2 == 0 && e.onGround())
 		{
 			int num = recipe.ingredients.size() + 3 + add;
 			float deg = 360F / num;
@@ -172,10 +184,10 @@ public class ItemParchmentFragment
 				double sin = Math.sin(Math.toRadians(coff));
 				double cos = Math.cos(Math.toRadians(coff));
 				
-				var itemRand = e.level.random;
+				var itemRand = e.level().random;
 				var ep = e.position();
 				
-				ImprovableSkills.PROXY.sparkle(e.level,
+				ImprovableSkills.PROXY.sparkle(e.level(),
 						ep.x + (itemRand.nextFloat() - itemRand.nextFloat()) * .05F,
 						ep.y + (itemRand.nextFloat() - itemRand.nextFloat()) * .1F + e.getBbHeight() * 1.5,
 						ep.z + (itemRand.nextFloat() - itemRand.nextFloat()) * .05F,

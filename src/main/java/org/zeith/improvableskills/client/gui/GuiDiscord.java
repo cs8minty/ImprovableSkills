@@ -2,6 +2,7 @@ package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -10,6 +11,7 @@ import net.minecraft.util.FormattedCharSequence;
 import org.zeith.hammerlib.client.texture.HttpTextureDownloader;
 import org.zeith.hammerlib.client.utils.RenderUtils;
 import org.zeith.hammerlib.client.utils.UV;
+import org.zeith.hammerlib.util.ZeithLinkRepository;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 import org.zeith.improvableskills.client.rendering.ote.OTEConfetti;
@@ -30,7 +32,7 @@ public class GuiDiscord
 	
 	public static AbstractTexture getDiscordServerIdTexture()
 	{
-		return HttpTextureDownloader.create(texture, "http://h.zeith.org/zmc", () -> texureLoaded = true);
+		return HttpTextureDownloader.create(texture, ZeithLinkRepository.getLink(ZeithLinkRepository.PredefinedLink.DEV_DISCORD_CARD_IMAGE), () -> texureLoaded = true);
 	}
 	
 	public GuiDiscord(PageletDiscord pagelet)
@@ -54,9 +56,11 @@ public class GuiDiscord
 	}
 	
 	@Override
-	protected void drawBack(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawBack(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
-		setWhiteColor();
+		var pose = gfx.pose();
+		
+		setWhiteColor(gfx);
 		gui1.render(pose, guiLeft, guiTop);
 		
 		boolean mouse = hovered = mouseX >= guiLeft + (xSize - 3 * xSize / 3.5) / 2 && mouseY >= guiTop + (ySize - xSize / 3.5) - 22 && mouseX < guiLeft + (xSize - 3 * xSize / 3.5) / 2 + 3 * xSize / 3.5 && mouseY < guiTop + (ySize - xSize / 3.5) - 22 + xSize / 3.5;
@@ -67,19 +71,19 @@ public class GuiDiscord
 		{
 			float m = .67F + .33F * OTEConfetti.sineF(hoverTime / 10F);
 			RenderSystem.setShaderColor(m, m, m, 1F);
-			RenderUtils.drawFullTexturedModalRect(pose, guiLeft + (xSize - 3 * xSize / 3.5F) / 2, guiTop + (ySize - xSize / 3.5F) - 22, 3 * xSize / 3.5F, xSize / 3.5F);
+			RenderUtils.drawFullTexturedModalRect(gfx, guiLeft + (xSize - 3 * xSize / 3.5F) / 2, guiTop + (ySize - xSize / 3.5F) - 22, 3 * xSize / 3.5F, xSize / 3.5F);
 			
 			pose.pushPose();
 			for(FormattedCharSequence formattedcharsequence : font.split(Component.translatable("pagelet." + ImprovableSkills.MOD_ID + ":discord2"), xSize - 21))
 			{
-				font.draw(pose, formattedcharsequence, (int) guiLeft + 13, (int) guiTop + 12, 0xFF000000);
+				gfx.drawString(font, formattedcharsequence, guiLeft + 13, guiTop + 12, 0xFF000000, false);
 				pose.translate(0, 9, 0);
 			}
 			pose.popPose();
 		} else
 			GuiNewsBook.spawnLoading(width, height);
 		
-		setBlueColor();
+		setBlueColor(gfx);
 		pose.pushPose();
 		pose.translate(0, 0, 5);
 		gui2.render(pose, guiLeft, guiTop);
@@ -93,7 +97,7 @@ public class GuiDiscord
 		
 		if(mouse)
 		{
-			Sys.openURL(PageletUpdate.discord);
+			Sys.openURL(ZeithLinkRepository.getLink(ZeithLinkRepository.PredefinedLink.DEV_DISCORD_INVITE));
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundsIS.CONNECT, 1.0F));
 			return true;
 		}

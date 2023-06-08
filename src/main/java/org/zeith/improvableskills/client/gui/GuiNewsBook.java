@@ -2,11 +2,12 @@ package org.zeith.improvableskills.client.gui;
 
 import com.google.common.base.Joiner;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import org.zeith.hammerlib.client.utils.Scissors;
 import org.zeith.hammerlib.client.utils.UV;
 import org.zeith.hammerlib.util.colors.Rainbow;
@@ -30,6 +31,9 @@ public class GuiNewsBook
 {
 	public final UV gui1;
 	public Component changes, translated;
+	
+	protected int prevScroll, scroll, maxScroll;
+	protected double dScroll;
 	
 	public GuiNewsBook(PageletNews pagelet)
 	{
@@ -98,9 +102,11 @@ public class GuiNewsBook
 	}
 	
 	@Override
-	protected void drawBack(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawBack(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
-		setWhiteColor();
+		var pose = gfx.pose();
+		
+		setWhiteColor(gfx);
 		gui1.render(pose, guiLeft, guiTop);
 		
 		RenderSystem.enableBlend();
@@ -118,11 +124,15 @@ public class GuiNewsBook
 		if(translated != null)
 		{
 			pose.pushPose();
+			pose.translate(0, Mth.lerp(minecraft.getPartialTick(), prevScroll, scroll), 0);
+			maxScroll = 0;
 			for(FormattedCharSequence formattedcharsequence : font.split(translated, (int) gui1.width - 22))
 			{
-				font.draw(pose, formattedcharsequence, (int) guiLeft + 12, (int) guiTop + 12, 0xFF000000);
+				gfx.drawString(font, formattedcharsequence, guiLeft + 12, guiTop + 12, 0xFF000000, false);
 				pose.translate(0, 9, 0);
+				maxScroll += 9;
 			}
+			maxScroll = Math.max(0, maxScroll - (ySize - 36));
 			pose.popPose();
 		} else
 			spawnLoading(width, height);
@@ -130,13 +140,13 @@ public class GuiNewsBook
 		RenderSystem.enableDepthTest();
 		Scissors.end();
 		
-		setBlueColor();
+		setBlueColor(gfx);
 		pose.pushPose();
 		pose.translate(0, 0, 5);
 		gui2.render(pose, guiLeft, guiTop);
 		pose.popPose();
 		
-		setWhiteColor();
+		setWhiteColor(gfx);
 	}
 	
 	public static void spawnLoading(float width, float height)
@@ -162,5 +172,23 @@ public class GuiNewsBook
 			
 			degree += angle;
 		}
+	}
+	
+	@Override
+	public void tick()
+	{
+		super.tick();
+		
+		prevScroll = scroll;
+		scroll += dScroll;
+		scroll = Mth.clamp(scroll, -maxScroll, 0);
+		dScroll = 0;
+	}
+	
+	@Override
+	public boolean mouseScrolled(double i, double j, double k)
+	{
+		dScroll += k * font.lineHeight;
+		return super.mouseScrolled(i, j, k);
 	}
 }

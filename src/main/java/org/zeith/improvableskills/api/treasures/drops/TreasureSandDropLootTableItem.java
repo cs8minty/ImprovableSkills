@@ -3,8 +3,7 @@ package org.zeith.improvableskills.api.treasures.drops;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.*;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
@@ -36,15 +35,15 @@ public class TreasureSandDropLootTableItem
 		PlayerSkillData data = ctx.data();
 		ServerLevel srv = (ServerLevel) ctx.level();
 		
-		LootContext lctx = new LootContext.Builder(srv)
+		LootParams lctx = new LootParams.Builder(srv)
 				.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(ctx.pos()))
 				.withParameter(LootContextParams.THIS_ENTITY, data.player)
 				.withLuck(data.player.getLuck())
 				.create(LootContextParamSets.CHEST);
 		
 		List<ItemStack> gen = srv.getServer()
-				.getLootTables()
-				.get(dropTable)
+				.getLootData()
+				.getLootTable(dropTable)
 				.getRandomItems(lctx);
 		
 		if(!gen.isEmpty())

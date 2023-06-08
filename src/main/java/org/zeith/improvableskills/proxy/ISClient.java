@@ -83,7 +83,7 @@ public class ISClient
 	
 	private void registerParticles(RegisterParticleProvidersEvent e)
 	{
-		e.register(ParticleTypesIS.SPARKLE, SparkleParticle.Provider::new);
+		e.registerSpriteSet(ParticleTypesIS.SPARKLE, SparkleParticle.Provider::new);
 	}
 	
 	private void registerItemColors(RegisterColorHandlersEvent.Item e)
@@ -144,6 +144,8 @@ public class ISClient
 	{
 		if(e.getScreen() instanceof InventoryScreen inv && openSkills != null && ConfigsIS.addBookToInv)
 		{
+			var gfx = e.getGuiGraphics();
+			
 			int mx = e.getMouseX();
 			int my = e.getMouseY();
 			
@@ -158,7 +160,7 @@ public class ISClient
 			
 			ItemStack book = new ItemStack(ItemsIS.SKILLS_BOOK);
 			
-			RenderUtils.renderItemIntoGui(e.getPoseStack(), book, openSkills.getX(), openSkills.getY());
+			RenderUtils.renderItemIntoGui(gfx.pose(), book, openSkills.getX(), openSkills.getY());
 			
 			if(hovered)
 			{
@@ -168,7 +170,7 @@ public class ISClient
 				if(!openSkills.active) arr.add(Component.translatable("gui." + ImprovableSkills.MOD_ID + ".locked"));
 				arr.add(Component.literal(ImprovableSkills.MOD_NAME).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
 				
-				inv.renderTooltip(e.getPoseStack(), arr, Optional.empty(), openSkills.getX() + 12, openSkills.getY() + 4);
+				gfx.renderTooltip(Minecraft.getInstance().font, arr, Optional.empty(), openSkills.getX() + 12, openSkills.getY() + 4);
 			}
 		}
 	}

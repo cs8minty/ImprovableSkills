@@ -23,8 +23,8 @@ public class SkillCutting
 	{
 		if(pos == null)
 			return 0F;
-		BlockState b = data.player.level.getBlockState(pos);
-		if(b.canHarvestBlock(data.player.level, pos, data.player)
+		BlockState b = data.player.level().getBlockState(pos);
+		if(b.canHarvestBlock(data.player.level(), pos, data.player)
 				&& (b.is(BlockTags.MINEABLE_WITH_AXE) || b.is(BlockTags.MINEABLE_WITH_HOE))
 				&& data.player.getMainHandItem().getDestroySpeed(b) > 0)
 			return data.getSkillLevel(this) / 8F;

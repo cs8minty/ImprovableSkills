@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLLoader;
+import org.zeith.hammerlib.util.ZeithLinkRepository;
 import org.zeith.hammerlib.util.java.Hashers;
 import org.zeith.hammerlib.util.java.net.HttpRequest;
 import org.zeith.hammerlib.util.mcf.ModHelper;
@@ -58,10 +59,12 @@ public class PageletNews
 		
 		try
 		{
+			var url = ZeithLinkRepository.findLink("mods/improvableskills/news").orElseThrow();
+			
 			this.changes = new String(
-					HttpRequest.get("https://mods.zeith.org/improvableskills/news.txt?mc=" + FMLLoader.versionInfo().mcVersion())
-							.userAgent("ImprovableSkills v" + ModHelper.getModVersion(ImprovableSkills.MOD_ID))
-							.connectTimeout(5000)
+					HttpRequest.get(url)
+							.userAgent("ImprovableSkills v" + ModHelper.getModVersion(ImprovableSkills.MOD_ID)+ "; Minecraft v" + FMLLoader.versionInfo().mcVersion())
+							.connectTimeout(30000)
 							.bytes(),
 					StandardCharsets.UTF_8
 			).replace("\r", "");

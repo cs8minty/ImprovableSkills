@@ -51,7 +51,7 @@ public class ContainerEnchPowBook
 	{
 		if(id == 11)
 		{
-			if(!playerIn.level.isClientSide)
+			if(!playerIn.level().isClientSide)
 				PlayerDataManager.handleDataSafely(playerIn, data ->
 				{
 					ItemStack item = inventory.getStackInSlot(0);
@@ -63,14 +63,14 @@ public class ContainerEnchPowBook
 							item.grow(1);
 						data.enchantPower -= 1F;
 						data.sync();
-						playerIn.level.playSound(null, playerIn.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0F, playerIn.level.random.nextFloat() * 0.1F + 1.5F);
+						playerIn.level().playSound(null, playerIn.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0F, playerIn.level().random.nextFloat() * 0.1F + 1.5F);
 					}
 				});
 			return true;
 		}
 		if(id == 0)
 		{
-			if(!playerIn.level.isClientSide)
+			if(!playerIn.level().isClientSide)
 				PlayerDataManager.handleDataSafely(playerIn, data ->
 				{
 					ItemStack item = inventory.getStackInSlot(0);
@@ -79,7 +79,7 @@ public class ContainerEnchPowBook
 						item.shrink(1);
 						data.enchantPower += 1F;
 						data.sync();
-						playerIn.level.playSound(null, playerIn.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0F, playerIn.level.random.nextFloat() * 0.1F + 1.5F);
+						playerIn.level().playSound(null, playerIn.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0F, playerIn.level().random.nextFloat() * 0.1F + 1.5F);
 					}
 				});
 			return true;

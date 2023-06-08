@@ -33,7 +33,7 @@ public abstract class AbstractFurnaceBlockEntityMixin
 	)
 	public void awardUsedRecipesAndPopExperience_IS3(ServerPlayer player, CallbackInfo ci)
 	{
-		var level = player.getLevel();
+		var level = player.serverLevel();
 		var evt = new CalculateAdditionalFurnaceExperienceMultiplier(player, Cast.cast(this));
 		MinecraftForge.EVENT_BUS.post(evt);
 		float mul = evt.getMultiplier();

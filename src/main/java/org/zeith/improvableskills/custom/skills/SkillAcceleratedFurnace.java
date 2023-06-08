@@ -32,12 +32,11 @@ public class SkillAcceleratedFurnace
 		int lvl = data.getSkillLevel(this);
 		boolean working = isActive && lvl > 0;
 		
-		if(!working || data.player.level.isClientSide)
+		Level level = data.player.level();
+		
+		if(!working || level.isClientSide)
 			return;
 		
-		Level w = data.player.level;
-		
-		Level level = data.player.level;
 		BlockPos center = data.player.blockPosition();
 		
 		int rad = 3;
@@ -57,18 +56,18 @@ public class SkillAcceleratedFurnace
 							if(a.getCookingProgress() >= a.getCookingTotalTime())
 							{
 								Recipe<?> recipe = level.getRecipeManager().getRecipeFor(a.getRecipeType(), tef, level).orElse(null);
-								if(a.callBurn(recipe, a.getItems(), tef.getMaxStackSize()))
+								if(a.callBurn(level.registryAccess(), recipe, a.getItems(), tef.getMaxStackSize()))
 									tef.setRecipeUsed(recipe);
 								a.setCookingProgress(0);
 							}
 						} else if(a.getCookingProgress() < 1)
 						{
-							BlockState state = w.getBlockState(pos);
+							BlockState state = level.getBlockState(pos);
 							if(state.getValue(AbstractFurnaceBlock.LIT))
 							{
 								state = state.setValue(AbstractFurnaceBlock.LIT, false);
-								w.setBlock(pos, state, 3);
-								w.setBlockEntity(tef);
+								level.setBlock(pos, state, 3);
+								level.setBlockEntity(tef);
 							}
 						}
 						

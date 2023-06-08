@@ -1,8 +1,8 @@
 package org.zeith.improvableskills.client.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +35,7 @@ public class OTEffect
 		height = Minecraft.getInstance().getWindow().getScreenHeight();
 	}
 	
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
 	}
 	

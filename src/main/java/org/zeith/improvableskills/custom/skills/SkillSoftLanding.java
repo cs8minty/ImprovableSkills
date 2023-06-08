@@ -1,6 +1,8 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -21,12 +23,17 @@ public class SkillSoftLanding
 	private void damageHook(LivingHurtEvent e)
 	{
 		DamageSource ds = e.getSource();
-		if(ds != null && ds.isFall() && e.getEntity() instanceof Player p)
-			PlayerDataManager.handleDataSafely(p, data ->
-			{
-				if(data.isSkillActive(this) && data.getSkillLevel(this) >= getMaxLevel() && e.getAmount() >= p.getHealth())
-					e.setAmount(p.getHealth() - 1F);
-			});
+		if(ds != null && e.getEntity() instanceof Player p)
+		{
+			var dmgReg = e.getEntity().level().registryAccess().registry(Registries.DAMAGE_TYPE).orElse(null);
+			if(dmgReg == null) return;
+			if(dmgReg.getKey(ds.type()).equals(DamageTypes.FALL.location()))
+				PlayerDataManager.handleDataSafely(p, data ->
+				{
+					if(data.isSkillActive(this) && data.getSkillLevel(this) >= getMaxLevel() && e.getAmount() >= p.getHealth())
+						e.setAmount(p.getHealth() - 1F);
+				});
+		}
 	}
 	
 	private void hook(LivingFallEvent e)

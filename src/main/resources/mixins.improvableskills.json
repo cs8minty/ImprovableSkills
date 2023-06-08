@@ -10,9 +10,9 @@
     "AbstractFurnaceBlockEntityMixin",
     "BrewingStandBlockEntityAccessor",
     "EnchantmentHelperMixin",
+    "LootTableAccessor",
     "ServerPlayerGameModeMixin",
     "Vec3Accessor",
-    "VibrationListenerMixin",
     "VillagerMixin",
     "WanderingTraderMixin",
     "jer.LootConditionHelperMixin"

@@ -40,7 +40,7 @@ public class LootConditionSkillScroll
 		
 		if(ent != null && !(ent instanceof Player))
 		{
-			var player = ent.level.getNearestPlayer(ent, 32);
+			var player = ent.level().getNearestPlayer(ent, 32);
 			if(player != null) ent = player;
 		}
 		

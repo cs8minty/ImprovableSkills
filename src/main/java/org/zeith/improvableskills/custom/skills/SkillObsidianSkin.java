@@ -1,5 +1,6 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.world.damagesource.DamageEffects;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -24,7 +25,7 @@ public class SkillObsidianSkin
 	private void damageHook(LivingHurtEvent e)
 	{
 		DamageSource ds = e.getSource();
-		if(ds != null && ds.isFire() && e.getEntity() instanceof Player p)
+		if(ds != null && ds.type().effects() == DamageEffects.BURNING && e.getEntity() instanceof Player p)
 			PlayerDataManager.handleDataSafely(p, data ->
 			{
 				if(!data.isSkillActive(this)) return;

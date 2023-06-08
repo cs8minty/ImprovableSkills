@@ -1,9 +1,9 @@
 package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -103,9 +103,11 @@ public class GuiUpdateBook
 	}
 	
 	@Override
-	protected void drawBack(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawBack(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
-		setWhiteColor();
+		var pose = gfx.pose();
+		
+		setWhiteColor(gfx);
 		gui1.render(pose, guiLeft, guiTop);
 		
 		RenderSystem.enableBlend();
@@ -121,14 +123,14 @@ public class GuiUpdateBook
 			var comp = upd.withStyle((dwnHover ? ChatFormatting.BLUE : ChatFormatting.RESET), ChatFormatting.UNDERLINE);
 			for(FormattedCharSequence formattedcharsequence : font.split(comp, (int) gui1.width - 22))
 			{
-				font.draw(pose, formattedcharsequence, (int) guiLeft + 16, (int) guiTop + 11 - scroll, 0xFF000000);
+				gfx.drawString(font, formattedcharsequence, (int) guiLeft + 16, (int) guiTop + 11 - scroll, 0xFF000000, false);
 				pose.translate(0, 9, 0);
 			}
 			
 			comp = translated;
 			for(FormattedCharSequence formattedcharsequence : font.split(comp, (int) gui1.width - 22))
 			{
-				font.draw(pose, formattedcharsequence, (int) guiLeft + 12, (int) guiTop + 12 - scroll, 0xFF000000);
+				gfx.drawString(font, formattedcharsequence, (int) guiLeft + 12, (int) guiTop + 12 - scroll, 0xFF000000, false);
 				pose.translate(0, 9, 0);
 			}
 			
@@ -139,13 +141,13 @@ public class GuiUpdateBook
 		RenderSystem.enableDepthTest();
 		Scissors.end();
 		
-		setBlueColor();
+		setBlueColor(gfx);
 		pose.pushPose();
 		pose.translate(0, 0, 5);
 		gui2.render(pose, guiLeft, guiTop);
 		pose.popPose();
 		
-		setWhiteColor();
+		setWhiteColor(gfx);
 	}
 	
 	@Override

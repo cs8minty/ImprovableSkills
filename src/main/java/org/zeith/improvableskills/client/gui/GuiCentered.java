@@ -2,6 +2,7 @@ package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -38,16 +39,17 @@ public class GuiCentered
 	}
 	
 	@Override
-	public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics gfx, int mouseX, int mouseY, float partialTicks)
 	{
-		drawGuiContainerBackgroundLayer(pose, partialTicks, mouseX, mouseY);
+		drawGuiContainerBackgroundLayer(gfx, partialTicks, mouseX, mouseY);
+		var pose = gfx.pose();
 		pose.pushPose();
 		pose.translate(0, 0, 100);
-		super.render(pose, mouseX, mouseY, partialTicks);
+		super.render(gfx, mouseX, mouseY, partialTicks);
 		pose.popPose();
 	}
 	
-	protected void drawGuiContainerBackgroundLayer(PoseStack pose, float partialTime, int mouseX, int mouseY)
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics pose, float partialTime, int mouseX, int mouseY)
 	{
 	}
 	

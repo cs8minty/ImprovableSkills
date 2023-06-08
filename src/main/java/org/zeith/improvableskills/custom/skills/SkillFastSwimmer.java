@@ -22,7 +22,7 @@ public class SkillFastSwimmer
 	@Override
 	public void tick(PlayerSkillData data, boolean isActive)
 	{
-		if(data.atTickRate(10) && !data.player.level.isClientSide)
+		if(data.atTickRate(10) && !data.player.level().isClientSide)
 		{
 			AttributeInstance hp = data.player.getAttribute(ForgeMod.SWIM_SPEED.get());
 			

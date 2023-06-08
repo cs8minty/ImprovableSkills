@@ -2,6 +2,7 @@ package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.util.java.tuples.Tuple2;
@@ -51,9 +52,11 @@ public class GuiAbilityBook
 	}
 	
 	@Override
-	protected void drawBack(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawBack(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
-		setWhiteColor();
+		var pose = gfx.pose();
+		
+		setWhiteColor(gfx);
 		gui1.render(pose, guiLeft, guiTop);
 		
 		int co = texes.size();
@@ -107,7 +110,7 @@ public class GuiAbilityBook
 				
 				RenderSystem.setShaderColor(1, 1, 1, (float) Math.sin(Math.toRadians(cht / 255F * 90)));
 				hov.render(pose, x, y, 24, 24);
-				setWhiteColor();
+				setWhiteColor(gfx);
 			} else
 				tex.toUV(false).render(pose, x, y, 24, 24);
 			
@@ -120,9 +123,9 @@ public class GuiAbilityBook
 		
 		Scissors.end();
 		
-		setBlueColor();
+		setBlueColor(gfx);
 		gui2.render(pose, guiLeft, guiTop, xSize, ySize);
-		setWhiteColor();
+		setWhiteColor(gfx);
 		
 		if(cHover >= 0 && chtni >= 200)
 		{

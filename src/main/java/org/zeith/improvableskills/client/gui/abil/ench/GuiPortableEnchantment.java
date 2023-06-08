@@ -3,14 +3,15 @@ package org.zeith.improvableskills.client.gui.abil.ench;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
 import net.minecraft.client.model.BookModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -22,7 +23,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import org.joml.Matrix4f;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
@@ -135,7 +135,7 @@ public class GuiPortableEnchantment
 	}
 	
 	@Override
-	protected void renderLabels(PoseStack pose, int mouseX, int mouseY)
+	protected void renderLabels(GuiGraphics gfx, int mouseX, int mouseY)
 	{
 		mouseX -= leftPos;
 		mouseY -= topPos;
@@ -144,148 +144,107 @@ public class GuiPortableEnchantment
 		boolean mouseOverChant = mouseX >= 60 + (108 - font.width(ln)) / 2 && mouseY > 3 && mouseX < 60 + (108 - font.width(ln)) / 2 + font.width(ln) && mouseY < 3 + font.lineHeight;
 		if(mouseOverChant)
 			ln = ln.withStyle(ChatFormatting.BLUE);
-		this.font.draw(pose, ln, 60 + (108 - font.width(ln)) / 2, 3, 4210752);
+		gfx.drawString(font, ln, 60 + (108 - font.width(ln)) / 2, 3, 4210752, false);
 		
-		super.renderLabels(pose, mouseX, mouseY);
-	}
-	
-	protected void setBlueColor()
-	{
-		RenderSystem.setShaderColor(0F, 136 / 255F, 1F, 1F);
+		super.renderLabels(gfx, mouseX, mouseY);
 	}
 	
 	@Override
-	protected void renderBg(PoseStack pose, float partial, int mouseX, int mouseY)
+	protected void renderBg(GuiGraphics gfx, float partial, int mouseX, int mouseY)
 	{
 		Lighting.setupForFlatItems();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, ENCHANTING_TABLE_LOCATION);
-		int guiLeft = leftPos;
-		int guiTop = topPos;
-		this.blit(pose, guiLeft, guiTop, 0, 0, this.imageWidth, this.imageHeight);
-		int k = (int) this.minecraft.getWindow().getGuiScale();
-		RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
+		gfx.blit(ENCHANTING_TABLE_LOCATION, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
 		
-		Matrix4f matrix4f = (new Matrix4f()).translation(-0.34F, 0.23F, 0.0F).perspective(((float) Math.PI / 2F), 1.3333334F, 9.0F, 80.0F);
+		renderBook(gfx, leftPos, topPos, partial);
 		
-		RenderSystem.backupProjectionMatrix();
-		RenderSystem.setProjectionMatrix(matrix4f);
-		pose.pushPose();
-		PoseStack.Pose posestack$pose = pose.last();
-		posestack$pose.pose().identity();
-		posestack$pose.normal().identity();
-		pose.translate(0.0D, 3.3F, 1984.0D);
-		float f = 5.0F;
-		pose.scale(5.0F, 5.0F, 5.0F);
-		pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
-		pose.mulPose(Axis.XP.rotationDegrees(20.0F));
-		float f1 = Mth.lerp(partial, this.oOpen, this.open);
-		pose.translate((1.0F - f1) * 0.2F, (1.0F - f1) * 0.1F, (1.0F - f1) * 0.25F);
-		float f2 = -(1.0F - f1) * 90.0F - 90.0F;
-		pose.mulPose(Axis.YP.rotationDegrees(f2));
-		pose.mulPose(Axis.XP.rotationDegrees(180.0F));
-		float f3 = Mth.lerp(partial, this.oFlip, this.flip) + 0.25F;
-		float f4 = Mth.lerp(partial, this.oFlip, this.flip) + 0.75F;
-		f3 = (f3 - (float) Mth.fastFloor(f3)) * 1.6F - 0.3F;
-		f4 = (f4 - (float) Mth.fastFloor(f4)) * 1.6F - 0.3F;
-		if(f3 < 0.0F)
-		{
-			f3 = 0.0F;
-		}
-		
-		if(f4 < 0.0F)
-		{
-			f4 = 0.0F;
-		}
-		
-		if(f3 > 1.0F)
-		{
-			f3 = 1.0F;
-		}
-		
-		if(f4 > 1.0F)
-		{
-			f4 = 1.0F;
-		}
-		
-		RenderSystem.enableBlend();
-		
-		this.bookModel.setupAnim(0.0F, f3, f4, f1);
-		MultiBufferSource.BufferSource buf = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-		
-		VertexConsumer vertexconsumer = buf.getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE1));
-		this.bookModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 0F, 136 / 255F, 1F, 1F);
-		
-		vertexconsumer = buf.getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE2));
-		this.bookModel.renderToBuffer(pose, vertexconsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-		
-		buf.endBatch();
-		pose.popPose();
-		RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
-		RenderSystem.restoreProjectionMatrix();
-		Lighting.setupFor3DItems();
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		EnchantmentNames.getInstance().initSeed(this.menu.getEnchantmentSeed());
-		int l = this.menu.getGoldCount();
+		int k = this.menu.getGoldCount();
 		
-		int leftSectionStart = guiLeft + 60;
-		int leftSectionPadded = leftSectionStart + 20;
-		for(int section = 0; section < 3; ++section)
+		for(int l = 0; l < 3; ++l)
 		{
-			this.setBlitOffset(0);
-			
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, ENCHANTING_TABLE_LOCATION);
-			int l1 = (this.menu).costs[section];
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			
-			if(l1 == 0)
+			int i1 = leftPos + 60;
+			int j1 = i1 + 20;
+			int k1 = (this.menu).costs[l];
+			if(k1 == 0)
 			{
-				this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 185, 108, 19);
+				gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 185, 108, 19);
 			} else
 			{
-				String s = "" + l1;
-				int i2 = 86 - this.font.width(s);
-				FormattedText formattedtext = EnchantmentNames.getInstance().getRandomName(this.font, i2);
-				int j2 = 6839882;
-				if(((l < section + 1 || this.minecraft.player.experienceLevel < l1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[section] == -1)
+				String s = "" + k1;
+				int l1 = 86 - this.font.width(s);
+				FormattedText formattedtext = EnchantmentNames.getInstance().getRandomName(this.font, l1);
+				int i2 = 6839882;
+				if(((k < l + 1 || this.minecraft.player.experienceLevel < k1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[l] == -1)
 				{ // Forge: render buttons as disabled when enchantable but enchantability not met on lower levels
-					this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 185, 108, 19);
-					this.blit(pose, leftSectionStart + 1, guiTop + 15 + 19 * section, 16 * section, 239, 16, 16);
-					this.font.drawWordWrap(formattedtext, leftSectionPadded, guiTop + 16 + 19 * section, i2, (j2 & 16711422) >> 1);
-					j2 = 4226832;
+					gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 185, 108, 19);
+					gfx.blit(ENCHANTING_TABLE_LOCATION, i1 + 1, topPos + 15 + 19 * l, 16 * l, 239, 16, 16);
+					gfx.drawWordWrap(this.font, formattedtext, j1, topPos + 16 + 19 * l, l1, (i2 & 16711422) >> 1);
+					i2 = 4226832;
 				} else
 				{
-					int k2 = mouseX - (guiLeft + 60);
-					int l2 = mouseY - (guiTop + 14 + 19 * section);
-					if(k2 >= 0 && l2 >= 0 && k2 < 108 && l2 < 19)
+					int j2 = mouseX - (leftPos + 60);
+					int k2 = mouseY - (topPos + 14 + 19 * l);
+					if(j2 >= 0 && k2 >= 0 && j2 < 108 && k2 < 19)
 					{
-						this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 204, 108, 19);
-						j2 = 16777088;
+						gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 204, 108, 19);
+						i2 = 16777088;
 					} else
 					{
-						this.blit(pose, leftSectionStart, guiTop + 14 + 19 * section, 0, 166, 108, 19);
+						gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 166, 108, 19);
 					}
 					
-					this.blit(pose, leftSectionStart + 1, guiTop + 15 + 19 * section, 16 * section, 223, 16, 16);
-					this.font.drawWordWrap(formattedtext, leftSectionPadded, guiTop + 16 + 19 * section, i2, j2);
-					j2 = 8453920;
+					gfx.blit(ENCHANTING_TABLE_LOCATION, i1 + 1, topPos + 15 + 19 * l, 16 * l, 223, 16, 16);
+					gfx.drawWordWrap(this.font, formattedtext, j1, topPos + 16 + 19 * l, l1, i2);
+					i2 = 8453920;
 				}
 				
-				this.font.drawShadow(pose, s, (float) (leftSectionPadded + 86 - this.font.width(s)), (float) (guiTop + 16 + 19 * section + 7), j2);
+				gfx.drawString(this.font, s, j1 + 86 - this.font.width(s), topPos + 16 + 19 * l + 7, i2);
 			}
 		}
+	}
+	
+	private void renderBook(GuiGraphics gfx, int x, int y, float partial)
+	{
+		var pose = gfx.pose();
 		
+		float f = Mth.lerp(partial, this.oOpen, this.open);
+		float f1 = Mth.lerp(partial, this.oFlip, this.flip);
+		Lighting.setupForEntityInInventory();
+		
+		pose.pushPose();
+		pose.translate((float) x + 33.0F, (float) y + 31.0F, 100.0F);
+		pose.scale(-40.0F, 40.0F, 40.0F);
+		pose.mulPose(Axis.XP.rotationDegrees(25.0F));
+		pose.translate((1.0F - f) * 0.2F, (1.0F - f) * 0.1F, (1.0F - f) * 0.25F);
+		
+		pose.mulPose(Axis.YP.rotationDegrees(-(1.0F - f) * 90.0F - 90.0F));
+		pose.mulPose(Axis.XP.rotationDegrees(180.0F));
+		
+		float f4 = Mth.clamp(Mth.frac(f1 + 0.25F) * 1.6F - 0.3F, 0.0F, 1.0F);
+		float f5 = Mth.clamp(Mth.frac(f1 + 0.75F) * 1.6F - 0.3F, 0.0F, 1.0F);
+		this.bookModel.setupAnim(0.0F, f4, f5, f);
+		
+		var vrtx = gfx.bufferSource().getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE1));
+		this.bookModel.renderToBuffer(pose, vrtx, 15728880, OverlayTexture.NO_OVERLAY, 0F, 136 / 255F, 1F, 1.0F);
+		
+		vrtx = gfx.bufferSource().getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE2));
+		this.bookModel.renderToBuffer(pose, vrtx, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		
+		gfx.flush();
+		
+		pose.popPose();
+		Lighting.setupFor3DItems();
 	}
 	
 	@Override
-	public void render(PoseStack p_98767_, int p_98768_, int p_98769_, float p_98770_)
+	public void render(GuiGraphics gfx, int mouseX, int mouseY, float partial)
 	{
-		p_98770_ = this.minecraft.getFrameTime();
-		this.renderBackground(p_98767_);
-		super.render(p_98767_, p_98768_, p_98769_, p_98770_);
-		this.renderTooltip(p_98767_, p_98768_, p_98769_);
+		partial = this.minecraft.getFrameTime();
+		this.renderBackground(gfx);
+		super.render(gfx, mouseX, mouseY, partial);
+		this.renderTooltip(gfx, mouseX, mouseY);
 		boolean flag = this.minecraft.player.getAbilities().instabuild;
 		int i = this.menu.getGoldCount();
 		
@@ -295,7 +254,7 @@ public class GuiPortableEnchantment
 			Enchantment enchantment = Enchantment.byId((this.menu).enchantClue[j]);
 			int l = (this.menu).levelClue[j];
 			int i1 = j + 1;
-			if(this.isHovering(60, 14 + 19 * j, 108, 17, p_98768_, p_98769_) && k > 0)
+			if(this.isHovering(60, 14 + 19 * j, 108, 17, mouseX, mouseY) && k > 0)
 			{
 				List<Component> list = Lists.newArrayList();
 				list.add((Component.translatable("container.enchant.clue", enchantment == null ? "" : enchantment.getFullname(l))).withStyle(ChatFormatting.WHITE));
@@ -334,7 +293,7 @@ public class GuiPortableEnchantment
 					}
 				}
 				
-				this.renderComponentTooltip(p_98767_, list, p_98768_, p_98769_);
+				gfx.renderComponentTooltip(this.font, list, mouseX, mouseY);
 				break;
 			}
 		}

@@ -63,6 +63,8 @@ public class PlayerSkillData
 		if(player == null || player.isSpectator())
 			return;
 		
+		var level = player.level();
+		
 		// stat_scrolls.clear();
 		
 		Map<ResourceLocation, Long> updates = new HashMap<>();
@@ -90,13 +92,13 @@ public class PlayerSkillData
 			}
 		}
 		
-		if(player.level.isClientSide && !Objects.equals(prevDim, player.level.dimension().location()))
+		if(level.isClientSide && !Objects.equals(prevDim, level.dimension().location()))
 		{
-			prevDim = player.level.dimension().location();
+			prevDim = level.dimension().location();
 			requestSync();
 		}
 		
-		if(!player.level.isClientSide && hasCraftedSkillBookPrev != hasCraftedSkillBook && !hasCraftedSkillBookPrev)
+		if(!level.isClientSide && hasCraftedSkillBookPrev != hasCraftedSkillBook && !hasCraftedSkillBookPrev)
 		{
 			player.sendSystemMessage(Component.translatable("chat." + ImprovableSkills.MOD_ID + ".guide"));
 			hasCraftedSkillBookPrev = true;
@@ -105,7 +107,7 @@ public class PlayerSkillData
 		
 		hasCraftedSkillBookPrev = hasCraftedSkillBook;
 		
-		if(!player.level.isClientSide)
+		if(!level.isClientSide)
 		{
 			var xpBankShown = ConfigsIS.xpBank;
 			if(enableXPBank != xpBankShown)
@@ -179,7 +181,7 @@ public class PlayerSkillData
 	
 	public boolean unlockAbility(PlayerAbilityBase ability, boolean sync)
 	{
-		if(ability != null && player != null && !player.level.isClientSide && !abilities.contains(ability.getRegistryName()))
+		if(ability != null && player != null && !player.level().isClientSide && !abilities.contains(ability.getRegistryName()))
 		{
 			abilities.add(ability.getRegistryName());
 			ability.onUnlocked(this);
@@ -192,7 +194,7 @@ public class PlayerSkillData
 	
 	public boolean unlockSkillScroll(PlayerSkillBase skill, boolean sync)
 	{
-		if(skill != null && skill.getScrollState().hasScroll() && player != null && !player.level.isClientSide && !skillScrolls.contains(skill.getRegistryName()))
+		if(skill != null && skill.getScrollState().hasScroll() && player != null && !player.level().isClientSide && !skillScrolls.contains(skill.getRegistryName()))
 		{
 			skillScrolls.add(skill.getRegistryName());
 			skill.onUnlocked(this);
@@ -205,7 +207,7 @@ public class PlayerSkillData
 	
 	public boolean lockAbility(PlayerAbilityBase ability, boolean sync)
 	{
-		if(ability != null && player != null && !player.level.isClientSide && abilities.remove(ability.getRegistryName()))
+		if(ability != null && player != null && !player.level().isClientSide && abilities.remove(ability.getRegistryName()))
 		{
 			if(sync) sync();
 			return true;
@@ -215,7 +217,7 @@ public class PlayerSkillData
 	
 	public boolean lockSkillScroll(PlayerSkillBase skill, boolean sync)
 	{
-		if(skill != null && player != null && !player.level.isClientSide && skillScrolls.remove(skill.getRegistryName()))
+		if(skill != null && player != null && !player.level().isClientSide && skillScrolls.remove(skill.getRegistryName()))
 		{
 			if(sync) sync();
 			return true;
@@ -381,7 +383,7 @@ public class PlayerSkillData
 	public static PlayerSkillData deserialize(Player player, CompoundTag nbt)
 	{
 		PlayerSkillData data = new PlayerSkillData(player);
-		data.prevDim = player.level.dimension().location();
+		data.prevDim = player.level().dimension().location();
 		data.deserializeNBT(nbt);
 		return data;
 	}

@@ -24,7 +24,7 @@ public class PacketOpenPortableCraft
 			if(dat.hasAbility(AbilitiesIS.CRAFTER))
 			{
 				mp.openMenu(new SimpleMenuProvider((windowId, inventory, player) ->
-						new CraftingMenuPortable(windowId, inventory, ContainerLevelAccess.create(player.level, player.blockPosition())), CONTAINER_TITLE));
+						new CraftingMenuPortable(windowId, inventory, ContainerLevelAccess.create(player.level(), player.blockPosition())), CONTAINER_TITLE));
 			}
 		});
 	}

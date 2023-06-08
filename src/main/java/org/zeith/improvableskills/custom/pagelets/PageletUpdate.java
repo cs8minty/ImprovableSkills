@@ -20,8 +20,6 @@ import org.zeith.improvableskills.api.registry.PageletBase;
 import org.zeith.improvableskills.client.gui.GuiUpdateBook;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 
-import java.util.Base64;
-
 import static net.minecraftforge.fml.VersionChecker.Status.*;
 
 public class PageletUpdate
@@ -29,7 +27,7 @@ public class PageletUpdate
 {
 	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/update.png");
 	public static VersionChecker.Status level;
-	public static String changes, latest, discord = "https://h.zeith.org/invite/zeithdev", homepage;
+	public static String changes, latest, homepage;
 	public static String liveURL, liveTitle;
 	
 	{
@@ -79,10 +77,11 @@ public class PageletUpdate
 		{
 			try
 			{
-				JSONObject o = (JSONObject) new JSONTokener(HttpRequest.get("https://h.zeith.org/api/fmluc/252902?changelog=true&zdev=true").body()).nextValue();
+				JSONObject o = (JSONObject) new JSONTokener(HttpRequest.get("https://api.modrinth.com/updates/9fT7HUaI/forge_updates.json").body()).nextValue();
 				
 				var mcVersion = FMLLoader.versionInfo().mcVersion();
-				changes = new String(Base64.getDecoder().decode(o.optJSONObject("changelogs64").optString(mcVersion + "-latest")));
+//				changes = new String(Base64.getDecoder().decode(o.optJSONObject("changelogs64").optString(mcVersion + "-latest")));
+				changes = "";
 				homepage = o.getString("homepage");
 				
 				var promos = o.getJSONObject("promos");

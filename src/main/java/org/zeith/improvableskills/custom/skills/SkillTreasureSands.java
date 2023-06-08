@@ -3,9 +3,9 @@ package org.zeith.improvableskills.custom.skills;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import org.zeith.improvableskills.api.evt.HarvestDropsEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
@@ -37,7 +37,7 @@ public class SkillTreasureSands
 		
 		PlayerDataManager.handleDataSafely(e.getEntity(), data ->
 		{
-			if(level instanceof ServerLevel mp && mp.getBlockState(pos).getMaterial() == Material.SAND && mp.getBiome(pos).get().getBaseTemperature() >= 2F)
+			if(level instanceof ServerLevel mp && mp.getBlockState(pos).is(BlockTags.SAND) && mp.getBiome(pos).get().getBaseTemperature() >= 2F)
 			{
 				RandomSource rng = data.player.getRandom();
 				

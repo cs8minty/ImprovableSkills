@@ -1,11 +1,12 @@
 package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.hammerlib.client.utils.RenderUtils;
@@ -93,10 +94,13 @@ public class GuiXPBank
 		}
 	}
 	
+	public final ResourceLocation ICONS_TX = new ResourceLocation("improvableskills", "textures/gui/skills_gui_paper.png");
+	
 	@Override
-	protected void drawBack(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawBack(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
-		setWhiteColor();
+		var pose = gfx.pose();
+		setWhiteColor(gfx);
 		gui1.render(pose, guiLeft, guiTop);
 		
 		int guiLeft = this.guiLeft;
@@ -105,13 +109,13 @@ public class GuiXPBank
 		int sizeX = 20;
 		int sizeY = 26;
 		
-		RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1);
-		blit(pose, guiLeft + sizeX, guiTop + sizeY - 9, sizeX, sizeY, xSize - sizeX * 2, ySize - sizeY * 2 - 4 + 14);
+		gfx.setColor(0.8F, 0.8F, 0.8F, 1);
+		gfx.blit(ICONS_TX, guiLeft + sizeX, guiTop + sizeY - 9, sizeX, sizeY, xSize - sizeX * 2, ySize - sizeY * 2 - 4 + 14);
 		
 		var form = PageletsIS.XP_STORAGE.getTitle().copy().withStyle(ChatFormatting.BLACK).append(": " + data.storageXp + " XP");
-		font.draw(pose, form, guiLeft + (xSize - font.width(form)) / 2, guiTop + 9, 4161280);
+		gfx.drawString(font, form, guiLeft + (xSize - font.width(form)) / 2, guiTop + 9, 0x3F7F00, false);
 		
-		setWhiteColor();
+		setWhiteColor(gfx);
 		
 		FXUtils.bindTexture("minecraft", "textures/gui/icons.png");
 		
@@ -131,21 +135,21 @@ public class GuiXPBank
 		pose.translate(guiLeft + bx, guiTop + by + 18, 0.0D);
 		pose.scale(1.1F, 1.1F, 1.1F);
 		int lvl = XPUtil.getLevelFromXPValue(xp);
-		String text = (lvl < 0 ? "TOO MUCH!!!" : Integer.valueOf(lvl)) + "";
+		var text = (lvl < 0 ? "TOO MUCH!!!" : Integer.toString(lvl));
 		RenderSystem.setShaderColor(0.24705882F, 0.49803922F, 0.0F, 1F);
-		font.draw(pose, text, (145.6F - font.width(text)) / 2.0F * 0.9F, -8.0F, 4161280);
-		setWhiteColor();
+		gfx.drawString(font, text, (145.6F - font.width(text)) / 2.0F * 0.9F, -8.0F, 0x3f7f00, false);
+		setWhiteColor(gfx);
 		pose.popPose();
 		
 		float r = (float) (System.currentTimeMillis() % 2000L) / 2000.0F;
 		r = r > 0.5F ? 1.0F - r : r;
 		r += 0.45F;
 		
-		drawCenteredString(pose, font, I18n.get("text." + ImprovableSkills.MOD_ID + ":totalXP", XPUtil.getXPTotal(minecraft.player)), guiLeft + xSize / 2, guiTop + ySize + 4, (int) (r * 255.0F) << 16 | 0xFF00 | 0x0);
+		gfx.drawCenteredString(font, I18n.get("text." + ImprovableSkills.MOD_ID + ":totalXP", XPUtil.getXPTotal(minecraft.player)), guiLeft + xSize / 2, guiTop + ySize + 4, (int) (r * 255.0F) << 16 | 0xFF00 | 0x0);
 		
-		setBlueColor();
+		setBlueColor(gfx);
 		gui2.render(pose, guiLeft, guiTop, xSize, ySize);
-		setWhiteColor();
+		setWhiteColor(gfx);
 	}
 	
 	protected void actionPerformed(Button buttonIn)

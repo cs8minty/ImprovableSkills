@@ -3,6 +3,7 @@ package org.zeith.improvableskills.client.rendering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -100,7 +101,8 @@ public class OnTopEffects
 		int mx = e.getMouseX(), my = e.getMouseY();
 		float pt = Minecraft.getInstance().getPartialTick();
 		
-		var pose = e.getPoseStack();
+		var gfx = e.getGuiGraphics();
+		var pose = gfx.pose();
 		
 		pose.pushPose();
 		pose.translate(0, 0, 300);
@@ -117,16 +119,17 @@ public class OnTopEffects
 			
 			RenderSystem.enableBlend();
 			pose.pushPose();
-			eff.render(pose, pt);
+			eff.render(gfx, pt);
 			pose.popPose();
 		}
 		pose.popPose();
 	}
 	
 	@Override
-	public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight)
+	public void render(ForgeGui gui, GuiGraphics gfx, float partialTick, int screenWidth, int screenHeight)
 	{
 		float pt = partialTick;
+		var pose = gfx.pose();
 		
 		for(int i = 0; i < effects.size(); ++i)
 		{
@@ -135,10 +138,10 @@ public class OnTopEffects
 			if(eff.expired || !eff.renderHud)
 				continue;
 			
-			poseStack.pushPose();
+			pose.pushPose();
 			RenderSystem.enableBlend();
-			eff.render(poseStack, pt);
-			poseStack.popPose();
+			eff.render(gfx, pt);
+			pose.popPose();
 		}
 	}
 }

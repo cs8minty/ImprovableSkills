@@ -1,9 +1,9 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -44,8 +44,9 @@ public class OTEFadeOutButton
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		double cx = prevX + (x - prevX) * partialTime;
 		double cy = prevY + (y - prevY) * partialTime;
 		float t = prevTime + partialTime;
@@ -84,7 +85,7 @@ public class OTEFadeOutButton
 			
 			setWhiteColor();
 			
-			fontrenderer.drawShadow(pose, uv.getMessage(), uv.getX() + (uv.getWidth() - fontrenderer.width(uv.getMessage())) / 2, uv.getY() + (uv.getHeight() - fontrenderer.lineHeight) / 2 + 1, a << 24 | j);
+			gfx.drawString(fontrenderer, uv.getMessage(), uv.getX() + (uv.getWidth() - fontrenderer.width(uv.getMessage())) / 2, uv.getY() + (uv.getHeight() - fontrenderer.lineHeight) / 2 + 1, a << 24 | j, true);
 		}
 		
 		setWhiteColor();

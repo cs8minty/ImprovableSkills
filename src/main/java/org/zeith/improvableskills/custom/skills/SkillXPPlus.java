@@ -42,7 +42,7 @@ public class SkillXPPlus
 			var xp = e.getExpToDrop();
 			if(xp <= 0 || !data.isSkillActive(this)) return;
 			var xpp = data.getSkillProgress(this);
-			e.setExpToDrop(Mth.floor(xp + data.player.level.random.nextFloat() * xp * xpp));
+			e.setExpToDrop(Mth.floor(xp + data.player.level().random.nextFloat() * xp * xpp));
 		});
 	}
 	
@@ -57,7 +57,7 @@ public class SkillXPPlus
 		{
 			if(!data.isSkillActive(this)) return;
 			float xpp = data.getSkillProgress(this);
-			e.setDroppedExperience(Mth.floor(xp + data.player.level.random.nextFloat() * xp * xpp));
+			e.setDroppedExperience(Mth.floor(xp + data.player.level().random.nextFloat() * xp * xpp));
 		});
 	}
 	
@@ -71,9 +71,9 @@ public class SkillXPPlus
 			int xpp = data.getSkillLevel(this);
 			if(xpp > 0)
 			{
-				int xp = 1 + data.player.level.random.nextInt(xpp + 1);
+				int xp = 1 + data.player.level().random.nextInt(xpp + 1);
 				var c = e.getParentA();
-				if(c.level instanceof ServerLevel mp)
+				if(c.level() instanceof ServerLevel mp)
 					ExperienceOrb.award(mp, c.position(), xp);
 			}
 		});
@@ -88,9 +88,9 @@ public class SkillXPPlus
 			NonNullList<ItemStack> drops = e.getDrops();
 			if(xpp > 0) for(var i = 0; i < drops.size(); ++i)
 			{
-				int xp = data.player.level.random.nextInt(xpp + 1);
+				int xp = data.player.level().random.nextInt(xpp + 1);
 				if(xp < 1) continue;
-				if(data.player.level instanceof ServerLevel mp)
+				if(data.player.level() instanceof ServerLevel mp)
 					ExperienceOrb.award(mp, data.player.position(), xp);
 			}
 		});

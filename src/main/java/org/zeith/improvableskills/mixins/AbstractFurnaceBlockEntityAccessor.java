@@ -1,6 +1,7 @@
 package org.zeith.improvableskills.mixins;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -29,7 +30,7 @@ public interface AbstractFurnaceBlockEntityAccessor
 	int getCookingTotalTime();
 	
 	@Invoker
-	boolean callBurn(@Nullable Recipe<?> recipe, NonNullList<ItemStack> lst, int i);
+	boolean callBurn(RegistryAccess access, @Nullable Recipe<?> recipe, NonNullList<ItemStack> items, int i);
 	
 	@Accessor
 	RecipeType<? extends AbstractCookingRecipe> getRecipeType();

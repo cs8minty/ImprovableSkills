@@ -1,6 +1,7 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.client.rendering.OTEffect;
 import org.zeith.improvableskills.utils.ScaledResolution;
@@ -64,8 +65,9 @@ public class OTESkill
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		double cx = prevX + (x - prevX) * partialTime;
 		double cy = prevY + (y - prevY) * partialTime;
 		float t = prevTime + partialTime;

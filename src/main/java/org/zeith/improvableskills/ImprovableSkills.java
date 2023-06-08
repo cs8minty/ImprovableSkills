@@ -30,6 +30,7 @@ import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.core.adapter.LanguageAdapter;
 import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
+import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.hammerlib.util.CommonMessages;
 import org.zeith.improvableskills.api.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.loot.RandomBoolean;
@@ -38,6 +39,7 @@ import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
 import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
 import org.zeith.improvableskills.init.*;
+import org.zeith.improvableskills.mixins.LootTableAccessor;
 import org.zeith.improvableskills.proxy.ISClient;
 import org.zeith.improvableskills.proxy.ISServer;
 
@@ -55,7 +57,9 @@ public class ImprovableSkills
 	
 	@CreativeTab.RegisterTab
 	public static final CreativeTab TAB = new CreativeTab(new ResourceLocation(MOD_ID, "root"),
-			b -> b.icon(ItemsIS.SKILLS_BOOK::getDefaultInstance).title(Component.translatable("itemGroup." + MOD_ID))
+			b -> b.icon(ItemsIS.SKILLS_BOOK::getDefaultInstance)
+					.title(Component.translatable("itemGroup." + MOD_ID))
+					.withTabsBefore(HLConstants.HL_TAB.id())
 	);
 	
 	private static Supplier<IForgeRegistry<PlayerSkillBase>> SKILLS;
@@ -83,6 +87,11 @@ public class ImprovableSkills
 		mcfBus.addListener(this::addLoot);
 		
 		HammerLib.EVENT_BUS.addListener(this::addRecipes);
+	}
+	
+	public static ResourceLocation id(String path)
+	{
+		return new ResourceLocation(MOD_ID, path);
 	}
 	
 	private void fingerprintCheck(FMLFingerprintCheckEvent e)
@@ -144,7 +153,9 @@ public class ImprovableSkills
 			try
 			{
 				var table = e.getTable();
-				table.addPool(LootPool.lootPool()
+				var pools = ((LootTableAccessor) table).getPools();
+				
+				pools.add(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1F))
 						.add(EmptyLootItem.emptyItem().setWeight(4))
 						.add(LootItem.lootTableItem(ItemsIS.PARCHMENT_FRAGMENT)
@@ -152,7 +163,7 @@ public class ImprovableSkills
 								.setWeight(1)
 								.setQuality(60)
 						)
-						.name("parchment_fragment")
+//						.name("parchment_fragment")
 						.build());
 			} catch(Throwable err)
 			{

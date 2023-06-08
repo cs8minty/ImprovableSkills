@@ -10,7 +10,7 @@ public class AnvilMenuPortable
 {
 	public AnvilMenuPortable(int windowId, Inventory inventory)
 	{
-		super(windowId, inventory, ContainerLevelAccess.create(inventory.player.level, inventory.player.blockPosition()));
+		super(windowId, inventory, ContainerLevelAccess.create(inventory.player.level(), inventory.player.blockPosition()));
 	}
 	
 	@Override

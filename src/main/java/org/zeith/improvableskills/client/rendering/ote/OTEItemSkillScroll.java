@@ -3,6 +3,7 @@ package org.zeith.improvableskills.client.rendering.ote;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
@@ -100,8 +101,9 @@ public class OTEItemSkillScroll
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		double cx = prevX + (x - prevX) * partialTime;
 		double cy = prevY + (y - prevY) * partialTime;
 		float t = prevTime + partialTime;

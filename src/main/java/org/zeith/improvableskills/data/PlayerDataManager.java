@@ -45,7 +45,7 @@ public class PlayerDataManager
 	public static PlayerSkillData getDataFor(Player player)
 	{
 		if(player == null || player instanceof FakePlayer) return null;
-		if(player.level.isClientSide)
+		if(player.level().isClientSide)
 		{
 			if(player.isLocalPlayer()) return SyncSkills.getData();
 			return PlayerSkillData.deserialize(player, player.getPersistentData().getCompound(ImprovableSkills.NBT_DATA_TAG));

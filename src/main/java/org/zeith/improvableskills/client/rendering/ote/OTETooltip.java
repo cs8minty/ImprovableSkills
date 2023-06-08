@@ -1,7 +1,8 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.improvableskills.client.rendering.OTEffect;
@@ -67,15 +68,16 @@ public class OTETooltip
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		if(!tooltip.isEmpty())
 		{
 			pose.pushPose();
 			pose.translate(0, 0, 200);
 			FXUtils.setPositionTexShader();
 			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-			currentGui.renderTooltip(pose, tooltip, Optional.empty(), mouseX, mouseY);
+			gfx.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
 			pose.popPose();
 			tooltip.clear();
 		}

@@ -1,8 +1,8 @@
 package org.zeith.improvableskills.client.gui.base;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -66,7 +66,7 @@ public class GuiTabbable<P extends PageletBase>
 		gui2 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png"), 0, 0, xSize, ySize);
 	}
 	
-	protected void drawBack(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawBack(GuiGraphics pose, float partialTicks, int mouseX, int mouseY)
 	{
 	}
 	
@@ -111,23 +111,25 @@ public class GuiTabbable<P extends PageletBase>
 		}
 	}
 	
-	protected void setWhiteColor()
+	protected void setWhiteColor(GuiGraphics gfx)
 	{
-		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+		gfx.setColor(1F, 1F, 1F, 1F);
 	}
 	
-	protected void setBlueColor()
+	protected void setBlueColor(GuiGraphics gfx)
 	{
-		RenderSystem.setShaderColor(0F, 136 / 255F, 1F, 1F);
+		gfx.setColor(0F, 136 / 255F, 1F, 1F);
 	}
 	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack pose, float partialTicks, int mouseX, int mouseY)
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
+		var pose = gfx.pose();
+		
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
 		
-		renderBackground(pose);
+		renderBackground(gfx);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		
 		RenderSystem.enableDepthTest();
@@ -146,7 +148,7 @@ public class GuiTabbable<P extends PageletBase>
 			pose.translate(16, 16, 0);
 			pose.mulPose(Axis.ZP.rotationDegrees(6 * OTEConfetti.sineF(System.currentTimeMillis() % 4000L / 1000F)));
 			pose.translate(-16, -16, 0);
-			RenderUtils.drawFullTexturedModalRect(pose, 0, 0, 32, 32);
+			RenderUtils.drawFullTexturedModalRect(gfx, 0, 0, 32, 32);
 			pose.popPose();
 		}
 		
@@ -164,13 +166,13 @@ public class GuiTabbable<P extends PageletBase>
 			pose.pushPose();
 			{
 				pose.translate((width - (w + 64)) / 2, guiTop - 36, 350);
-				RenderUtils.drawFullTexturedModalRect(pose, 0, 0, 32, 32);
+				RenderUtils.drawFullTexturedModalRect(gfx, 0, 0, 32, 32);
 				
 				pose.pushPose();
 				{
 					pose.translate(32, 4, 0);
 					pose.scale(s, s, 1F);
-					font.draw(pose, "LIVE", 0, 3, hover ? 0xFFAAAA : 0xFFFFFF);
+					gfx.drawString(font, "LIVE", 0, 3, hover ? 0xFFAAAA : 0xFFFFFF, false);
 					RenderSystem.setShaderColor(1, 1, 1, 1);
 				}
 				pose.popPose();
@@ -226,7 +228,7 @@ public class GuiTabbable<P extends PageletBase>
 			
 			pose.pushPose();
 			
-			setBlueColor();
+			setBlueColor(gfx);
 			pose.translate(
 					guiLeft + 193 - 7 * ((5 - progress) / 5),
 					guiTop + 10 + i * 25,
@@ -243,14 +245,14 @@ public class GuiTabbable<P extends PageletBase>
 			else if(icon instanceof AbstractTexture tex)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				tex.bind();
 				RenderSystem.setShaderTexture(0, tex.getId());
-				RenderUtils.drawFullTexturedModalRect(pose, 2, 4, 16, 16);
+				RenderUtils.drawFullTexturedModalRect(gfx, 2, 4, 16, 16);
 			} else if(icon instanceof UV uv)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				uv.render(pose, 2, 4, 16, 16);
 			}
 			
@@ -292,7 +294,7 @@ public class GuiTabbable<P extends PageletBase>
 			}
 			
 			pose.pushPose();
-			setBlueColor();
+			setBlueColor(gfx);
 			pose.translate(guiLeft - 18 + 7 * ((5 - progress) / 5), guiTop + 10 + i * 25, 0);
 			pose.pushPose();
 			pose.translate(10, 14, 0);
@@ -307,14 +309,14 @@ public class GuiTabbable<P extends PageletBase>
 			if(icon instanceof AbstractTexture tex)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				tex.bind();
 				RenderSystem.setShaderTexture(0, tex.getId());
-				RenderUtils.drawFullTexturedModalRect(pose, 2, 4, 16, 16);
+				RenderUtils.drawFullTexturedModalRect(gfx, 2, 4, 16, 16);
 			} else if(icon instanceof UV uv)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				uv.render(pose, 0, 0, 16, 16);
 			}
 			pose.popPose();
@@ -323,11 +325,11 @@ public class GuiTabbable<P extends PageletBase>
 		
 		//
 		
-		setWhiteColor();
+		setWhiteColor(gfx);
 		
 		pose.pushPose();
 		pose.translate(0, 0, 100);
-		drawBack(pose, partialTicks, mouseX, mouseY);
+		drawBack(gfx, partialTicks, mouseX, mouseY);
 		pose.popPose();
 		
 		//
@@ -382,7 +384,7 @@ public class GuiTabbable<P extends PageletBase>
 				continue;
 			}
 			pose.pushPose();
-			setBlueColor();
+			setBlueColor(gfx);
 			pose.translate(
 					guiLeft + 193 - 7 * ((5 - progress) / 5),
 					guiTop + 10 + i * 25,
@@ -396,14 +398,14 @@ public class GuiTabbable<P extends PageletBase>
 			else if(icon instanceof AbstractTexture tex)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				tex.bind();
 				RenderSystem.setShaderTexture(0, tex.getId());
-				RenderUtils.drawFullTexturedModalRect(pose, 2, 4, 16, 16);
+				RenderUtils.drawFullTexturedModalRect(gfx, 2, 4, 16, 16);
 			} else if(icon instanceof UV uv)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				uv.render(pose, 2, 4, 16, 16);
 			}
 			pose.popPose();
@@ -434,7 +436,7 @@ public class GuiTabbable<P extends PageletBase>
 				continue;
 			}
 			pose.pushPose();
-			setBlueColor();
+			setBlueColor(gfx);
 			pose.translate(
 					guiLeft - 18 + 7 * ((5 - progress) / 5),
 					guiTop + 10 + i * 25,
@@ -453,14 +455,14 @@ public class GuiTabbable<P extends PageletBase>
 			if(icon instanceof AbstractTexture tex)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				tex.bind();
 				RenderSystem.setShaderTexture(0, tex.getId());
-				RenderUtils.drawFullTexturedModalRect(pose, 2, 4, 16, 16);
+				RenderUtils.drawFullTexturedModalRect(gfx, 2, 4, 16, 16);
 			} else if(icon instanceof UV uv)
 			{
 				pose.translate(0, 0, 150);
-				setWhiteColor();
+				setWhiteColor(gfx);
 				uv.render(pose, 0, 0, 16, 16);
 			}
 			pose.popPose();

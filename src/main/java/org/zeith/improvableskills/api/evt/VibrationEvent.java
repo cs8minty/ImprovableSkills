@@ -1,9 +1,8 @@
 package org.zeith.improvableskills.api.evt;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
+import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -11,26 +10,17 @@ import net.minecraftforge.eventbus.api.Event;
 public class VibrationEvent
 		extends Event
 {
-	private final VibrationListener listener;
 	private final ServerLevel level;
-	private final GameEvent event;
-	private final GameEvent.Context context;
-	private final Vec3 from;
-	private final Vec3 to;
+	private final VibrationSystem.Data data;
+	private final VibrationSystem.User user;
+	private final VibrationInfo info;
 	
-	public VibrationEvent(VibrationListener listener, ServerLevel level, GameEvent event, GameEvent.Context context, Vec3 from, Vec3 to)
+	public VibrationEvent(ServerLevel level, VibrationSystem.Data data, VibrationSystem.User user, VibrationInfo info)
 	{
-		this.listener = listener;
 		this.level = level;
-		this.event = event;
-		this.context = context;
-		this.from = from;
-		this.to = to;
-	}
-	
-	public VibrationListener getListener()
-	{
-		return listener;
+		this.data = data;
+		this.user = user;
+		this.info = info;
 	}
 	
 	public ServerLevel getLevel()
@@ -38,28 +28,18 @@ public class VibrationEvent
 		return level;
 	}
 	
-	public GameEvent getEvent()
+	public VibrationSystem.Data getData()
 	{
-		return event;
+		return data;
 	}
 	
-	public Vec3 getFrom()
+	public VibrationSystem.User getUser()
 	{
-		return from;
+		return user;
 	}
 	
-	public Vec3 getTo()
+	public VibrationInfo getInfo()
 	{
-		return to;
-	}
-	
-	public double getDistance()
-	{
-		return from.distanceTo(to);
-	}
-	
-	public GameEvent.Context getContext()
-	{
-		return context;
+		return info;
 	}
 }

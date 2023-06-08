@@ -34,7 +34,7 @@ public class AbilityMagnetism
 		if(data.magnetism && data.magnetismRange > 1F)
 		{
 			var pos = data.player.getBoundingBox().getCenter();
-			for(var ie : data.player.level.getEntitiesOfClass(ItemEntity.class, new AABB(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z).inflate(data.magnetismRange)))
+			for(var ie : data.player.level().getEntitiesOfClass(ItemEntity.class, new AABB(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z).inflate(data.magnetismRange)))
 			{
 				ie.setDeltaMovement(
 						ie.getDeltaMovement()

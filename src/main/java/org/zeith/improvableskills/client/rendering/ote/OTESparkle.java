@@ -3,6 +3,7 @@ package org.zeith.improvableskills.client.rendering.ote;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.hammerlib.client.utils.RenderUtils;
@@ -69,8 +70,9 @@ public class OTESparkle
 	}
 	
 	@Override
-	public void render(PoseStack pose, float partialTime)
+	public void render(GuiGraphics gfx, float partialTime)
 	{
+		var pose = gfx.pose();
 		Screen gui = Minecraft.getInstance().screen;
 		if((gui == null && screen == null) || (screen != null && gui != null && screen.isAssignableFrom(gui.getClass())))
 		{
