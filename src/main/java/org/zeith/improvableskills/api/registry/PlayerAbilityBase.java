@@ -9,14 +9,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
-import org.zeith.improvableskills.api.SkillTex;
+import org.zeith.improvableskills.api.OwnedTexture;
 
 import java.util.NoSuchElementException;
 
 public class PlayerAbilityBase
 		implements IHasRegistryName
 {
-	public SkillTex<PlayerAbilityBase> tex = new SkillTex<>(this);
+	public OwnedTexture<PlayerAbilityBase> tex = new OwnedTexture<>(this);
 	
 	private ResourceLocation id;
 	
@@ -28,6 +28,12 @@ public class PlayerAbilityBase
 		if(id == null)
 			id = ImprovableSkills.ABILITIES().getKey(this);
 		return id;
+	}
+	
+	@Override
+	public String textureFolder()
+	{
+		return "abilities";
 	}
 	
 	@OnlyIn(Dist.CLIENT)

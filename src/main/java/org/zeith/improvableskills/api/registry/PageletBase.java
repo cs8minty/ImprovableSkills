@@ -41,6 +41,12 @@ public abstract class PageletBase
 		return null;
 	}
 	
+	@Override
+	public String textureFolder()
+	{
+		return "pagelets";
+	}
+	
 	public void reload()
 	{
 	}

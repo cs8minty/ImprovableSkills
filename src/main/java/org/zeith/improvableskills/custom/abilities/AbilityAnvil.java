@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.net.Network;
-import org.zeith.improvableskills.api.SkillTex;
+import org.zeith.improvableskills.api.OwnedTexture;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.net.PacketOpenPortableAnvil;
 
@@ -18,7 +18,7 @@ public class AbilityAnvil
 	public AbilityAnvil()
 	{
 		setColor(0xFB6400);
-		tex = new SkillTex<>(this)
+		tex = new OwnedTexture<>(this)
 		{
 			@Override
 			@OnlyIn(Dist.CLIENT)

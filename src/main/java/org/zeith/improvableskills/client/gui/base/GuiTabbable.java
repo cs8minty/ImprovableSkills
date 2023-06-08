@@ -124,6 +124,7 @@ public class GuiTabbable<P extends PageletBase>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
+		partialTicks = minecraft.getPartialTick(); // hardware acceleration LOL
 		var pose = gfx.pose();
 		
 		this.mouseX = mouseX;

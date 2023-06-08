@@ -22,7 +22,7 @@ public class PlayerSkillBase
 	private List<Consumer<? extends Event>> forgeEvents = new ArrayList<>();
 	
 	public SkillCostConfig xpCalculator = new SkillCostConfig(1);
-	public SkillTex<PlayerSkillBase> tex = new SkillTex<>(this);
+	public OwnedTexture<PlayerSkillBase> tex = new OwnedTexture<>(this);
 	protected final int maxLvl;
 	protected boolean lockedWithScroll, generateScroll;
 	
@@ -65,6 +65,12 @@ public class PlayerSkillBase
 		if(id == null)
 			id = ImprovableSkills.SKILLS().getKey(this);
 		return id;
+	}
+	
+	@Override
+	public String textureFolder()
+	{
+		return "skills";
 	}
 	
 	public String getUnlocalizedName(ResourceLocation id)
