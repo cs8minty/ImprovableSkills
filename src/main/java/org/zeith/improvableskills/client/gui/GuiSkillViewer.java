@@ -1,7 +1,6 @@
 package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -10,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.XPUtil;
@@ -63,12 +63,36 @@ public class GuiSkillViewer
 		super.init();
 		parent.init();
 		
+		prevLevel = currentLevel = data.getSkillLevel(skill);
+		
 		int gl = guiLeft, gt = guiTop;
 		
 		btnUpgrade = addRenderableWidget(new GuiCustomButton(0, gl + 10, gt + 124, 75, 20, Component.translatable("button.improvableskills:upgrade"), this::actionPerformed));
 		btnDegrade = addRenderableWidget(new GuiCustomButton(1, gl + 116, gt + 124, 75, 20, Component.translatable("button.improvableskills:degrade"), this::actionPerformed));
 		btnBack = addRenderableWidget(new GuiCustomButton(2, gl + (xSize - 20) / 2, gt + 124, 20, 20, " ", this::actionPerformed).setCustomClickSound(SoundsIS.PAGE_TURNS));
 		btnToggle = addRenderableWidget(new GuiCustomButton(3, gl + xSize - 30, gt + 14, 20, 20, " ", this::actionPerformed).setCustomClickSound(SoundsIS.PAGE_TURNS));
+	}
+	
+	protected int prevLevel, currentLevel;
+	protected final Random random = new Random();
+	
+	@Override
+	public void tick()
+	{
+		super.tick();
+		prevLevel = currentLevel;
+		currentLevel = data.getSkillLevel(skill);
+		
+		int lvl = (skill.getMaxLevel() - currentLevel) * 10 + 10;
+		
+		if(currentLevel > 0 && random.nextInt(lvl + 10) == 0)
+		{
+			int[] rgbs = TexturePixelGetter.getAllColors(skill.tex.toUV(true).path);
+			int col = rgbs[random.nextInt(rgbs.length)];
+			double tx = guiLeft + 10 + random.nextInt(64) / 2F;
+			double ty = guiTop + 6 + random.nextInt(64) / 2F;
+			OnTopEffects.effects.add(new OTESparkle(tx, ty, tx, ty, 10, col));
+		}
 	}
 	
 	@Override
@@ -141,7 +165,7 @@ public class GuiSkillViewer
 		RenderUtils.drawTexturedModalRect(pose, 0, 0, 0, 0, xSize, ySize);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		skill.tex.toUV(false).render(pose, 10, 6, 32, 32);
-		int lev = data.getSkillLevel(skill);
+		float lev = Mth.lerp(minecraft.getPartialTick(), prevLevel, currentLevel);
 		if(lev > 0)
 		{
 			var hov = skill.tex.toUV(true);
@@ -176,6 +200,7 @@ public class GuiSkillViewer
 		if(!(button instanceof GuiCustomButton b)) return;
 		
 		new OTEFadeOutButton(b, b.id == 2 ? 2 : 20);
+		rebuildWidgets();
 		
 		if(b.id == 2)
 		{
@@ -193,13 +218,11 @@ public class GuiSkillViewer
 		
 		if(b.id == 0)
 		{
-			Random r = new Random();
-			
 			int[] rgbs = TexturePixelGetter.getAllColors(skill.tex.toUV(true).path);
 			
-			int col = rgbs[r.nextInt(rgbs.length)];
-			double tx = guiLeft + 10 + r.nextInt(64) / 2F;
-			double ty = guiTop + 6 + r.nextInt(64) / 2F;
+			int col = rgbs[random.nextInt(rgbs.length)];
+			double tx = guiLeft + 10 + random.nextInt(64) / 2F;
+			double ty = guiTop + 6 + random.nextInt(64) / 2F;
 			OnTopEffects.effects.add(new OTESparkle(mouseX, mouseY, tx, ty, 30, col));
 			
 			Network.sendToServer(new PacketLvlUpSkill(skill));
@@ -207,13 +230,11 @@ public class GuiSkillViewer
 		
 		if(b.id == 1)
 		{
-			Random r = new Random();
-			
 			int[] rgbs = TexturePixelGetter.getAllColors(skill.tex.toUV(true).path);
 			
-			int col = rgbs[r.nextInt(rgbs.length)];
-			double tx = guiLeft + 10 + r.nextInt(64) / 2F;
-			double ty = guiTop + 6 + r.nextInt(64) / 2F;
+			int col = rgbs[random.nextInt(rgbs.length)];
+			double tx = guiLeft + 10 + random.nextInt(64) / 2F;
+			double ty = guiTop + 6 + random.nextInt(64) / 2F;
 			OnTopEffects.effects.add(new OTESparkle(tx, ty, mouseX, mouseY, 30, col));
 			
 			Network.sendToServer(new PacketLvlDownSkill(skill));

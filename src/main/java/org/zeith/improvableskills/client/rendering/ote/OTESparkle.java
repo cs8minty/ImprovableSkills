@@ -1,10 +1,10 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.hammerlib.client.utils.RenderUtils;
 import org.zeith.hammerlib.util.colors.ColorHelper;
@@ -74,7 +74,7 @@ public class OTESparkle
 	{
 		var pose = gfx.pose();
 		Screen gui = Minecraft.getInstance().screen;
-		if((gui == null && screen == null) || (screen != null && gui != null && screen.isAssignableFrom(gui.getClass())))
+		if((gui == null && screen == null) || (screen != null && screen.isInstance(gui)))
 		{
 			double cx = prevX + (x - prevX) * partialTime;
 			double cy = prevY + (y - prevY) * partialTime;
@@ -83,6 +83,7 @@ public class OTESparkle
 			r = r > 0.5F ? 1.0F - r : r;
 			r += 0.45F;
 			
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			FXUtils.bindTexture(ImprovableSkills.MOD_ID, "textures/particles/sparkle.png");
 			
 			int tx = 64 * (int) (time / (float) totTime * 3F);
@@ -97,13 +98,11 @@ public class OTESparkle
 			
 			RenderSystem.setShaderColor(ColorHelper.getRed(color), ColorHelper.getGreen(color), ColorHelper.getBlue(color), .9F * ColorHelper.getAlpha(color));
 			RenderSystem.enableBlend();
-			RenderSystem.defaultBlendFunc();
+			RenderSystem.blendFunc(770, 772);
 			
-			for(int i = 0; i < 3; ++i)
+			for(int i = 0; i < 4; ++i)
 			{
-				float ps = i == 0 ? scale : i == 2 ? (float) ((Math.sin(hashCode() % 90 + t / 2) + 1) / 2.5 * scale) : scale / 2;
-				
-				RenderSystem.blendFunc(770, i == 0 ? 771 : 772);
+				float ps = scale / (i + 1F);
 				
 				pose.pushPose();
 				pose.translate(cx - 64 * ps / 2, cy - 64 * ps / 2, 5);

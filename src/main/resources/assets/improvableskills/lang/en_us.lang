@@ -99,6 +99,9 @@ skill.improvableskills:soul_speed.desc=Increases movement speed on soul sand, wi
 skill.improvableskills:huckster.name=Huckster
 skill.improvableskills:huckster.desc=Decreases villager special prices, letting you trade for cheaper.
 
+skill.improvableskills:mob_repellent.name=Mob Repellent
+skill.improvableskills:mob_repellent.desc=Pushes hostile entities away from you, keeping your back covered. Higher levels increase the range of effect.
+
 pagelet.improvableskills:xp_bank=XP Bank
 
 #ABILITIES#
@@ -168,6 +171,7 @@ recipe.improvableskills:skill.silent_foot=Found in &bancient cities&7 with &4100
 recipe.improvableskills:skill.dexterous_arms=Found in &babandoned mineshafts&7 with &425%%&7
 recipe.improvableskills:skill.soul_speed=Bartered with &bpiglins&7 with &414.29%%&7
 recipe.improvableskills:skill.huckster=Gifted by &blibrarian&7 after defeating a raid
+recipe.improvableskills:skill.mob_repellent=Found in &barmorer's chest&7 in a village
 
 recipe.improvableskills:ability.enchanting=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:enchanting_table>&7, &2<minecraft:bookshelf>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
 recipe.improvableskills:ability.crafter=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:crafting_table>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.

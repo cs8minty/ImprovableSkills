@@ -111,4 +111,8 @@ public class SkillsIS
 	@RegistryName("huckster")
 	@OnlyIf(owner = ConfigsIS.class, member = "enableSkill")
 	public static final SkillHuckster HUCKSTER = new SkillHuckster();
+	
+	@RegistryName("mob_repellent")
+	@OnlyIf(owner = ConfigsIS.class, member = "enableSkill")
+	public static final SkillMobRepellent MOB_REPELLENT = new SkillMobRepellent();
 }

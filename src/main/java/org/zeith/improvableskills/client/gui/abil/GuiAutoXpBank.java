@@ -70,6 +70,7 @@ public class GuiAutoXpBank
 		{
 			Network.sendToServer(new PacketSetAutoXpBankData(data.autoXpBank = !data.autoXpBank));
 			new OTEFadeOutButton(btn, 15);
+			rebuildWidgets();
 			for(int i = 0; i < 3; ++i)
 				new OTEFadeOutUV(new UV(TEXTURE, 176, data != null && data.autoXpBank ? 20 : 0, 20, 20), 20, 20, btn.getX(), btn.getY(), 15 + i * 10);
 		})
