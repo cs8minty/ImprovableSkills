@@ -7,6 +7,8 @@ import org.zeith.improvableskills.api.evt.DamageItemEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
 
+import java.util.Random;
+
 public class SkillDexterousArms
 		extends PlayerSkillBase
 {
@@ -22,6 +24,8 @@ public class SkillDexterousArms
 		addListener(this::hook);
 	}
 	
+	private final Random rng = new Random();
+	
 	private void hook(DamageItemEvent e)
 	{
 		if(e.getEntity() instanceof Player player)
@@ -36,8 +40,6 @@ public class SkillDexterousArms
 						0,
 						60
 				);
-				
-				var rng = player.getRandom();
 				
 				for(int i = 0; i < e.getNewDamage(); ++i)
 					if(rng.nextInt(100) + 1 < chanceToSaveDurability)

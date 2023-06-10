@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -67,9 +66,9 @@ public class GuiCustomButton
 		{
 			Minecraft minecraft = Minecraft.getInstance();
 			Font font = minecraft.font;
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			
 			RenderSystem.setShaderTexture(0, CBUTTON_TEXTURES);
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+			gfx.setColor(1.0F, 1.0F, 1.0F, this.alpha);
 			RenderSystem.enableBlend();
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.enableDepthTest();
@@ -78,6 +77,7 @@ public class GuiCustomButton
 			
 			int j = getFGColor();
 			gfx.drawCenteredString(font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+			gfx.setColor(1F, 1F, 1F, 1F);
 		}
 	}
 	

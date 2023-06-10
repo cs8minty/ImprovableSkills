@@ -7,15 +7,14 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.zeith.hammerlib.client.utils.RenderUtils;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
@@ -131,9 +130,10 @@ public class ISClient
 		{
 			PlayerSkillData data = SyncSkills.getData();
 			
-			e.addListener(openSkills = new GuiCustomButton(0, inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1, inv.getGuiTop() + 24, 16, 16, Component.literal(""), this::openSkillBook)
-					.setCustomClickSound(SoundsIS.PAGE_TURNS)
-			);
+			openSkills = new GuiCustomButton(0, inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1, inv.getGuiTop() + 24, 16, 16, Component.literal(""), this::openSkillBook)
+					.setCustomClickSound(SoundsIS.PAGE_TURNS);
+
+//			e.addListener(openSkills);
 			
 			openSkills.setAlpha(0F);
 			openSkills.active = data.hasCraftedSkillsBook();
@@ -158,20 +158,31 @@ public class ISClient
 			hovered = openSkills.isMouseOver(mx, my);
 			openSkills.active = data.hasCraftedSkillsBook();
 			
-			ItemStack book = new ItemStack(ItemsIS.SKILLS_BOOK);
+			gfx.renderItem(ItemsIS.SKILLS_BOOK.getDefaultInstance(), openSkills.getX(), openSkills.getY());
 			
-			RenderUtils.renderItemIntoGui(gfx.pose(), book, openSkills.getX(), openSkills.getY());
+			if(openSkills.active) gfx.setColor(1F, 1F, 1F, 1F);
+			else gfx.setColor(0.75F, 0.75F, 0.75F, 1F);
+			
+			gfx.renderItem(ItemsIS.SKILLS_BOOK.getDefaultInstance(), openSkills.getX(), openSkills.getY());
+			
+			gfx.setColor(1F, 1F, 1F, 1F);
 			
 			if(hovered)
 			{
 				List<Component> arr = new ArrayList<>();
 				
-				arr.add(ItemsIS.SKILLS_BOOK.getDescription());
+				arr.add(ItemsIS.SKILLS_BOOK.getDescription().copy().withStyle(Style.EMPTY.withColor(0xDDDDDD)));
 				if(!openSkills.active) arr.add(Component.translatable("gui." + ImprovableSkills.MOD_ID + ".locked"));
 				arr.add(Component.literal(ImprovableSkills.MOD_NAME).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
 				
 				gfx.renderTooltip(Minecraft.getInstance().font, arr, Optional.empty(), openSkills.getX() + 12, openSkills.getY() + 4);
+			} else
+			{
+				gfx.drawString(Minecraft.getInstance().font, "", 0, 0, 0xFFFFFF);
+				gfx.setColor(1F, 1F, 1F, 1F);
 			}
+			
+			gfx.setColor(1F, 1F, 1F, 1F);
 		}
 	}
 	
