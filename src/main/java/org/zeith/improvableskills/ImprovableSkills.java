@@ -1,11 +1,9 @@
 package org.zeith.improvableskills;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -26,18 +24,16 @@ import org.apache.logging.log4j.Logger;
 import org.zeith.api.registry.RegistryMapping;
 import org.zeith.hammerlib.HammerLib;
 import org.zeith.hammerlib.api.items.CreativeTab;
-import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.core.adapter.LanguageAdapter;
 import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
 import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.hammerlib.util.CommonMessages;
-import org.zeith.improvableskills.api.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.loot.RandomBoolean;
+import org.zeith.improvableskills.api.recipe.Is3RecipeBuilderExtension;
 import org.zeith.improvableskills.api.registry.*;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
-import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
 import org.zeith.improvableskills.init.*;
 import org.zeith.improvableskills.mixins.LootTableAccessor;
 import org.zeith.improvableskills.proxy.ISClient;
@@ -189,56 +185,63 @@ public class ImprovableSkills
 				.result(new ItemStack(Items.PAPER, 7))
 				.register();
 		
-		e.add(new RecipeParchmentFragment(AbilitiesIS.ANVIL.getRegistryName(),
-				ItemAbilityScroll.of(AbilitiesIS.ANVIL),
-				NonNullList.of(
-						Ingredient.EMPTY,
-						RecipeHelper.fromTag(Tags.Items.ENDER_PEARLS),
-						RecipeHelper.fromComponent(Items.ANVIL),
-						RecipeHelper.fromTag(Tags.Items.GEMS_EMERALD)
-				)
-		));
+		var $ = e.extension(Is3RecipeBuilderExtension.class);
 		
-		e.add(new RecipeParchmentFragment(AbilitiesIS.CRAFTER.getRegistryName(),
-				ItemAbilityScroll.of(AbilitiesIS.CRAFTER),
-				NonNullList.of(
-						Ingredient.EMPTY,
-						RecipeHelper.fromTag(Tags.Items.ENDER_PEARLS),
-						RecipeHelper.fromComponent(Items.CRAFTING_TABLE),
-						RecipeHelper.fromTag(Tags.Items.INGOTS_IRON)
+		$.parchment()
+				.abilityScroll(AbilitiesIS.ANVIL)
+				.addAll(
+						Tags.Items.ENDER_PEARLS,
+						Items.ANVIL,
+						Tags.Items.GEMS_EMERALD
 				)
-		));
+				.registerIf(AbilitiesIS.ANVIL::registered);
 		
-		e.add(new RecipeParchmentFragment(AbilitiesIS.ENCHANTING.getRegistryName(),
-				ItemAbilityScroll.of(AbilitiesIS.ENCHANTING),
-				NonNullList.of(
-						Ingredient.EMPTY,
-						RecipeHelper.fromTag(Tags.Items.ENDER_PEARLS),
-						RecipeHelper.fromComponent(Items.ENCHANTING_TABLE),
-						RecipeHelper.fromComponent(Items.BOOKSHELF)
+		$.parchment()
+				.abilityScroll(AbilitiesIS.CRAFTER)
+				.addAll(
+						Tags.Items.ENDER_PEARLS,
+						Items.CRAFTING_TABLE,
+						Tags.Items.INGOTS_IRON
 				)
-		));
+				.registerIf(AbilitiesIS.CRAFTER::registered);
 		
-		e.add(new RecipeParchmentFragment(AbilitiesIS.MAGNETISM.getRegistryName(),
-				ItemAbilityScroll.of(AbilitiesIS.MAGNETISM),
-				NonNullList.of(
-						Ingredient.EMPTY,
-						RecipeHelper.fromTag(Tags.Items.ENDER_PEARLS),
-						RecipeHelper.fromComponent(Items.ENDER_EYE),
-						RecipeHelper.fromComponent(Items.IRON_INGOT),
-						RecipeHelper.fromComponent(Items.CHAIN)
+		$.parchment()
+				.abilityScroll(AbilitiesIS.ENCHANTING)
+				.addAll(
+						Tags.Items.ENDER_PEARLS,
+						Items.ENCHANTING_TABLE,
+						Items.BOOKSHELF
 				)
-		));
+				.registerIf(AbilitiesIS.ENCHANTING::registered);
 		
-		e.add(new RecipeParchmentFragment(AbilitiesIS.AUTO_XP_BANK.getRegistryName(),
-				ItemAbilityScroll.of(AbilitiesIS.AUTO_XP_BANK),
-				NonNullList.of(
-						Ingredient.EMPTY,
-						RecipeHelper.fromTag(Tags.Items.ENDER_PEARLS),
-						RecipeHelper.fromComponent(Items.EXPERIENCE_BOTTLE),
-						RecipeHelper.fromComponent(Items.REDSTONE)
+		$.parchment()
+				.abilityScroll(AbilitiesIS.MAGNETISM)
+				.addAll(
+						Tags.Items.ENDER_PEARLS,
+						Items.ENDER_EYE,
+						Items.IRON_INGOT,
+						Items.CHAIN
 				)
-		));
+				.registerIf(AbilitiesIS.MAGNETISM::registered);
+		
+		$.parchment()
+				.abilityScroll(AbilitiesIS.AUTO_XP_BANK)
+				.addAll(
+						Tags.Items.ENDER_PEARLS,
+						Items.EXPERIENCE_BOTTLE,
+						Items.REDSTONE
+				)
+				.registerIf(AbilitiesIS.AUTO_XP_BANK::registered);
+		
+		$.parchment()
+				.abilityScroll(AbilitiesIS.COWBOY)
+				.addAll(
+						Tags.Items.ENDER_PEARLS,
+						Items.GLOWSTONE_DUST,
+						Items.NETHER_STAR,
+						Items.SADDLE
+				)
+				.registerIf(AbilitiesIS.COWBOY::registered);
 	}
 	
 	public static IForgeRegistry<PlayerSkillBase> SKILLS()

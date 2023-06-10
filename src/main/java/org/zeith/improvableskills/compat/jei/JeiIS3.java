@@ -11,7 +11,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.RecipeParchmentFragment;
+import org.zeith.improvableskills.api.recipe.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.client.gui.abil.anvil.AnvilMenuPortable;

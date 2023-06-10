@@ -1,4 +1,4 @@
-package org.zeith.improvableskills.api;
+package org.zeith.improvableskills.api.recipe;
 
 import com.google.gson.*;
 import net.minecraft.core.NonNullList;
@@ -22,10 +22,12 @@ public class RecipeParchmentFragment
 	public final ResourceLocation id;
 	public final List<Ingredient> ingredients;
 	public final ItemStack result;
+	public final String group;
 	
-	public RecipeParchmentFragment(ResourceLocation id, ItemStack result, NonNullList<Ingredient> ingredients)
+	public RecipeParchmentFragment(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients)
 	{
 		this.id = id;
+		this.group = group;
 		this.result = result;
 		this.ingredients = ingredients;
 	}
@@ -80,6 +82,12 @@ public class RecipeParchmentFragment
 		return RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE;
 	}
 	
+	@Override
+	public String getGroup()
+	{
+		return group;
+	}
+	
 	public static class Serializer
 			implements RecipeSerializer<RecipeParchmentFragment>
 	{
@@ -92,8 +100,9 @@ public class RecipeParchmentFragment
 				throw new JsonParseException("No ingredients for shapeless recipe");
 			} else
 			{
+				String s = GsonHelper.getAsString(json, "group", "");
 				ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-				return new RecipeParchmentFragment(id, result, items);
+				return new RecipeParchmentFragment(id, s, result, items);
 			}
 		}
 		
@@ -101,16 +110,18 @@ public class RecipeParchmentFragment
 		@Override
 		public RecipeParchmentFragment fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
 		{
+			String s = buf.readUtf();
 			int i = buf.readVarInt();
 			NonNullList<Ingredient> items = NonNullList.withSize(i, Ingredient.EMPTY);
 			for(int j = 0; j < items.size(); ++j) items.set(j, Ingredient.fromNetwork(buf));
 			ItemStack result = buf.readItem();
-			return new RecipeParchmentFragment(id, result, items);
+			return new RecipeParchmentFragment(id, s, result, items);
 		}
 		
 		@Override
 		public void toNetwork(FriendlyByteBuf buf, RecipeParchmentFragment r)
 		{
+			buf.writeUtf(r.group);
 			buf.writeVarInt(r.ingredients.size());
 			for(var ingredient : r.ingredients) ingredient.toNetwork(buf);
 			buf.writeItem(r.result);

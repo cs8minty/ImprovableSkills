@@ -1,25 +1,42 @@
 package org.zeith.improvableskills.init;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import org.zeith.improvableskills.ImprovableSkills;
 
-public class TagsIS3
+public interface TagsIS3
 {
-	public static void init()
+	static void init()
 	{
 		Blocks.init();
+		EntityTypes.init();
 	}
 	
-	public static class Blocks
+	interface EntityTypes
 	{
 		private static void init()
 		{
 		}
 		
-		public static final TagKey<Block> GROWTH_SKILL_BLOCKLIST = tag("growth_skill_blocklist");
+		TagKey<EntityType<?>> PREVENT_COWBOY_INTERACTION = tag("prevent_cowboy_interaction");
+		
+		private static TagKey<EntityType<?>> tag(String name)
+		{
+			return TagKey.create(Registries.ENTITY_TYPE, ImprovableSkills.id(name));
+		}
+	}
+	
+	interface Blocks
+	{
+		private static void init()
+		{
+		}
+		
+		TagKey<Block> GROWTH_SKILL_BLOCKLIST = tag("growth_skill_blocklist");
 		
 		private static TagKey<Block> tag(String name)
 		{

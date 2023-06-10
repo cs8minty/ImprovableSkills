@@ -9,14 +9,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.function.BiConsumer;
 
-public class SoundsIS
+public interface SoundsIS
 {
-	public static final SoundEvent PAGE_TURNS = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "page_turns"));
-	public static final SoundEvent TREASURE_FOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "treasure_found"));
-	public static final SoundEvent CONNECT = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "connect"));
+	SoundEvent PAGE_TURNS = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "page_turns"));
+	SoundEvent TREASURE_FOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "treasure_found"));
+	SoundEvent CONNECT = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "connect"));
 	
 	@SimplyRegister
-	public static void register(BiConsumer<ResourceLocation, SoundEvent> r)
+	static void register(BiConsumer<ResourceLocation, SoundEvent> r)
 	{
 		for(Field f : SoundsIS.class.getDeclaredFields())
 			if(SoundEvent.class.isAssignableFrom(f.getType()) && Modifier.isStatic(f.getModifiers()))

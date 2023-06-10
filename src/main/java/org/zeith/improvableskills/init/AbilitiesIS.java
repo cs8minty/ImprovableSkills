@@ -1,24 +1,33 @@
 package org.zeith.improvableskills.init;
 
-import org.zeith.hammerlib.annotations.RegistryName;
-import org.zeith.hammerlib.annotations.SimplyRegister;
+import org.zeith.hammerlib.annotations.*;
+import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.custom.abilities.*;
 
 @SimplyRegister
-public class AbilitiesIS
+public interface AbilitiesIS
 {
 	@RegistryName("enchanting")
-	public static final AbilityEnchanting ENCHANTING = new AbilityEnchanting();
+	@OnlyIf(owner = ConfigsIS.class, member = "enableAbility")
+	AbilityEnchanting ENCHANTING = new AbilityEnchanting();
 	
 	@RegistryName("crafter")
-	public static final AbilityCrafter CRAFTER = new AbilityCrafter();
+	@OnlyIf(owner = ConfigsIS.class, member = "enableAbility")
+	AbilityCrafter CRAFTER = new AbilityCrafter();
 	
 	@RegistryName("anvil")
-	public static final AbilityAnvil ANVIL = new AbilityAnvil();
+	@OnlyIf(owner = ConfigsIS.class, member = "enableAbility")
+	AbilityAnvil ANVIL = new AbilityAnvil();
 	
 	@RegistryName("magnetism")
-	public static final AbilityMagnetism MAGNETISM = new AbilityMagnetism();
+	@OnlyIf(owner = ConfigsIS.class, member = "enableAbility")
+	AbilityMagnetism MAGNETISM = new AbilityMagnetism();
 	
 	@RegistryName("auto_xp_bank")
-	public static final AbilityAutoXpBank AUTO_XP_BANK = new AbilityAutoXpBank();
+	@OnlyIf(owner = ConfigsIS.class, member = "enableAbility")
+	AbilityAutoXpBank AUTO_XP_BANK = new AbilityAutoXpBank();
+	
+	@RegistryName("cowboy")
+	@OnlyIf(owner = ConfigsIS.class, member = "enableAbility")
+	AbilityCowboy COWBOY = new AbilityCowboy();
 }

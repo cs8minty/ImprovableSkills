@@ -84,12 +84,33 @@ skill.improvableskills:ender_manipulator.desc=Уменьшает урон от �
 skill.improvableskills:xp_plus.name=Сбор опыта
 skill.improvableskills:xp_plus.desc=Увеличивает получаемый опыт во время добычи, размножения животных, рыбалки и убийства мобов.
 
+skill.improvableskills:silent_foot.name=Silent Foot
+skill.improvableskills:silent_foot.desc=Decreases the radius of any vibrations you make.
+
+skill.improvableskills:dexterous_arms.name=Dexterous Arms
+skill.improvableskills:dexterous_arms.desc=Makes all tools last longer by sometimes preventing their damage when used.
+
+skill.improvableskills:fast_swimmer.name=Fast Swimmer
+skill.improvableskills:fast_swimmer.desc=Increases the swimming speed of the player in any liquid.
+
+skill.improvableskills:soul_speed.name=Soul Speed
+skill.improvableskills:soul_speed.desc=Increases movement speed on soul sand, without needing Soul Speed boots. As penalty, your boots will get damaged when walking on soul sand.
+
+skill.improvableskills:huckster.name=Huckster
+skill.improvableskills:huckster.desc=Decreases villager special prices, letting you trade for cheaper.
+
+skill.improvableskills:mob_repellent.name=Mob Repellent
+skill.improvableskills:mob_repellent.desc=Pushes hostile entities away from you, keeping your back covered. Higher levels increase the range of effect.
+
 pagelet.improvableskills:xp_bank=Хранилище опыта
 
 #ABILITIES#
 ability.improvableskills:enchanting.name=Зачарование
 ability.improvableskills:crafter.name=Крафтер
 ability.improvableskills:anvil.name=Blacksmith
+ability.improvableskills:magnetism.name=Magnetism
+ability.improvableskills:auto_xp_bank.name=Auto XP Bank
+ability.improvableskills:cowboy.name=Cowboy
 
 #BUTTONS#
 button.improvableskills:upgrade=Улучшить
@@ -112,6 +133,15 @@ gui.improvableskills:nver=Новая версия
 gui.improvableskills:changes=Изменения
 text.improvableskills:shiftfrecipe=Нажмите &6&lSHIFT&r&7 что бы посмотреть рецепт.
 text.improvableskills:unresolved_item=Предмет не найден
+
+gui.improvableskills.toggle_skill.disabled=%s is inactive. Click to toggle.
+gui.improvableskills.toggle_skill.enabled=%s is active. Click to toggle.
+
+text.improvableskills.magnetism.off=Magnetism is currently disabled.
+text.improvableskills.magnetism.on=Magnetism is currently enabled. Picking up items within range of %s blocks.
+
+text.improvableskills.auto_xp_bank.off=Auto XP Bank is currently disabled.
+text.improvableskills.auto_xp_bank.on=Auto XP Bank is currently enabled. Keeping %s levels at your disposal.
 
 #SUBTITLES#
 subtitles.improvableskills:treasure_found=Найдено сокровище
@@ -138,7 +168,13 @@ recipe.improvableskills:skill.health=Found in &bend cities&7 with &411,[1]%%&7
 recipe.improvableskills:skill.enchanter=Found in &bend fortresses&7 with &425%%&7
 recipe.improvableskills:skill.treasure_sands=Found in &bdesert temples&7 with &412,5%%&7
 recipe.improvableskills:skill.xp_plus=Drops from &belder guardian&7 with &433,[3]%%&7
+recipe.improvableskills:skill.silent_foot=Found in &bancient cities&7 with &4100%%&7
+recipe.improvableskills:skill.dexterous_arms=Found in &babandoned mineshafts&7 with &425%%&7
+recipe.improvableskills:skill.soul_speed=Bartered with &bpiglins&7 with &414.29%%&7
+recipe.improvableskills:skill.huckster=Gifted by &blibrarian&7 after defeating a raid
+recipe.improvableskills:skill.mob_repellent=Found in &barmorer's chest&7 in a village
 
-recipe.improvableskills:ability.enchanting=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:enchanting_table>&7, &2<minecraft:bookshelf>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
-recipe.improvableskills:ability.crafter=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:crafting_table>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
-recipe.improvableskills:ability.anvil=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:anvil>&7, &2<minecraft:emerald>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
+recipe.improvableskills:ability=Drop %s close to each other and wait.
+
+#MISC#
+improvableskills.jer.skill_condition=Only drops if the player has not unlocked '%s' skill.

@@ -12,13 +12,13 @@ build_candidate=false
 
 # Maven Info
 maven_group=org.zeith.improvableskills
-hl_version=20.0.4
+hl_version=20.0.5
 maven_url=file:///SERVER//Maven
 
 # MC Info
 mc_version=1.20
 mc_range=[1.20,1.21)
-forge_version=46.0.2
+forge_version=46.0.10
 forge_range=[46,)
 mc_user=Zeitheron,63fa4c485b5640809727d5d59663e603
 

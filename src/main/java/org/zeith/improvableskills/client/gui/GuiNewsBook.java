@@ -46,6 +46,7 @@ public class GuiNewsBook
 	
 	public String getOrTranslate(String changes)
 	{
+		if(changes == null) changes = "";
 		String sha = Hashers.SHA256.hashify(changes);
 		
 		String lng = Minecraft.getInstance().getLocale().getLanguage();

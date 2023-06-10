@@ -21,7 +21,7 @@ public class PacketOpenPortableCraft
 		ServerPlayer mp = net.getSender();
 		PlayerDataManager.handleDataSafely(mp, dat ->
 		{
-			if(dat.hasAbility(AbilitiesIS.CRAFTER))
+			if(AbilitiesIS.CRAFTER.registered() && dat.hasAbility(AbilitiesIS.CRAFTER))
 			{
 				mp.openMenu(new SimpleMenuProvider((windowId, inventory, player) ->
 						new CraftingMenuPortable(windowId, inventory, ContainerLevelAccess.create(player.level(), player.blockPosition())), CONTAINER_TITLE));

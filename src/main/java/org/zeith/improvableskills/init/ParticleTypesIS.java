@@ -7,8 +7,8 @@ import org.zeith.improvableskills.custom.particles.ParticleDataSparkle;
 import org.zeith.improvableskills.custom.particles.ParticleTypeWithCodec;
 
 @SimplyRegister
-public class ParticleTypesIS
+public interface ParticleTypesIS
 {
 	@RegistryName("sparkle")
-	public static final ParticleType<ParticleDataSparkle> SPARKLE = new ParticleTypeWithCodec<>(false, ParticleDataSparkle.CODEC, ParticleDataSparkle.DESERIALIZER);
+	ParticleType<ParticleDataSparkle> SPARKLE = new ParticleTypeWithCodec<>(false, ParticleDataSparkle.CODEC, ParticleDataSparkle.DESERIALIZER);
 }

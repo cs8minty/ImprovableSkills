@@ -3,13 +3,17 @@ package org.zeith.improvableskills.api.registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.zeith.hammerlib.api.fml.IRegisterListener;
 import org.zeith.hammerlib.util.XPUtil;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.*;
+import org.zeith.improvableskills.api.client.IClientSkillExtensions;
 import org.zeith.improvableskills.api.loot.SkillLoot;
 
 import java.util.*;
@@ -31,6 +35,7 @@ public class PlayerSkillBase
 	public PlayerSkillBase(int maxLvl)
 	{
 		this.maxLvl = maxLvl;
+		initClient();
 	}
 	
 	public float getLevelProgress(int level)
@@ -179,6 +184,30 @@ public class PlayerSkillBase
 	public boolean is(PlayerSkillBase skill)
 	{
 		return skill == this;
+	}
+	
+	private Object renderProperties;
+	
+	public Object getRenderPropertiesInternal()
+	{
+		return renderProperties;
+	}
+	
+	private void initClient()
+	{
+		if(FMLEnvironment.dist == Dist.CLIENT && !FMLLoader.getLaunchHandler().isData())
+		{
+			initializeClient(properties ->
+			{
+				if(properties == this)
+					throw new IllegalStateException("Don't extend IItemRenderProperties in your item, use an anonymous class instead.");
+				this.renderProperties = properties;
+			});
+		}
+	}
+	
+	public void initializeClient(java.util.function.Consumer<IClientSkillExtensions> consumer)
+	{
 	}
 	
 	public enum EnumScrollState

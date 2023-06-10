@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.RecipeParchmentFragment;
+import org.zeith.improvableskills.api.recipe.RecipeParchmentFragment;
 import org.zeith.improvableskills.compat.jei.JeiIS3;
 import org.zeith.improvableskills.init.ItemsIS;
 

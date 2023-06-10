@@ -16,6 +16,7 @@ import org.zeith.hammerlib.util.XPUtil;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.IGuiSkillDataConsumer;
 import org.zeith.improvableskills.api.PlayerSkillData;
+import org.zeith.improvableskills.api.client.IClientSkillExtensions;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.client.gui.base.GuiCustomButton;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
@@ -158,20 +159,25 @@ public class GuiSkillViewer
 		var name = skill.getLocalizedName(data);
 		
 		renderBackground(gfx);
-		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+		gfx.setColor(1F, 1F, 1F, 1F);
 		pose.pushPose();
 		pose.translate(guiLeft, guiTop, 0);
 		FXUtils.bindTexture(ImprovableSkills.MOD_ID, "textures/gui/skill_viewer.png");
 		RenderUtils.drawTexturedModalRect(pose, 0, 0, 0, 0, xSize, ySize);
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		skill.tex.toUV(false).render(pose, 10, 6, 32, 32);
-		float lev = Mth.lerp(minecraft.getPartialTick(), prevLevel, currentLevel);
-		if(lev > 0)
+		gfx.setColor(1, 1, 1, 1);
+		
+		float lev = Mth.lerp(minecraft.getPartialTick(), prevLevel, currentLevel) / skill.getMaxLevel();
+		
+		if(!IClientSkillExtensions.of(skill).slotRenderer().drawSlot(gfx, 10, 6, 32, 32, lev, partialTicks))
 		{
-			var hov = skill.tex.toUV(true);
-			RenderSystem.setShaderColor(1, 1, 1, (float) lev / skill.getMaxLevel());
-			hov.render(pose, 10, 6, 32, 32);
-			RenderSystem.setShaderColor(1, 1, 1, 1);
+			skill.tex.toUV(false).render(pose, 10, 6, 32, 32);
+			if(lev > 0)
+			{
+				var hov = skill.tex.toUV(true);
+				gfx.setColor(1, 1, 1, lev);
+				hov.render(pose, 10, 6, 32, 32);
+				gfx.setColor(1, 1, 1, 1);
+			}
 		}
 		
 		gfx.drawString(font, I18n.get("text.improvableskills:level", data.getSkillLevel(skill), skill.getMaxLevel()), 44, 30, 0x555555, false);

@@ -4,8 +4,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.zeith.hammerlib.client.utils.UV;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.OwnedTexture;
+import org.zeith.improvableskills.api.PlayerSkillData;
+import org.zeith.improvableskills.api.client.IClientAbilityExtensions;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.custom.pagelets.PageletAbilities;
 
@@ -42,9 +43,29 @@ public class GuiAbilityBook
 		}
 		
 		@Override
-		public UV toUV(boolean hover)
+		public UV getHoverUV()
 		{
-			return tex.toUV(hover);
+			return tex.toUV(true);
+		}
+		
+		@Override
+		public void drawUV(GuiGraphics gfx, float x, float y, float width, float height, float hoverProgress, float partialTicks)
+		{
+			var sr = IClientAbilityExtensions.of(tex.owner).slotRenderer();
+			if(sr.drawSlot(gfx, x, y, width, height, hoverProgress, partialTicks))
+				return;
+			
+			var pose = gfx.pose();
+			UV norm = tex.toUV(false);
+			norm.render(pose, x, y, width, height);
+			
+			if(hoverProgress > 0)
+			{
+				UV hov = tex.toUV(true);
+				gfx.setColor(1, 1, 1, hoverProgress);
+				hov.render(pose, x, y, width, height);
+				gfx.setColor(1F, 1F, 1F, 1F);
+			}
 		}
 		
 		@Override

@@ -20,7 +20,7 @@ public class PacketOpenPortableAnvil
 		ServerPlayer mp = net.getSender();
 		PlayerDataManager.handleDataSafely(mp, dat ->
 		{
-			if(dat.hasAbility(AbilitiesIS.ANVIL))
+			if(AbilitiesIS.ANVIL.registered() && dat.hasAbility(AbilitiesIS.ANVIL))
 				GuiManager.openGuiCallback(GuiHooksIS.REPAIR, mp, CONTAINER_TITLE);
 		});
 	}

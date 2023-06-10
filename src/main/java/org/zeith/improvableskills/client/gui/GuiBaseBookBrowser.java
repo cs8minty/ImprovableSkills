@@ -29,8 +29,8 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 	public static final ResourceLocation PAPER_TEXTURE = ImprovableSkills.id("textures/gui/skills_gui_paper.png");
 	
 	protected final Rectangle scissorRect = new Rectangle();
-	public double scrolledPixels;
-	public double prevScrolledPixels;
+	public float scrolledPixels;
+	public float prevScrolledPixels;
 	public int row = 6;
 	
 	public Map<TX, Tuple2.Mutable2<Integer, Integer>> hoverAnims = new HashMap<>();
@@ -43,13 +43,15 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 	
 	public interface ITxInstance
 	{
-		UV toUV(boolean hover);
+		UV getHoverUV();
+		
+		void drawUV(GuiGraphics gfx, float x, float y, float width, float height, float hoverProgress, float partialTicks);
 		
 		List<Component> getHoverTooltip();
 		
 		default int[] getAllColors()
 		{
-			return TexturePixelGetter.getAllColors(toUV(true).path);
+			return TexturePixelGetter.getAllColors(getHoverUV().path);
 		}
 		
 		void renderDecorations(GuiGraphics gfx, float hoverProgress, double x, double y, float partialTicks);
@@ -108,8 +110,8 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 			int cHoverTime = hovt.a();
 			int cHoverTimePrev = hovt.b();
 			
-			double x = (i % row) * 28 + guiLeft + 16;
-			double y = (i / row) * 28 - (prevScrolledPixels + (scrolledPixels - prevScrolledPixels) * partialTicks);
+			float x = (i % row) * 28 + guiLeft + 16;
+			float y = (i / row) * 28 - (prevScrolledPixels + (scrolledPixels - prevScrolledPixels) * partialTicks);
 			if(y < -24) continue;
 			if(y > ySize - 14) break;
 			y += guiTop + 9;
@@ -129,18 +131,10 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 			if(cHoverTime > 0)
 			{
 				cht = (int) (cHoverTimePrev + (cHoverTime - cHoverTimePrev) * partialTicks);
-				
-				UV norm = tex.toUV(false);
-				UV hov = tex.toUV(true);
-				
-				norm.render(pose, x, y, 24, 24);
-				
-				RenderSystem.setShaderColor(1, 1, 1, hoverProgress = (float) Math.sin(Math.toRadians(cht / 255F * 90)));
-				hov.render(pose, x, y, 24, 24);
-				setWhiteColor(gfx);
-			} else
-				tex.toUV(false).render(pose, x, y, 24, 24);
+				hoverProgress = (float) Math.sin(Math.toRadians(cht / 255F * 90));
+			}
 			
+			tex.drawUV(gfx, x, y, 24, 24, hoverProgress, partialTicks);
 			tex.renderDecorations(gfx, hoverProgress, x, y, partialTicks);
 		}
 		
@@ -243,7 +237,7 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 					
 					if(tex == skill)
 					{
-						new OTEFadeOutUV(tex.toUV(true), 24, 24, x, y + guiTop + 9, 2);
+						new OTEFadeOutUV(tex.getHoverUV(), 24, 24, x, y + guiTop + 9, 2);
 						break;
 					}
 				}

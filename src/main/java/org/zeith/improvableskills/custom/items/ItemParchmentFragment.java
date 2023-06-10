@@ -13,12 +13,13 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.api.inv.SimpleInventory;
 import org.zeith.hammerlib.api.items.ConsumableItem;
-import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.RecipeParchmentFragment;
+import org.zeith.improvableskills.api.recipe.RecipeParchmentFragment;
 import org.zeith.improvableskills.init.RecipeTypesIS;
 
 import java.util.List;
+
+import static org.zeith.hammerlib.util.CommonMessages.CRAFTING_MATERIAL;
 
 public class ItemParchmentFragment
 		extends Item
@@ -32,13 +33,14 @@ public class ItemParchmentFragment
 	{
 		this(new Properties());
 		ImprovableSkills.TAB.add(this);
+		ItemAbilityScroll.setCustomColor(this, 0x54FCFC);
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> tooltip, TooltipFlag p_41424_)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
 	{
-		tooltip.add(HLConstants.CRAFTING_MATERIAL);
-		super.appendHoverText(p_41421_, p_41422_, tooltip, p_41424_);
+		tooltip.add(CRAFTING_MATERIAL);
+		super.appendHoverText(stack, level, tooltip, flag);
 	}
 	
 	@Override

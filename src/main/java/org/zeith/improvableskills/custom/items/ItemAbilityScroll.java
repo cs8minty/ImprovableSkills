@@ -1,11 +1,13 @@
 package org.zeith.improvableskills.custom.items;
 
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -14,27 +16,44 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.zeith.hammerlib.api.items.ITabItem;
+import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.Chars;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
+import org.zeith.improvableskills.api.recipe.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.api.tooltip.AbilityTooltip;
 import org.zeith.improvableskills.data.PlayerDataManager;
 import org.zeith.improvableskills.init.ItemsIS;
+import org.zeith.improvableskills.init.RecipeTypesIS;
 import org.zeith.improvableskills.net.PacketScrollUnlockedAbility;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ItemAbilityScroll
 		extends Item
 		implements ITabItem
 {
 	private static final Map<String, PlayerAbilityBase> ABILITY_MAP = new HashMap<>();
+	
+	private static final Object2IntMap<Item> CUSTOM_COLORS = new Object2IntArrayMap<>();
+	
+	public static void setCustomColor(Item item, int rgb)
+	{
+		CUSTOM_COLORS.put(item, rgb);
+	}
+	
+	public static int getCustomColor(Item item)
+	{
+		return CUSTOM_COLORS.getOrDefault(item, 0x00A800);
+	}
 	
 	public ItemAbilityScroll()
 	{
@@ -104,22 +123,56 @@ public class ItemAbilityScroll
 		
 		if(ImprovableSkills.PROXY.hasShiftDown())
 		{
-			String ln = I18n.get("recipe." + base.getRegistryName().getNamespace() + ":ability." + base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN);
-			int i, j;
-			while((i = ln.indexOf('<')) != -1 && (j = ln.indexOf('>', i + 1)) != -1)
+			boolean hasAdded = false;
+			var recipes = worldIn.getRecipeManager().getAllRecipesFor(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE);
+			for(RecipeParchmentFragment recipe : recipes)
 			{
-				String to = ln.substring(i + 1, j);
-				String t;
+				if(recipe.result.getItem() != this) continue;
+				var match = getAbilityFromScroll(recipe.result);
+				if(match != base) continue;
 				
-				Item it = ForgeRegistries.ITEMS.getValue(new ResourceLocation(to));
-				if(it != null)
-					t = it.getDefaultInstance().getDisplayName().getString();
-				else
-					t = Component.translatable("text.improvableskills:unresolved_item").withStyle(ChatFormatting.DARK_RED).getString();
+				var comp = Component.literal("");
 				
-				ln = ln.replaceAll("<" + to + ">", t);
+				int i = 0;
+				var it = Stream.concat(Stream.of(Ingredient.of(ItemsIS.PARCHMENT_FRAGMENT)), recipe.ingredients.stream())
+						.map(m ->
+						{
+							var st = RecipeHelper.cycleIngredientStack(m, 1000L);
+							return ((MutableComponent) st.getDisplayName())
+									.withStyle(Style.EMPTY.withColor(getCustomColor(st.getItem())));
+						})
+						.iterator();
+				
+				while(it.hasNext())
+				{
+					if(i > 0) comp.append(", ");
+					comp.append(it.next());
+					++i;
+				}
+				
+				tooltip.add(Component.translatable("recipe.improvableskills:ability", comp).withStyle(ChatFormatting.GRAY));
+				hasAdded = true;
 			}
-			tooltip.add(Component.literal(ln).withStyle(ChatFormatting.GRAY));
+			
+			if(!hasAdded)
+			{
+				String ln = I18n.get("recipe." + base.getRegistryName().getNamespace() + ":ability." + base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN);
+				int i, j;
+				while((i = ln.indexOf('<')) != -1 && (j = ln.indexOf('>', i + 1)) != -1)
+				{
+					String to = ln.substring(i + 1, j);
+					String t;
+					
+					Item it = ForgeRegistries.ITEMS.getValue(new ResourceLocation(to));
+					if(it != null)
+						t = it.getDefaultInstance().getDisplayName().getString();
+					else
+						t = Component.translatable("text.improvableskills:unresolved_item").withStyle(ChatFormatting.DARK_RED).getString();
+					
+					ln = ln.replaceAll("<" + to + ">", t);
+				}
+				tooltip.add(Component.literal(ln).withStyle(ChatFormatting.GRAY));
+			}
 		} else
 			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 	}

@@ -1,7 +1,7 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+import org.zeith.improvableskills.api.client.IClientSkillExtensions;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.client.rendering.OTEffect;
 import org.zeith.improvableskills.utils.ScaledResolution;
@@ -68,8 +68,8 @@ public class OTESkill
 	public void render(GuiGraphics gfx, float partialTime)
 	{
 		var pose = gfx.pose();
-		double cx = prevX + (x - prevX) * partialTime;
-		double cy = prevY + (y - prevY) * partialTime;
+		float cx = (float) (prevX + (x - prevX) * partialTime);
+		float cy = (float) (prevY + (y - prevY) * partialTime);
 		float t = prevTime + partialTime;
 		
 		float scale = 1F;
@@ -82,7 +82,9 @@ public class OTESkill
 		
 		scale *= 16;
 		
-		setWhiteColor();
-		item.tex.toUV(false).render(pose, cx - scale / 2, cy - scale / 2, scale, scale);
+		gfx.setColor(1F, 1F, 1F, 1F);
+		
+		if(!IClientSkillExtensions.of(item).slotRenderer().drawSlot(gfx, cx - scale / 2, cy - scale / 2, scale, scale, 0F, partialTime))
+			item.tex.toUV(false).render(pose, cx - scale / 2, cy - scale / 2, scale, scale);
 	}
 }

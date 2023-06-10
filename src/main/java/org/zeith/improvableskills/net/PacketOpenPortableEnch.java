@@ -22,7 +22,7 @@ public class PacketOpenPortableEnch
 		ServerPlayer mp = net.getSender();
 		PlayerDataManager.handleDataSafely(mp, dat ->
 		{
-			if(dat.hasAbility(AbilitiesIS.ENCHANTING))
+			if(AbilitiesIS.ENCHANTING.registered() && dat.hasAbility(AbilitiesIS.ENCHANTING))
 				GuiManager.openGuiCallback(GuiHooksIS.ENCHANTMENT, mp, Component.translatable("container.enchant"));
 		});
 	}

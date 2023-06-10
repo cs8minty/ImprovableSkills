@@ -8,6 +8,7 @@ import org.zeith.hammerlib.util.configured.ConfigFile;
 import org.zeith.hammerlib.util.configured.ConfiguredLib;
 import org.zeith.hammerlib.util.configured.types.ConfigCategory;
 import org.zeith.improvableskills.ImprovableSkills;
+import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 
 public class ConfigsIS
@@ -64,6 +65,16 @@ public class ConfigsIS
 				.getElement(ConfiguredLib.BOOLEAN, id.toString())
 				.withDefault(true)
 				.withComment("Should Skill \"" + skill.getUnlocalizedName(id) + "\" be added to the game?")
+				.getValue();
+	}
+	
+	public static boolean enableAbility(PlayerAbilityBase skill, ResourceLocation id)
+	{
+		return config.setupCategory("Abilities")
+				.withComment("What abilities should be enabled?")
+				.getElement(ConfiguredLib.BOOLEAN, id.toString())
+				.withDefault(true)
+				.withComment("Should Ability \"" + skill.getUnlocalizedName(id) + "\" be added to the game?")
 				.getValue();
 	}
 }

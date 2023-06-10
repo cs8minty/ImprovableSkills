@@ -41,6 +41,7 @@ public class PlayerSkillData
 	
 	public float enchantPower = 0;
 	
+	public boolean cowboy;
 	public boolean magnetism;
 	public float magnetismRange;
 	
@@ -269,6 +270,7 @@ public class PlayerSkillData
 		persistedData.putBoolean("SkillBookCrafted", hasCraftedSkillBook);
 		persistedData.putBoolean("PrevSkillBookCrafted", hasCraftedSkillBookPrev);
 		
+		persistedData.putBoolean("Cowboy", cowboy);
 		persistedData.putBoolean("Magnetism", magnetism);
 		persistedData.putFloat("MagnetismRange", magnetismRange);
 		
@@ -371,6 +373,7 @@ public class PlayerSkillData
 		hasCraftedSkillBook = persistedData.getBoolean("SkillBookCrafted");
 		hasCraftedSkillBookPrev = persistedData.getBoolean("PrevSkillBookCrafted");
 		
+		cowboy = persistedData.getBoolean("Cowboy");
 		magnetism = persistedData.getBoolean("Magnetism");
 		magnetismRange = persistedData.getFloat("MagnetismRange");
 		

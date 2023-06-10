@@ -8,9 +8,9 @@ import org.zeith.improvableskills.api.treasures.drops.*;
 
 import static org.zeith.improvableskills.api.treasures.TreasureRegistry.registerDrop;
 
-public class TreasuresIS
+public interface TreasuresIS
 {
-	public static void register()
+	static void register()
 	{
 		registerSandTreasures();
 	}
@@ -34,13 +34,13 @@ public class TreasuresIS
 		registerDrop(new TreasureSandDropLootTableItem(BuiltInLootTables.DESERT_PYRAMID, 3)).setChance(.45F);
 	}
 	
-	public static ItemStack damage(ItemStack stack, int rng)
+	static ItemStack damage(ItemStack stack, int rng)
 	{
 		stack.setDamageValue(rng);
 		return stack;
 	}
 	
-	public static <T> T select(RandomSource rand, T... vars)
+	static <T> T select(RandomSource rand, T... vars)
 	{
 		return vars[rand.nextInt(vars.length)];
 	}

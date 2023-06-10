@@ -1,10 +1,9 @@
 package org.zeith.improvableskills.client.rendering.tooltip;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import org.zeith.improvableskills.api.client.IClientAbilityExtensions;
 import org.zeith.improvableskills.api.tooltip.AbilityTooltip;
 
 public class AbilityTooltipRenderer
@@ -32,6 +31,9 @@ public class AbilityTooltipRenderer
 	@Override
 	public void renderImage(Font font, int x, int y, GuiGraphics gfx)
 	{
+		if(IClientAbilityExtensions.of(tooltip.ability()).slotRenderer().drawSlot(gfx, x, y - 1, 24, 24, 1F, 1F))
+			return;
+		
 		var tx = tooltip.ability().tex;
 		tx.toUV(false).render(gfx.pose(), x, y - 1, 24, 24);
 		tx.toUV(true).render(gfx.pose(), x, y - 1, 24, 24);

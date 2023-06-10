@@ -110,6 +110,7 @@ ability.improvableskills:crafter.name=Crafter
 ability.improvableskills:anvil.name=Blacksmith
 ability.improvableskills:magnetism.name=Magnetism
 ability.improvableskills:auto_xp_bank.name=Auto XP Bank
+ability.improvableskills:cowboy.name=Cowboy
 
 #BUTTONS#
 button.improvableskills:upgrade=Upgrade
@@ -173,11 +174,7 @@ recipe.improvableskills:skill.soul_speed=Bartered with &bpiglins&7 with &414.29%
 recipe.improvableskills:skill.huckster=Gifted by &blibrarian&7 after defeating a raid
 recipe.improvableskills:skill.mob_repellent=Found in &barmorer's chest&7 in a village
 
-recipe.improvableskills:ability.enchanting=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:enchanting_table>&7, &2<minecraft:bookshelf>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
-recipe.improvableskills:ability.crafter=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:crafting_table>&7, &2<minecraft:iron_ingot>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
-recipe.improvableskills:ability.anvil=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:anvil>&7, &2<minecraft:emerald>&7 and an &2<minecraft:ender_pearl>&7 close to eachother and wait.
-recipe.improvableskills:ability.magnetism=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:ender_pearl>&7, &2<minecraft:ender_eye>&7, &2<minecraft:iron_ingot>&7 and a &2<minecraft:chain>&7 close to eachother and wait.
-recipe.improvableskills:ability.auto_xp_bank=Drop &b<improvableskills:parchment_fragment>&7, &2<minecraft:ender_pearl>&7, &2<minecraft:experience_bottle>&7 and &2<minecraft:redstone>&7 close to eachother and wait.
+recipe.improvableskills:ability=Drop %s close to each other and wait.
 
 #MISC#
 improvableskills.jer.skill_condition=Only drops if the player has not unlocked '%s' skill.
