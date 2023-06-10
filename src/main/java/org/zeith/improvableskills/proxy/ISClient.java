@@ -133,7 +133,7 @@ public class ISClient
 			openSkills = new GuiCustomButton(0, inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1, inv.getGuiTop() + 24, 16, 16, Component.literal(""), this::openSkillBook)
 					.setCustomClickSound(SoundsIS.PAGE_TURNS);
 
-//			e.addListener(openSkills);
+			e.addListener(openSkills);
 			
 			openSkills.setAlpha(0F);
 			openSkills.active = data.hasCraftedSkillsBook();
@@ -154,7 +154,6 @@ public class ISClient
 			
 			PlayerSkillData data = SyncSkills.getData();
 			
-			openSkills.active = true;
 			hovered = openSkills.isMouseOver(mx, my);
 			openSkills.active = data.hasCraftedSkillsBook();
 			
