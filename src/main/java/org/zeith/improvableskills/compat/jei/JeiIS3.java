@@ -5,11 +5,11 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
-import mezz.jei.common.util.ErrorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.recipe.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
@@ -31,13 +31,21 @@ public class JeiIS3
 	
 	public static final RecipeType<RecipeParchmentFragment> PARCHMENTS = RecipeType.create(ImprovableSkills.MOD_ID, "parcment_fusion", RecipeParchmentFragment.class);
 	
+	public static <T> void checkNotNull(@Nullable T object, String name)
+	{
+		if(object == null)
+		{
+			throw new NullPointerException(name + " must not be null.");
+		}
+	}
+	
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
-		ErrorUtil.checkNotNull(minecraft, "minecraft");
+		checkNotNull(minecraft, "minecraft");
 		ClientLevel world = minecraft.level;
-		ErrorUtil.checkNotNull(world, "minecraft world");
+		checkNotNull(world, "minecraft world");
 		var recipeManager = world.getRecipeManager();
 		
 		registration.addRecipes(PARCHMENTS, recipeManager.getAllRecipesFor(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE));
