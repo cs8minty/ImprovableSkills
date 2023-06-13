@@ -127,8 +127,9 @@ public class ItemAbilityScroll
 			var recipes = worldIn.getRecipeManager().getAllRecipesFor(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE);
 			for(RecipeParchmentFragment recipe : recipes)
 			{
-				if(recipe.result.getItem() != this) continue;
-				var match = getAbilityFromScroll(recipe.result);
+				var result = recipe.result();
+				if(result.getItem() != this) continue;
+				var match = getAbilityFromScroll(result);
 				if(match != base) continue;
 				
 				var comp = Component.literal("");

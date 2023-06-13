@@ -1,6 +1,7 @@
 package org.zeith.improvableskills.api.recipe;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import org.zeith.hammerlib.core.RecipeHelper;
@@ -21,7 +22,11 @@ public class ParchmentFragmentBuilder
 	
 	public ParchmentFragmentBuilder abilityScroll(PlayerAbilityBase abil)
 	{
-		if(identifier == null) id(abil.getRegistryName());
+		if(identifier == null)
+		{
+			var id = abil.getRegistryName();
+			id(new ResourceLocation(id.getNamespace(), "ability_scrolls/" + id.getPath()));
+		}
 		return result(ItemAbilityScroll.of(abil));
 	}
 	

@@ -1,35 +1,49 @@
 package org.zeith.improvableskills.api.recipe;
 
 import com.google.gson.*;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import org.zeith.hammerlib.abstractions.recipes.IRecipeVisualizer;
+import org.zeith.hammerlib.abstractions.recipes.IVisualizedRecipe;
+import org.zeith.hammerlib.abstractions.recipes.layout.ISlotBuilder.SlotRole;
+import org.zeith.hammerlib.abstractions.recipes.layout.IVisualizerBuilder;
 import org.zeith.hammerlib.api.items.ConsumableItem;
+import org.zeith.hammerlib.api.recipes.BaseRecipe;
+import org.zeith.hammerlib.api.recipes.SerializableRecipeType;
+import org.zeith.hammerlib.client.render.IGuiDrawable;
+import org.zeith.hammerlib.client.utils.UV;
+import org.zeith.improvableskills.ImprovableSkills;
+import org.zeith.improvableskills.init.ItemsIS;
 import org.zeith.improvableskills.init.RecipeTypesIS;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RecipeParchmentFragment
-		implements Recipe<Container>
+		extends BaseRecipe<RecipeParchmentFragment>
 {
-	public final ResourceLocation id;
 	public final List<Ingredient> ingredients;
-	public final ItemStack result;
-	public final String group;
 	
 	public RecipeParchmentFragment(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients)
 	{
-		this.id = id;
-		this.group = group;
-		this.result = result;
+		super(id, group);
+		this.vanillaResult = result;
 		this.ingredients = ingredients;
+	}
+	
+	public ItemStack result()
+	{
+		return vanillaResult.copy();
 	}
 	
 	public List<ConsumableItem> getConsumableIngredients()
@@ -41,55 +55,13 @@ public class RecipeParchmentFragment
 	}
 	
 	@Override
-	public boolean matches(Container ctr, Level lvl)
-	{
-		return false;
-	}
-	
-	@Override
-	public ItemStack assemble(Container ctr, RegistryAccess access)
-	{
-		return result.copy();
-	}
-	
-	@Override
-	public boolean canCraftInDimensions(int x, int y)
-	{
-		return false;
-	}
-	
-	@Override
-	public ItemStack getResultItem(RegistryAccess access)
-	{
-		return result.copy();
-	}
-	
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
-	}
-	
-	@Override
-	public RecipeSerializer<?> getSerializer()
-	{
-		return RecipeTypesIS.PARCHMENT_FRAGMENT_SERIALIZER;
-	}
-	
-	@Override
-	public RecipeType<?> getType()
+	protected SerializableRecipeType<RecipeParchmentFragment> getRecipeType()
 	{
 		return RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE;
 	}
 	
-	@Override
-	public String getGroup()
-	{
-		return group;
-	}
-	
-	public static class Serializer
-			implements RecipeSerializer<RecipeParchmentFragment>
+	public static class Type
+			extends SerializableRecipeType<RecipeParchmentFragment>
 	{
 		@Override
 		public RecipeParchmentFragment fromJson(ResourceLocation id, JsonObject json)
@@ -124,7 +96,20 @@ public class RecipeParchmentFragment
 			buf.writeUtf(r.group);
 			buf.writeVarInt(r.ingredients.size());
 			for(var ingredient : r.ingredients) ingredient.toNetwork(buf);
-			buf.writeItem(r.result);
+			buf.writeItem(r.vanillaResult);
+		}
+		
+		@Override
+		public void initVisuals(Consumer<IRecipeVisualizer<RecipeParchmentFragment, ?>> viualizerConsumer)
+		{
+			viualizerConsumer.accept(IRecipeVisualizer.simple(VisualizedTestMachine.class,
+					IRecipeVisualizer.groupBuilder()
+							.title(Component.translatable("jei." + ImprovableSkills.MOD_ID + ":parchf"))
+							.size(132, 34)
+							.icon(IGuiDrawable.ofItem(new ItemStack(ItemsIS.PARCHMENT_FRAGMENT)))
+							.catalyst(new ItemStack(ItemsIS.SKILLS_BOOK))
+							.build(),
+					VisualizedTestMachine::new));
 		}
 		
 		private static NonNullList<Ingredient> itemsFromJson(JsonArray arr)
@@ -137,6 +122,52 @@ public class RecipeParchmentFragment
 					lst.add(ingredient);
 			}
 			return lst;
+		}
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static class VisualizedTestMachine
+			implements IVisualizedRecipe<RecipeParchmentFragment>
+	{
+		public static final UV BACKGROUND = new UV(ImprovableSkills.id("textures/gui/jei.png"), 0, 0, 132, 34);
+		
+		final RecipeParchmentFragment recipe;
+		
+		public VisualizedTestMachine(RecipeParchmentFragment recipe)
+		{
+			this.recipe = recipe;
+		}
+		
+		@Override
+		public RecipeParchmentFragment getRecipe()
+		{
+			return recipe;
+		}
+		
+		@Override
+		public void drawBackground(GuiGraphics gfx, double mouseX, double mouseY)
+		{
+			BACKGROUND.render(gfx, 0, 0);
+		}
+		
+		@Override
+		public void setupLayout(IVisualizerBuilder builder)
+		{
+			builder.addSlot(SlotRole.INPUT, 8, 9)
+					.addItemStack(new ItemStack(ItemsIS.PARCHMENT_FRAGMENT))
+					.build();
+			
+			builder.addSlot(SlotRole.OUTPUT, 107, 9)
+					.addItemStack(recipe.vanillaResult.copy())
+					.build();
+			
+			int j = 0;
+			for(var ci : recipe.ingredients)
+			{
+				builder.addSlot(SlotRole.INPUT, j * 18 + 26, 9)
+						.addIngredients(ci);
+				++j;
+			}
 		}
 	}
 }

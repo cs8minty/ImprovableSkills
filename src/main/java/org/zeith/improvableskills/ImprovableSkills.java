@@ -75,14 +75,14 @@ public class ImprovableSkills
 		modBus.addListener(this::setup);
 		modBus.addListener(this::loadComplete);
 		modBus.addListener(this::fingerprintCheck);
+		modBus.addListener(this::addRecipes);
+		
 		PROXY.register(modBus);
 		
 		var mcfBus = MinecraftForge.EVENT_BUS;
 		
 		mcfBus.addListener(this::registerCommands);
 		mcfBus.addListener(this::addLoot);
-		
-		HammerLib.EVENT_BUS.addListener(this::addRecipes);
 	}
 	
 	public static ResourceLocation id(String path)
