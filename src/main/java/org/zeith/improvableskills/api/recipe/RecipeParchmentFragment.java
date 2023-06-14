@@ -126,17 +126,10 @@ public class RecipeParchmentFragment
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public static class VisualizedTestMachine
+	public record VisualizedTestMachine(RecipeParchmentFragment recipe)
 			implements IVisualizedRecipe<RecipeParchmentFragment>
 	{
 		public static final UV BACKGROUND = new UV(ImprovableSkills.id("textures/gui/jei.png"), 0, 0, 132, 34);
-		
-		final RecipeParchmentFragment recipe;
-		
-		public VisualizedTestMachine(RecipeParchmentFragment recipe)
-		{
-			this.recipe = recipe;
-		}
 		
 		@Override
 		public RecipeParchmentFragment getRecipe()

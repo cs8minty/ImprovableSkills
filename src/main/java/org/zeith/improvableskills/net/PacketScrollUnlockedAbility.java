@@ -75,7 +75,7 @@ public class PacketScrollUnlockedAbility
 		{
 			PlayerAbilityBase sk = ImprovableSkills.ABILITIES().getValue(skill);
 			base.add(sk);
-			sp.sendSystemMessage(Component.translatable("chat.improvableskills.page_unlocked", sk.getLocalizedName(SyncSkills.getData())));
+			sp.sendSystemMessage(Component.translatable("chat.improvableskills.ability_unlocked", sk.getLocalizedName(SyncSkills.getData())));
 		}
 		
 		Random rand = new Random();
