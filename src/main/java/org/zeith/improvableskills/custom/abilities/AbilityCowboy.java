@@ -29,7 +29,7 @@ public class AbilityCowboy
 	@SubscribeEvent
 	public void entityClick(PlayerInteractEvent.EntityInteract e)
 	{
-		if(!(e.getTarget() instanceof LivingEntity le))
+		if(!(e.getTarget() instanceof LivingEntity le) || le.isDeadOrDying())
 			return;
 		
 		PlayerDataManager.handleDataSafely(e.getEntity(), data ->

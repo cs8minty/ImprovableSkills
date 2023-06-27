@@ -82,7 +82,6 @@ public class ImprovableSkills
 		var mcfBus = MinecraftForge.EVENT_BUS;
 		
 		mcfBus.addListener(this::registerCommands);
-		mcfBus.addListener(this::addLoot);
 	}
 	
 	public static ResourceLocation id(String path)
@@ -126,47 +125,6 @@ public class ImprovableSkills
 		PAGELETS = e.create(new RegistryBuilder<PageletBase>()
 				.setName(new ResourceLocation(MOD_ID, "pagelets"))
 				.disableSync(), reg -> RegistryMapping.report(PageletBase.class, reg, false));
-	}
-	
-	private void addLoot(LootTableLoadEvent e)
-	{
-		for(var skill : SKILLS())
-		{
-			var loot = skill.getLoot();
-			if(loot != null)
-			{
-				loot.apply(e);
-			}
-		}
-		
-		if(e.getName().toString().toLowerCase().contains("chests/"))
-		{
-			RandomBoolean bool = new RandomBoolean();
-			bool.n = 5;
-			
-			LOG.info("Injecting parchment into LootTable '" + e.getName() + "'!");
-			
-			try
-			{
-				var table = e.getTable();
-				var pools = ((LootTableAccessor) table).getPools();
-				
-				pools.add(LootPool.lootPool()
-						.setRolls(ConstantValue.exactly(1F))
-						.add(EmptyLootItem.emptyItem().setWeight(4))
-						.add(LootItem.lootTableItem(ItemsIS.PARCHMENT_FRAGMENT)
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)))
-								.setWeight(1)
-								.setQuality(60)
-						)
-//						.name("parchment_fragment")
-						.build());
-			} catch(Throwable err)
-			{
-				ImprovableSkills.LOG.error("Failed to inject parchment into LootTable '" + e.getName() + "'!!!");
-				err.printStackTrace();
-			}
-		}
 	}
 	
 	private void addRecipes(RegisterRecipesEvent e)

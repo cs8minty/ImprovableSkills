@@ -61,17 +61,27 @@ public class ItemAbilityScroll
 		ImprovableSkills.TAB.add(this);
 	}
 	
+	@Override
+	public @Nullable String getCreatorModId(ItemStack stack)
+	{
+		var v = getAbilityFromScroll(stack);
+		if(v != null) return ImprovableSkills.ABILITIES().getKey(v).getNamespace();
+		return null;
+	}
+	
 	@Nullable
 	public static PlayerAbilityBase getAbilityFromScroll(ItemStack stack)
 	{
-		if(!stack.isEmpty() && stack.getItem() instanceof ItemAbilityScroll && stack.hasTag() && stack.getTag().contains("Ability", Tag.TAG_STRING))
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemAbilityScroll && stack.hasTag() &&
+				stack.getTag().contains("Ability", Tag.TAG_STRING))
 		{
 			String skill = stack.getTag().getString("Ability");
 			
 			if(ABILITY_MAP.containsKey(skill))
 				return ABILITY_MAP.get(skill);
 			
-			PlayerAbilityBase b = ImprovableSkills.ABILITIES().getValue(new ResourceLocation(stack.getTag().getString("Ability")));
+			PlayerAbilityBase b = ImprovableSkills.ABILITIES()
+					.getValue(new ResourceLocation(stack.getTag().getString("Ability")));
 			
 			ABILITY_MAP.put(skill, b);
 			
@@ -151,13 +161,15 @@ public class ItemAbilityScroll
 					++i;
 				}
 				
-				tooltip.add(Component.translatable("recipe.improvableskills:ability", comp).withStyle(ChatFormatting.GRAY));
+				tooltip.add(Component.translatable("recipe.improvableskills:ability", comp)
+						.withStyle(ChatFormatting.GRAY));
 				hasAdded = true;
 			}
 			
 			if(!hasAdded)
 			{
-				String ln = I18n.get("recipe." + base.getRegistryName().getNamespace() + ":ability." + base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN);
+				String ln = I18n.get("recipe." + base.getRegistryName().getNamespace() + ":ability." +
+						base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN);
 				int i, j;
 				while((i = ln.indexOf('<')) != -1 && (j = ln.indexOf('>', i + 1)) != -1)
 				{
@@ -168,14 +180,16 @@ public class ItemAbilityScroll
 					if(it != null)
 						t = it.getDefaultInstance().getDisplayName().getString();
 					else
-						t = Component.translatable("text.improvableskills:unresolved_item").withStyle(ChatFormatting.DARK_RED).getString();
+						t = Component.translatable("text.improvableskills:unresolved_item")
+								.withStyle(ChatFormatting.DARK_RED).getString();
 					
 					ln = ln.replaceAll("<" + to + ">", t);
 				}
 				tooltip.add(Component.literal(ln).withStyle(ChatFormatting.GRAY));
 			}
 		} else
-			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe")
+					.replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 	}
 	
 	@Override

@@ -3,12 +3,10 @@ package org.zeith.improvableskills.custom.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.*;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -17,8 +15,7 @@ import net.minecraft.world.level.Level;
 import org.zeith.hammerlib.api.items.ITabItem;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.Chars;
-import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.SyncSkills;
+import org.zeith.improvableskills.*;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.api.tooltip.SkillTooltip;
 import org.zeith.improvableskills.data.PlayerDataManager;
@@ -40,17 +37,27 @@ public class ItemSkillScroll
 		ImprovableSkills.TAB.add(this);
 	}
 	
+	@Override
+	public @Nullable String getCreatorModId(ItemStack stack)
+	{
+		var v = getSkillFromScroll(stack);
+		if(v != null) return ImprovableSkills.SKILLS().getKey(v).getNamespace();
+		return null;
+	}
+	
 	@Nullable
 	public static PlayerSkillBase getSkillFromScroll(ItemStack stack)
 	{
-		if(!stack.isEmpty() && stack.getItem() instanceof ItemSkillScroll && stack.hasTag() && stack.getTag().contains("Skill", Tag.TAG_STRING))
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemSkillScroll && stack.hasTag() &&
+				stack.getTag().contains("Skill", Tag.TAG_STRING))
 		{
 			String skill = stack.getTag().getString("Skill");
 			
 			if(SKILL_MAP.containsKey(skill))
 				return SKILL_MAP.get(skill);
 			
-			PlayerSkillBase b = ImprovableSkills.SKILLS().getValue(new ResourceLocation(stack.getTag().getString("Skill")));
+			PlayerSkillBase b = ImprovableSkills.SKILLS()
+					.getValue(new ResourceLocation(stack.getTag().getString("Skill")));
 			
 			SKILL_MAP.put(skill, b);
 			
@@ -106,9 +113,12 @@ public class ItemSkillScroll
 			tooltip.add(Component.literal(" - " + base.getRegistryName()).withStyle(ChatFormatting.DARK_GRAY));
 		
 		if(ImprovableSkills.PROXY.hasShiftDown())
-			tooltip.add(Component.literal(I18n.get("recipe." + base.getRegistryName().getNamespace() + ":skill." + base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.literal(I18n.get(
+							"recipe." + base.getRegistryName().getNamespace() + ":skill." + base.getRegistryName().getPath())
+					.replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 		else
-			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe").replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe")
+					.replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
 	}
 	
 	@Override

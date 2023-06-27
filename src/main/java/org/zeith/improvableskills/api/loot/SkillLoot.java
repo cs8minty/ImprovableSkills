@@ -8,7 +8,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraftforge.event.LootTableLoadEvent;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.custom.items.ItemSkillScroll;
@@ -52,11 +51,11 @@ public class SkillLoot
 		lootTableChecker = lootTableChecker.or(rls::contains);
 	}
 	
-	public void apply(LootTableLoadEvent table)
+	public void apply(LootTable table)
 	{
-		if(lootTableChecker != null && lootTableChecker.test(table.getName()))
+		if(lootTableChecker != null && lootTableChecker.test(table.getLootTableId()))
 		{
-			ImprovableSkills.LOG.info("Injecting scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getName() + "'!");
+			ImprovableSkills.LOG.info("Injecting scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!");
 			
 			try
 			{
@@ -65,20 +64,19 @@ public class SkillLoot
 								.apply(SetNbtFunction.setTag(ItemSkillScroll.of(skill).getTag()))
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)));
 				
-				var pools = ((LootTableAccessor) table.getTable()).getPools();
+				var pools = ((LootTableAccessor) table).getPools();
 				
-				pools.add(
-						LootPool.lootPool()
-								.when(() -> new LootConditionSkillScroll(1F, skill))
-								.setRolls(ConstantValue.exactly(1F))
-								.add(EmptyLootItem.emptyItem().setWeight(chance.n - 1))
-								.add(entry.setWeight(1).setQuality(60))
-								// .name(skill.getRegistryName().toString() + "_skill_scroll")
-								.build()
+				pools.add(LootPool.lootPool()
+						.when(() -> new LootConditionSkillScroll(1F, skill))
+						.setRolls(ConstantValue.exactly(1F))
+						.add(EmptyLootItem.emptyItem().setWeight(chance.n - 1))
+						.add(entry.setWeight(1).setQuality(60))
+						// .name(skill.getRegistryName().toString() + "_skill_scroll")
+						.build()
 				);
 			} catch(Throwable err)
 			{
-				ImprovableSkills.LOG.error("Failed to inject scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getName() + "'!!!");
+				ImprovableSkills.LOG.error("Failed to inject scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!!!");
 				err.printStackTrace();
 			}
 		}

@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.*;
 import net.minecraftforge.common.util.FakePlayer;
@@ -32,20 +33,20 @@ public class LootConditionSkillScroll
 		return LootItemConditions.RANDOM_CHANCE;
 	}
 	
+	private Player findPlayer(LootContext context, LootContextParam<Entity> par)
+	{
+		return context.hasParam(par) && context.getParamOrNull(par) instanceof Player pl && !(pl instanceof FakePlayer) ? pl : null;
+	}
+	
 	@Override
 	public boolean test(LootContext context)
 	{
-		Entity ent = context.hasParam(LootContextParams.KILLER_ENTITY) ? context.getParam(LootContextParams.KILLER_ENTITY) : null;
-		if(ent == null && context.hasParam(LootContextParams.THIS_ENTITY)) ent = context.getParam(LootContextParams.THIS_ENTITY);
+		Player p = findPlayer(context, LootContextParams.KILLER_ENTITY);
+		if(p == null) p = findPlayer(context, LootContextParams.THIS_ENTITY);
+		if(p == null) p = findPlayer(context, LootContextParams.DIRECT_KILLER_ENTITY);
 		
-		if(ent != null && !(ent instanceof Player))
-		{
-			var player = ent.level().getNearestPlayer(ent, 32);
-			if(player != null) ent = player;
-		}
-		
-		if(ent instanceof Player p && !(ent instanceof FakePlayer))
-			return PlayerDataManager.handleDataSafely(p, data -> !data.hasSkillScroll(skill), true);
+		if(p != null)
+			return PlayerDataManager.handleDataSafely(p, data -> !data.hasSkillScroll(skill) || data.getSkillProgress(skill) < 1F, true);
 		
 		return false;
 	}
