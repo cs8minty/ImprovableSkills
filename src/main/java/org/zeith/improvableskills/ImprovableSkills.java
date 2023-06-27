@@ -4,14 +4,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -22,20 +16,18 @@ import net.minecraftforge.registries.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeith.api.registry.RegistryMapping;
-import org.zeith.hammerlib.HammerLib;
 import org.zeith.hammerlib.api.items.CreativeTab;
-import org.zeith.hammerlib.core.adapter.LanguageAdapter;
+import org.zeith.hammerlib.core.adapter.*;
 import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
 import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.hammerlib.util.CommonMessages;
-import org.zeith.improvableskills.api.loot.RandomBoolean;
 import org.zeith.improvableskills.api.recipe.Is3RecipeBuilderExtension;
 import org.zeith.improvableskills.api.registry.*;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
+import org.zeith.improvableskills.custom.LootTableLoader;
 import org.zeith.improvableskills.init.*;
-import org.zeith.improvableskills.mixins.LootTableAccessor;
 import org.zeith.improvableskills.proxy.ISClient;
 import org.zeith.improvableskills.proxy.ISServer;
 
@@ -68,6 +60,7 @@ public class ImprovableSkills
 				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
 		
 		LanguageAdapter.registerMod(MOD_ID);
+		LootTableAdapter.addLoadHook(LootTableLoader::loadTable);
 		
 		var modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		

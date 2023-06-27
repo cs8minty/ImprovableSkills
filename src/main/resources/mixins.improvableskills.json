@@ -10,8 +10,6 @@
     "AbstractFurnaceBlockEntityMixin",
     "BrewingStandBlockEntityAccessor",
     "EnchantmentHelperMixin",
-    "ForgeHooksMixin",
-    "LootTableAccessor",
     "ServerPlayerGameModeMixin",
     "Vec3Accessor",
     "VillagerMixin",

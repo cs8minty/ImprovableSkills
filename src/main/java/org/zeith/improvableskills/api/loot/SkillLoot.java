@@ -8,11 +8,11 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import org.zeith.hammerlib.core.adapter.LootTableAdapter;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.custom.items.ItemSkillScroll;
 import org.zeith.improvableskills.init.ItemsIS;
-import org.zeith.improvableskills.mixins.LootTableAccessor;
 import org.zeith.improvableskills.utils.loot.LootConditionSkillScroll;
 
 import java.util.List;
@@ -51,9 +51,9 @@ public class SkillLoot
 		lootTableChecker = lootTableChecker.or(rls::contains);
 	}
 	
-	public void apply(LootTable table)
+	public void apply(ResourceLocation id, LootTable table)
 	{
-		if(lootTableChecker != null && lootTableChecker.test(table.getLootTableId()))
+		if(lootTableChecker != null && lootTableChecker.test(id))
 		{
 			ImprovableSkills.LOG.info("Injecting scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!");
 			
@@ -64,7 +64,7 @@ public class SkillLoot
 								.apply(SetNbtFunction.setTag(ItemSkillScroll.of(skill).getTag()))
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)));
 				
-				var pools = ((LootTableAccessor) table).getPools();
+				var pools = LootTableAdapter.getPools(table);
 				
 				pools.add(LootPool.lootPool()
 						.when(() -> new LootConditionSkillScroll(1F, skill))

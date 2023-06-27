@@ -1,39 +1,34 @@
 package org.zeith.improvableskills.custom;
 
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.*;
+import net.minecraft.world.level.storage.loot.entries.*;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import org.zeith.hammerlib.core.adapter.LootTableAdapter;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.loot.RandomBoolean;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.init.ItemsIS;
-import org.zeith.improvableskills.mixins.LootTableAccessor;
 
 public class LootTableLoader
 {
-	public static void loadTable(LootTable table)
+	public static void loadTable(ResourceLocation id, LootTable table)
 	{
 		for(PlayerSkillBase skill : ImprovableSkills.SKILLS())
 		{
 			var lt = skill.getLoot();
 			if(lt == null) continue;
 			
-			lt.apply(table);
+			lt.apply(id, table);
 		}
 		
-		if(table.getLootTableId().toString().toLowerCase().contains("chests/"))
+		if(id.getPath().contains("chests/"))
 		{
-			RandomBoolean bool = new RandomBoolean();
-			bool.n = 5;
-			
 			ImprovableSkills.LOG.info("Injecting parchment into LootTable '" + table.getLootTableId() + "'!");
 			
 			try
 			{
-				var pools = ((LootTableAccessor) table).getPools();
+				var pools = LootTableAdapter.getPools(table);
 				
 				pools.add(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1F))
@@ -47,7 +42,8 @@ public class LootTableLoader
 						.build());
 			} catch(Throwable err)
 			{
-				ImprovableSkills.LOG.error("Failed to inject parchment into LootTable '" + table.getLootTableId() + "'!!!");
+				ImprovableSkills.LOG.error(
+						"Failed to inject parchment into LootTable '" + table.getLootTableId() + "'!!!");
 				err.printStackTrace();
 			}
 		}
