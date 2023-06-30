@@ -2,15 +2,15 @@
 mod_id=improvableskills
 archive_name=ImprovableSkills
 mod_name=Improvable Skills
-mod_version=19.2.8
+mod_version=19.2.9
 
 # Maven Info
 maven_group=org.zeith.improvableskills
-hl_version=19.2.37
+hl_version=19.3.57
 
 # MC Info
 mc_version=1.19.2
-forge_version=43.1.43
+forge_version=43.2.0
 
 # MCP Info
 mcp_ch=official

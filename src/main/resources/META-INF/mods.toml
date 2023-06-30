@@ -16,7 +16,7 @@ Boost player's abilities as well as granting useful abilities using single book 
 [[dependencies.improvableskills]]
 modId = "forge"
 mandatory = true
-versionRange = "[43,)"
+versionRange = "[43.2,)"
 ordering = "NONE" # NONE/BEFORE/AFTER
 side = "BOTH"
 [[dependencies.improvableskills]]
@@ -28,6 +28,6 @@ side = "BOTH"
 [[dependencies.improvableskills]]
 modId = "hammerlib"
 mandatory = true
-versionRange = "[19.2.37,)"
+versionRange = "[19.3.57,)"
 ordering = "NONE"
 side = "BOTH"
