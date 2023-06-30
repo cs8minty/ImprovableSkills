@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.zeith.hammerlib.core.adapter.LootTableAdapter;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
+import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.init.ItemsIS;
 
 public class LootTableLoader
@@ -22,8 +23,13 @@ public class LootTableLoader
 			lt.apply(id, table);
 		}
 		
-		if(id.getPath().contains("chests/"))
+		if(id.getPath().contains("chests/") && ConfigsIS.parchmentGeneration)
 		{
+			if(ConfigsIS.blockedParchmentChests.contains(id.toString()))
+			{
+				ImprovableSkills.LOG.debug("SKIPPING parchment injection for LootTable '" + table.getLootTableId() + "'!");
+				return;
+			}
 			ImprovableSkills.LOG.info("Injecting parchment into LootTable '" + table.getLootTableId() + "'!");
 			
 			try
@@ -32,7 +38,7 @@ public class LootTableLoader
 				
 				pools.add(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1F))
-						.add(EmptyLootItem.emptyItem().setWeight(4))
+						.add(EmptyLootItem.emptyItem().setWeight(ConfigsIS.parchmentRarity))
 						.add(LootItem.lootTableItem(ItemsIS.PARCHMENT_FRAGMENT)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)))
 								.setWeight(1)

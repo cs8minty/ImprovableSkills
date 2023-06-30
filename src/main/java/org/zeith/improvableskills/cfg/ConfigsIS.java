@@ -4,12 +4,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.zeith.hammerlib.annotations.SetupConfigs;
-import org.zeith.hammerlib.util.configured.ConfigFile;
-import org.zeith.hammerlib.util.configured.ConfiguredLib;
-import org.zeith.hammerlib.util.configured.types.ConfigCategory;
+import org.zeith.hammerlib.util.configured.*;
+import org.zeith.hammerlib.util.configured.data.IntValueRange;
+import org.zeith.hammerlib.util.configured.types.*;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
-import org.zeith.improvableskills.api.registry.PlayerSkillBase;
+import org.zeith.improvableskills.api.registry.*;
+
+import java.util.List;
+
+import static net.minecraft.world.level.storage.loot.BuiltInLootTables.*;
 
 public class ConfigsIS
 {
@@ -19,6 +22,9 @@ public class ConfigsIS
 	
 	public static boolean xpBank;
 	public static boolean addBookToInv;
+	public static boolean parchmentGeneration = true;
+	public static int parchmentRarity = 10;
+	public static List<String> blockedParchmentChests = List.of();
 	
 	@SetupConfigs
 	public static void reloadCustom(ConfigFile cfgs)
@@ -32,6 +38,54 @@ public class ConfigsIS
 					.withDefault(true)
 					.withComment("Should XP Bank be active in the book? Disabling this only hides the skill from the player.")
 					.getValue();
+			
+			var parchmentFragment = gameplay.getElement(ConfiguredLib.CATEGORY, "Parchment Fragment")
+					.withComment("Various configurations for parchment fragment");
+			{
+				parchmentGeneration = parchmentFragment.getElement(ConfiguredLib.BOOLEAN, "Do Generation")
+						.withDefault(true)
+						.withComment("Should parchment fragment appear in naturally generated chests?")
+						.getValue();
+				
+				parchmentRarity = parchmentFragment.getElement(ConfiguredLib.INT, "WorldGen Rarity")
+						.withRange(IntValueRange.range(1, Integer.MAX_VALUE))
+						.withDefault(10)
+						.withComment("How rare should parchment fragment be? Higher values make the fragment appear less frequently inside chests.")
+						.getValue()
+						.intValue();
+				
+				boolean init = !parchmentFragment.getValue().containsKey("Chest Blocklist");
+				
+				var bc = parchmentFragment.getElement(ConfiguredLib.STRING.arrayOf(), "Chest Blocklist")
+						.withComment("Which chests should be blocked from generating fragments?");
+				var lst = bc.getElements();
+				if(init)
+				{
+					ResourceLocation[] locs = {
+							VILLAGE_WEAPONSMITH,
+							VILLAGE_TOOLSMITH,
+							VILLAGE_ARMORER,
+							VILLAGE_CARTOGRAPHER,
+							VILLAGE_MASON,
+							VILLAGE_SHEPHERD,
+							VILLAGE_BUTCHER,
+							VILLAGE_FLETCHER,
+							VILLAGE_FISHER,
+							VILLAGE_TANNERY,
+							VILLAGE_TEMPLE,
+							VILLAGE_DESERT_HOUSE,
+							VILLAGE_PLAINS_HOUSE,
+							VILLAGE_TAIGA_HOUSE,
+							VILLAGE_SNOWY_HOUSE,
+							VILLAGE_SAVANNA_HOUSE
+					};
+					
+					for(var i : locs)
+						lst.add(bc.createElement().withDefault(i.toString()));
+				}
+				
+				blockedParchmentChests = bc.getElements().stream().map(ConfigString::getValue).toList();
+			}
 		}
 		
 		if(FMLEnvironment.dist == Dist.CLIENT)
