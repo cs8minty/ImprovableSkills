@@ -2,13 +2,13 @@ package org.zeith.improvableskills.api.recipe;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.*;
 import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.core.adapter.recipe.RecipeBuilder;
 import org.zeith.hammerlib.util.mcf.itf.IRecipeRegistrationEvent;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
+import org.zeith.improvableskills.init.RecipeTypesIS;
 
 public class ParchmentFragmentBuilder
 		extends RecipeBuilder<ParchmentFragmentBuilder, Recipe<?>>
@@ -52,7 +52,7 @@ public class ParchmentFragmentBuilder
 	public void register()
 	{
 		validate();
-		if(!event.enableRecipe(getIdentifier())) return;
+		if(!event.enableRecipe(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE, getIdentifier())) return;
 		if(ingredients.isEmpty())
 			throw new IllegalStateException(getClass().getSimpleName() + " does not have any defined ingredients!");
 		var id = getIdentifier();
