@@ -1,35 +1,29 @@
 package org.zeith.improvableskills;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.*;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.common.*;
+import net.minecraftforge.event.*;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.zeith.api.registry.RegistryMapping;
 import org.zeith.hammerlib.HammerLib;
-import org.zeith.hammerlib.client.adapter.ChatMessageAdapter;
 import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.core.adapter.LanguageAdapter;
-import org.zeith.hammerlib.core.adapter.ModSourceAdapter;
+import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
+import org.zeith.hammerlib.util.CommonMessages;
 import org.zeith.improvableskills.api.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.loot.RandomBoolean;
 import org.zeith.improvableskills.api.registry.*;
@@ -37,8 +31,7 @@ import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
 import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
 import org.zeith.improvableskills.init.*;
-import org.zeith.improvableskills.proxy.ISClient;
-import org.zeith.improvableskills.proxy.ISServer;
+import org.zeith.improvableskills.proxy.*;
 
 import java.util.function.Supplier;
 
@@ -67,39 +60,9 @@ public class ImprovableSkills
 	
 	public ImprovableSkills()
 	{
-		var illegalSourceNotice = ModSourceAdapter.getModSource(ImprovableSkills.class)
-				.filter(ModSourceAdapter.ModSource::wasDownloadedIllegally)
-				.orElse(null);
-		
-		if(illegalSourceNotice != null)
-		{
-			LOG.fatal("====================================================");
-			LOG.fatal("WARNING: ImprovableSkills was downloaded from " + illegalSourceNotice.referrerDomain() +
-					", which has been marked as illegal site over at stopmodreposts.org.");
-			LOG.fatal("Please download the mod from https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
-			LOG.fatal("====================================================");
-			
-			var illegalUri = Component.literal(illegalSourceNotice.referrerDomain())
-					.withStyle(s -> s.withColor(ChatFormatting.RED));
-			var smrUri = Component.literal("stopmodreposts.org")
-					.withStyle(s -> s.withColor(ChatFormatting.BLUE)
-							.withUnderlined(true)
-							.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://stopmodreposts.org/"))
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to open webpage."))));
-			var curseforgeUri = Component.literal("curseforge.com")
-					.withStyle(s -> s.withColor(ChatFormatting.BLUE)
-							.withUnderlined(true)
-							.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/improvable-skills"))
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to open webpage."))));
-			ChatMessageAdapter.sendOnFirstWorldLoad(Component.literal("WARNING: ImprovableSkills was downloaded from ")
-					.append(illegalUri)
-					.append(", which has been marked as illegal site over at ")
-					.append(smrUri)
-					.append(". Please download the mod from ")
-					.append(curseforgeUri)
-					.append(".")
-			);
-		}
+		CommonMessages.printMessageOnIllegalRedistribution(ImprovableSkills.class,
+				LOG, "ImprovableSkills", "https://modrinth.com/mod/9fT7HUaI"
+		);
 		
 		LanguageAdapter.registerMod(MOD_ID);
 		
@@ -108,6 +71,7 @@ public class ImprovableSkills
 		modBus.addListener(this::newRegistries);
 		modBus.addListener(this::setup);
 		modBus.addListener(this::loadComplete);
+		modBus.addListener(this::checkFingerprint);
 		PROXY.register(modBus);
 		
 		var mcfBus = MinecraftForge.EVENT_BUS;
@@ -133,6 +97,13 @@ public class ImprovableSkills
 		ConfigsIS.reloadCosts();
 		if(ConfigsIS.config.hasChanged())
 			ConfigsIS.config.save();
+	}
+	
+	public void checkFingerprint(FMLFingerprintCheckEvent e)
+	{
+		CommonMessages.printMessageOnFingerprintViolation(e, "97e852e9b3f01b83574e8315f7e77651c6605f2b455919a7319e9869564f013c",
+				LOG, "ImprovableSkills", "https://modrinth.com/mod/9fT7HUaI"
+		);
 	}
 	
 	private void newRegistries(NewRegistryEvent e)

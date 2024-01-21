@@ -16,6 +16,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.modrinth.minotaur" version "2.+"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
@@ -76,9 +80,9 @@ repositories {
         name = "Zeitheron Maven"
         url = "https://maven.zeith.org/"
     }
-    flatDir { dirs 'libraries/all' }
-    flatDir { dirs 'libraries/classpathOnly' }
-    flatDir { dirs 'libraries/runtimeOnly' }
+    flatDir { dirs "libraries/${config.mc_version}/all" }
+    flatDir { dirs "libraries/${config.mc_version}/classpathOnly" }
+    flatDir { dirs "libraries/${config.mc_version}/runtimeOnly" }
 }
 
 dependencies {
@@ -88,7 +92,7 @@ dependencies {
 
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
-    def libraries = file("libraries");
+    def libraries = file("libraries/${config.mc_version}");
     if (!libraries.isDirectory()) libraries.mkdirs()
 
     def libDir = new File(libraries, "all");
@@ -193,6 +197,18 @@ curseforge {
     }
 }
 
+modrinth {
+    token = System.env.MODRINTH_TOKEN != null ? System.env.MODRINTH_TOKEN : "NONE"
+    projectId = config.modrinth_project
+    versionNumber = config.mod_version
+    versionType = config.release_type
+    uploadFile = jar
+    gameVersions = [config.mc_version]
+    dependencies {
+        required.project "hammer-lib"
+    }
+}
+
 import net.minecraftforge.gradle.common.tasks.SignJar
 
 task signJar(type: SignJar, dependsOn: jar) {
@@ -218,8 +234,20 @@ publish.dependsOn('reobfJar')
 
 build.dependsOn signJar
 
+tasks.register('buildAndUploadMod') {
+    group = "upload"
+    dependsOn "curseforge${config.cf_project}", 'modrinth'
+
+    doLast {
+        println "Upload complete."
+    }
+}
+
 afterEvaluate {
-    tasks["curseforge${config.cf_project}"].dependsOn.add(publish)
+    if (!config.maven_url.isEmpty()) {
+        tasks["curseforge${config.cf_project}"].dependsOn.add(publish)
+        tasks["modrinth"].dependsOn.add(publish)
+    }
 }
 
 publishing {
@@ -234,11 +262,6 @@ publishing {
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
-
-                def dependencyNode = dependenciesNode.appendNode('dependency')
-                dependencyNode.appendNode('groupId', "org.zeith.hammerlib")
-                dependencyNode.appendNode('artifactId', "HammerLib-${config.mc_version}")
-                dependencyNode.appendNode('version', config.hl_version)
             }
         }
     }
@@ -248,3 +271,32 @@ publishing {
         }
     }
 }
+
+import java.nio.file.Files
+
+def incrementBuild = {
+    if (!hasConfig("build_candidate") || !Boolean.parseBoolean(config.build_candidate)) {
+        def buildTxt = configFile.toPath()
+        List<String> lines = Files.readAllLines buildTxt
+        lines.replaceAll { String ln ->
+            if (ln.startsWith("mod_version")) {
+                def version = ln.split("=")[1]
+                def dot = version.lastIndexOf('.') + 1
+                def newVersion = version.substring(0, dot)
+                def lastOne = Integer.parseInt(version.substring(dot)) + 1
+                return "mod_version=" + newVersion + lastOne
+            }
+            return ln
+        }
+        Files.write buildTxt, lines, java.nio.file.StandardOpenOption.CREATE
+    } else println "Build candidate enabled, we are not increasing build number after this."
+}
+
+tasks.register("incrementBuildVersionProperty") {
+    group "upload"
+    doLast incrementBuild
+}
+
+// This piece of garbage will ensure that the build number is updated after build is executed.
+tasks.build.doLast incrementBuild
+tasks.buildAndUploadMod.doLast incrementBuild

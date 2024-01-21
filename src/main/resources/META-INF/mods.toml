@@ -1,13 +1,13 @@
 modLoader = "javafml"
 loaderVersion = "[43,)"
-issueTrackerURL = "https://gitlab.com/DragonForge/ImprovableSkills/issues"
+issueTrackerURL = "https://github.com/dragon-forge/ImprovableSkills/issues"
 license = "All rights reserved"
 [[mods]]
 modId = "improvableskills"
 version = "${file.jarVersion}"
-displayName = "Improvable Skills"
-updateJSONURL = "http://h.zeith.org/api/fmluc/252902"
-displayURL = "http://h.zeith.org/api/fmlhp/252902"
+displayName = "ImprovableSkills"
+updateJSONURL = "https://api.modrinth.com/updates/9fT7HUaI/forge_updates.json"
+displayURL = "https://modrinth.com/mod/9fT7HUaI"
 logoFile = "icon.png"
 authors = "Zeitheron"
 description = '''
@@ -16,7 +16,7 @@ Boost player's abilities as well as granting useful abilities using single book 
 [[dependencies.improvableskills]]
 modId = "forge"
 mandatory = true
-versionRange = "[43,)"
+versionRange = "[43.2,)"
 ordering = "NONE" # NONE/BEFORE/AFTER
 side = "BOTH"
 [[dependencies.improvableskills]]
@@ -28,6 +28,6 @@ side = "BOTH"
 [[dependencies.improvableskills]]
 modId = "hammerlib"
 mandatory = true
-versionRange = "[19.2.37,)"
+versionRange = "[19.3.76,)"
 ordering = "NONE"
 side = "BOTH"

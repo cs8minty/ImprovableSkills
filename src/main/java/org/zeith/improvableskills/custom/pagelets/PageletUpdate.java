@@ -4,16 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.VersionChecker;
+import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.fml.*;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.zeith.hammerlib.util.java.Threading;
 import org.zeith.hammerlib.util.java.net.HttpRequest;
-import org.zeith.hammerlib.util.shaded.json.JSONObject;
-import org.zeith.hammerlib.util.shaded.json.JSONTokener;
+import org.zeith.hammerlib.util.shaded.json.*;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PageletBase;
@@ -29,7 +26,7 @@ public class PageletUpdate
 {
 	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/update.png");
 	public static VersionChecker.Status level;
-	public static String changes, latest, discord = "https://h.zeith.org/invite/zeithdev", homepage;
+	public static String changes, latest, homepage;
 	public static String liveURL, liveTitle;
 	
 	{
@@ -79,7 +76,7 @@ public class PageletUpdate
 		{
 			try
 			{
-				JSONObject o = (JSONObject) new JSONTokener(HttpRequest.get("https://h.zeith.org/api/fmluc/252902?changelog=true&zdev=true").body()).nextValue();
+				JSONObject o = (JSONObject) new JSONTokener(HttpRequest.get("https://api.modrinth.com/updates/9fT7HUaI/forge_updates.json").body()).nextValue();
 				
 				var mcVersion = FMLLoader.versionInfo().mcVersion();
 				changes = new String(Base64.getDecoder().decode(o.optJSONObject("changelogs64").optString(mcVersion + "-latest")));

@@ -8,12 +8,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.zeith.hammerlib.client.texture.HttpTextureDownloader;
-import org.zeith.hammerlib.client.utils.RenderUtils;
-import org.zeith.hammerlib.client.utils.UV;
+import org.zeith.hammerlib.client.utils.*;
+import org.zeith.hammerlib.util.ZeithLinkRepository;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 import org.zeith.improvableskills.client.rendering.ote.OTEConfetti;
-import org.zeith.improvableskills.custom.pagelets.PageletUpdate;
 import org.zeith.improvableskills.init.SoundsIS;
 import org.zeith.improvableskills.utils.Sys;
 
@@ -30,7 +29,7 @@ public class GuiDiscord
 	
 	public static AbstractTexture getDiscordServerIdTexture()
 	{
-		return HttpTextureDownloader.create(texture, "http://h.zeith.org/zmc", () -> texureLoaded = true);
+		return HttpTextureDownloader.create(texture, ZeithLinkRepository.getLink(ZeithLinkRepository.PredefinedLink.DEV_DISCORD_CARD_IMAGE), () -> texureLoaded = true);
 	}
 	
 	public GuiDiscord(PageletDiscord pagelet)
@@ -93,7 +92,7 @@ public class GuiDiscord
 		
 		if(mouse)
 		{
-			Sys.openURL(PageletUpdate.discord);
+			Sys.openURL(ZeithLinkRepository.getLink(ZeithLinkRepository.PredefinedLink.DEV_DISCORD_INVITE));
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundsIS.CONNECT, 1.0F));
 			return true;
 		}
