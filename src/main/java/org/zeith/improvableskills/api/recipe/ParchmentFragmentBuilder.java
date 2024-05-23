@@ -14,6 +14,7 @@ public class ParchmentFragmentBuilder
 		extends RecipeBuilder<ParchmentFragmentBuilder, Recipe<?>>
 {
 	protected final NonNullList<Ingredient> ingredients = NonNullList.create();
+	protected boolean identifierSet;
 	
 	public ParchmentFragmentBuilder(IRecipeRegistrationEvent<Recipe<?>> event)
 	{
@@ -25,6 +26,8 @@ public class ParchmentFragmentBuilder
 		if(identifier == null)
 		{
 			var id = abil.getRegistryName();
+			if(id == null) return this;
+			identifierSet = true;
 			id(new ResourceLocation(id.getNamespace(), "ability_scrolls/" + id.getPath()));
 		}
 		return result(ItemAbilityScroll.of(abil));
@@ -51,6 +54,7 @@ public class ParchmentFragmentBuilder
 	@Override
 	public void register()
 	{
+		if(!identifierSet) return;
 		validate();
 		if(!event.enableRecipe(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE, getIdentifier())) return;
 		if(ingredients.isEmpty())

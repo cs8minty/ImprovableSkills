@@ -7,7 +7,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -17,7 +16,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeith.api.registry.RegistryMapping;
 import org.zeith.hammerlib.api.items.CreativeTab;
-import org.zeith.hammerlib.core.adapter.*;
+import org.zeith.hammerlib.api.proxy.IProxy;
+import org.zeith.hammerlib.core.adapter.LanguageAdapter;
+import org.zeith.hammerlib.core.adapter.LootTableAdapter;
 import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
 import org.zeith.hammerlib.proxy.HLConstants;
@@ -41,7 +42,7 @@ public class ImprovableSkills
 	public static final String MOD_NAME = "Improvable Skills";
 	public static final String NBT_DATA_TAG = "ImprovableSkillsData";
 	
-	public static final ISServer PROXY = DistExecutor.unsafeRunForDist(() -> ISClient::new, () -> ISServer::new);
+	public static final ISServer PROXY = IProxy.create(() -> ISClient::new, () -> ISServer::new);
 	
 	@CreativeTab.RegisterTab
 	public static final CreativeTab TAB = new CreativeTab(new ResourceLocation(MOD_ID, "root"),

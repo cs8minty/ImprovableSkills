@@ -15,6 +15,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.zeith.hammerlib.api.proxy.IClientProxy;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
@@ -41,6 +42,7 @@ import java.util.*;
 
 public class ISClient
 		extends ISServer
+		implements IClientProxy
 {
 	@Override
 	public void register(IEventBus modBus)
@@ -132,7 +134,7 @@ public class ISClient
 			
 			openSkills = new GuiCustomButton(0, inv.getGuiLeft() + (inv.getXSize() - 16) / 2 - 1, inv.getGuiTop() + 24, 16, 16, Component.literal(""), this::openSkillBook)
 					.setCustomClickSound(SoundsIS.PAGE_TURNS);
-
+			
 			e.addListener(openSkills);
 			
 			openSkills.setAlpha(0F);
