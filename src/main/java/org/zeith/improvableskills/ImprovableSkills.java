@@ -1,19 +1,24 @@
 package org.zeith.improvableskills;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.*;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.*;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.zeith.api.registry.RegistryMapping;
 import org.zeith.hammerlib.core.adapter.LanguageAdapter;
 import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
@@ -22,8 +27,10 @@ import org.zeith.improvableskills.api.loot.RandomBoolean;
 import org.zeith.improvableskills.api.registry.*;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
-import org.zeith.improvableskills.init.*;
-import org.zeith.improvableskills.proxy.*;
+import org.zeith.improvableskills.init.ItemsIS;
+import org.zeith.improvableskills.init.TreasuresIS;
+import org.zeith.improvableskills.proxy.ISClient;
+import org.zeith.improvableskills.proxy.ISServer;
 
 import java.util.function.Supplier;
 
