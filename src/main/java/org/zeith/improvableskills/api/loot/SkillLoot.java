@@ -24,6 +24,11 @@ public class SkillLoot
 	public Predicate<ResourceLocation> lootTableChecker = r -> false;
 	public RandomBoolean chance = new RandomBoolean();
 	
+	/**
+	 * Setting this to true will remove any other loot from being generated if a skill scroll drops in a loot table.
+	 */
+	public boolean exclusive;
+	
 	public SkillLoot(PlayerSkillBase skill)
 	{
 		this.skill = skill;

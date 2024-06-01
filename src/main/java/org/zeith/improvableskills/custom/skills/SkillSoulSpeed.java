@@ -16,6 +16,7 @@ public class SkillSoulSpeed
 		setupScroll();
 		getLoot().chance.n = 7;
 		getLoot().setLootTable(BuiltInLootTables.PIGLIN_BARTERING);
+		getLoot().exclusive = true;
 		setColor(0x00FFFF);
 		xpCalculator.setBaseFormula("(%lvl%+1)^6+150");
 		addListener(this::hook);

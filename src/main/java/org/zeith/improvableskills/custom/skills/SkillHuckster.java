@@ -14,6 +14,7 @@ public class SkillHuckster
 		setupScroll();
 		getLoot().chance.n = 3;
 		getLoot().setLootTable(BuiltInLootTables.LIBRARIAN_GIFT);
+		getLoot().exclusive = true;
 		setColor(0x00FF00);
 		xpCalculator.setBaseFormula("150*(%lvl%+1)+(%lvl%+1)^3");
 		addListener(this::hook);

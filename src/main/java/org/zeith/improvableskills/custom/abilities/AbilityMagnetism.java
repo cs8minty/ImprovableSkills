@@ -36,15 +36,17 @@ public class AbilityMagnetism
 			var pos = data.player.getBoundingBox().getCenter();
 			for(var ie : data.player.level().getEntitiesOfClass(ItemEntity.class, new AABB(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z).inflate(data.magnetismRange)))
 			{
-				ie.setDeltaMovement(
-						ie.getDeltaMovement()
-								.scale(0.98F)
-								.add(
-										data.player.position()
-												.subtract(ie.position())
-												.normalize()
-												.multiply(0.1F, 0.2F, 0.1F)
-								)
+				// #26
+				if(ie.getPersistentData().getBoolean("PreventRemoteMovement")) continue;
+				
+				ie.setDeltaMovement(ie.getDeltaMovement()
+						.scale(0.98F)
+						.add(
+								data.player.position()
+										.subtract(ie.position())
+										.normalize()
+										.multiply(0.1F, 0.2F, 0.1F)
+						)
 				);
 			}
 		}

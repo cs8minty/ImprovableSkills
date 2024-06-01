@@ -3,10 +3,12 @@ package org.zeith.improvableskills.custom.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.*;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -15,11 +17,13 @@ import net.minecraft.world.level.Level;
 import org.zeith.hammerlib.api.items.ITabItem;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.Chars;
-import org.zeith.improvableskills.*;
+import org.zeith.improvableskills.ImprovableSkills;
+import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.api.tooltip.SkillTooltip;
 import org.zeith.improvableskills.data.PlayerDataManager;
 import org.zeith.improvableskills.init.ItemsIS;
+import org.zeith.improvableskills.net.PacketScrollLevelupSkill;
 import org.zeith.improvableskills.net.PacketScrollUnlockedSkill;
 
 import javax.annotation.Nullable;
@@ -157,7 +161,7 @@ public class ItemSkillScroll
 				worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 1F);
 				
 				int slot = handIn == InteractionHand.OFF_HAND ? -2 : playerIn.getInventory().selected;
-				Network.sendTo(new PacketScrollUnlockedSkill(slot, used, base.getRegistryName()), playerIn);
+				Network.sendTo(new PacketScrollLevelupSkill(slot, used, base.getRegistryName()), playerIn);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, held);
 			}
 			

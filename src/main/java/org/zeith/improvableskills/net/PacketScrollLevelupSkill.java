@@ -22,31 +22,28 @@ import org.zeith.improvableskills.client.rendering.ote.OTEItemSkillScroll;
 
 import java.util.*;
 
-public class PacketScrollUnlockedSkill
+public class PacketScrollLevelupSkill
 		implements INBTPacket
 {
-	private ResourceLocation[] skills;
+	private ResourceLocation skill;
 	private ItemStack used;
 	private int slot;
 	
-	public PacketScrollUnlockedSkill(int slot, ItemStack used, ResourceLocation... skills)
+	public PacketScrollLevelupSkill(int slot, ItemStack used, ResourceLocation skill)
 	{
-		this.skills = skills;
+		this.skill = skill;
 		this.used = used;
 		this.slot = slot;
 	}
 	
-	public PacketScrollUnlockedSkill()
+	public PacketScrollLevelupSkill()
 	{
 	}
 	
 	@Override
 	public void write(CompoundTag nbt)
 	{
-		ListTag tags = new ListTag();
-		for(ResourceLocation s : skills)
-			tags.add(StringTag.valueOf(s.toString()));
-		nbt.put("s", tags);
+		nbt.putString("s", skill.toString());
 		nbt.putInt("i", slot);
 		nbt.put("u", used.serializeNBT());
 	}
@@ -54,10 +51,7 @@ public class PacketScrollUnlockedSkill
 	@Override
 	public void read(CompoundTag nbt)
 	{
-		ListTag tags = nbt.getList("s", Tag.TAG_STRING);
-		skills = new ResourceLocation[tags.size()];
-		for(int i = 0; i < skills.length; ++i)
-			skills[i] = new ResourceLocation(tags.getString(i));
+		skill = ResourceLocation.tryParse(nbt.getString("s"));
 		slot = nbt.getInt("i");
 		used = ItemStack.of(nbt.getCompound("u"));
 	}
@@ -69,17 +63,14 @@ public class PacketScrollUnlockedSkill
 		Player sp = Minecraft.getInstance().player;
 		if(sp == null) return;
 		
-		List<PlayerSkillBase> base = new ArrayList<>();
+		PlayerSkillBase sk = ImprovableSkills.SKILLS().getValue(skill);
+		if(sk == null) return;
 		
-		for(ResourceLocation skill : skills)
-		{
-			PlayerSkillBase sk = ImprovableSkills.SKILLS().getValue(skill);
-			if(sk == null) continue;
-			base.add(sk);
-			sp.sendSystemMessage(Component.translatable("chat.improvableskills.page_unlocked",
-					sk.getLocalizedName(SyncSkills.getData())
-			));
-		}
+		List<PlayerSkillBase> base = new ArrayList<>();
+		base.add(sk);
+		sp.sendSystemMessage(Component.translatable("chat.improvableskills.page_upgraded",
+				sk.getLocalizedName(SyncSkills.getData())
+		));
 		
 		Random rand = new Random();
 		Minecraft mc = Minecraft.getInstance();

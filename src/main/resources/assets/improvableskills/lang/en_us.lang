@@ -125,6 +125,7 @@ text.improvableskills:draw10lvls=Take 10 Lvl.
 text.improvableskills:enchpower=Enchant Power: %,d
 chat.improvableskills.guide=You have just made Book of Skills! Now you can boost certain skills.
 chat.improvableskills.page_unlocked=New skill (%s) unlocked!
+chat.improvableskills.page_upgraded=Skill (%s) has been leveled up!
 chat.improvableskills.ability_unlocked=New ability (%s) unlocked!
 gui.improvableskills.locked=§4Unavailable. Craft Book of Skills to unlock.
 chat.improvableskills:skill_reset_self=Your skill levels and scrolls were reset.

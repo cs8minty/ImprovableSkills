@@ -18,6 +18,7 @@ public class SkillLuckOfTheSea
 		setupScroll();
 		getLoot().chance.n = 10;
 		getLoot().setLootTable(BuiltInLootTables.FISHING);
+		getLoot().exclusive = true;
 		setColor(0x4CC8E8);
 		xpCalculator.xpValue = 2;
 	}
