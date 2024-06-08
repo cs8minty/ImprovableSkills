@@ -16,7 +16,7 @@ skill.improvableskills:accelerated_furnace.name=Прискорена піч
 skill.improvableskills:accelerated_furnace.desc=Ця статистика збільшує швидкість переплавки в печі. Щоб ваші печі стали швидше, ви повинні стояти в радіусі 5 блоків від них.
 
 skill.improvableskills:mining.name=Видобуток
-skill.improvableskills:mining.desc=Ця статистика збільшує швидкість видобутку киркою.
+skill.improvableskills:mining.desc=Ця статистика збільшує швидкість видобутку кайлом.
 
 skill.improvableskills:digging.name=Риття
 skill.improvableskills:digging.desc=Ця статистика збільшує швидкість риття лопатою.
@@ -34,7 +34,7 @@ skill.improvableskills:soft_landing.name=М'яке приземлення
 skill.improvableskills:soft_landing.desc=Знижує шкоди від падіння. Якщо гравець з макс. рівнем впаде з висоти, то він виживе.
 
 skill.improvableskills:obsidian_skin.name=Обсидіановий щит
-skill.improvableskills:obsidian_skin.desc=Знижує урон від вогню/лави.
+skill.improvableskills:obsidian_skin.desc=Знижує шкоду від вогню/лави.
 
 skill.improvableskills:ladder_king.name=Цар гори
 skill.improvableskills:ladder_king.desc=Збільшує швидкість лазіння по драбині.
@@ -45,10 +45,10 @@ skill.improvableskills:treasure_finder.desc=Дозволяє знаходити 
 skill.improvableskills:pvp_protection.name=Захист від PvP
 skill.improvableskills:pvp_protection.desc=Збільшує рівень захисту від PvP.
 
-skill.improvableskills:luck_of_the_sea.name=Морська вдача
+skill.improvableskills:luck_of_the_sea.name=Удача морів
 skill.improvableskills:luck_of_the_sea.desc=Підвищує улов.
 
-skill.improvableskills:item_repair.name=Починка предметів
+skill.improvableskills:item_repair.name=Лагодження предметів
 skill.improvableskills:item_repair.desc=Повільно лагодить предмети. Це працює для обох рук і одягненої броні.
 
 skill.improvableskills:health.name=Додаткове здоров'я
@@ -61,7 +61,7 @@ skill.improvableskills:alchemist.name=Алхімик
 skill.improvableskills:alchemist.desc=Зілля варятся швидше. Дуже добре для тих хто займається алхімією.
 
 skill.improvableskills:generic_protection.name=Плотна шкіра
-skill.improvableskills:generic_protection.desc=Робить вашу шкіру більш  надійною проти ворогів. Спробуйте стати драконом.
+skill.improvableskills:generic_protection.desc=Робить вашу шкіру стійкішою до шкоди від ворогів. Спробуйте стати драконом.
 
 skill.improvableskills:treasure_sands.name=Скарби пісків
 skill.improvableskills:treasure_sands.desc=Дозволяє знайти скарби з піску.
@@ -69,7 +69,7 @@ skill.improvableskills:treasure_sands.desc=Дозволяє знайти ска�
 skill.improvableskills:atkdmg_melee.name=Сильна рука
 skill.improvableskills:atkdmg_melee.desc=Збільшує силу атаки в ближньому бою.
 
-skill.improvableskills:atkdmg_ranged.name=Острая стрела
+skill.improvableskills:atkdmg_ranged.name=Гостра стріла
 skill.improvableskills:atkdmg_ranged.desc=Збільшує силу атаки в дальньому бою.
 
 skill.improvableskills:pvp.name=PvP Захист
@@ -79,21 +79,21 @@ skill.improvableskills:enchanter.name=Чаклун
 skill.improvableskills:enchanter.desc=Зменшує мінімальний рівень щоб зачарувати предмет. (Ефект збільшується кожні 4 рівні)
 
 skill.improvableskills:ender_manipulator.name=Ендер-маніпулятор
-skill.improvableskills:ender_manipulator.desc=Зменшує урон від використовування ендер-перлин. Останній рівень має шанс вилікувати гравця.
+skill.improvableskills:ender_manipulator.desc=Зменшує шкоду від використовування ендер-перлин. Останній рівень має шанс вилікувати гравця.
 
 skill.improvableskills:xp_plus.name=Збір досвіду
 skill.improvableskills:xp_plus.desc=Збільшує кількість досвіду під час видобутку, розмноження тварин, риболовлі й вбивства мобів.
 
-skill.improvableskills:silent_foot.name=Silent Foot
+skill.improvableskills:silent_foot.name=Тиха стопа
 skill.improvableskills:silent_foot.desc=Decreases the radius of any vibrations you make.
 
 skill.improvableskills:dexterous_arms.name=Dexterous Arms
 skill.improvableskills:dexterous_arms.desc=Makes all tools last longer by sometimes preventing their damage when used.
 
-skill.improvableskills:fast_swimmer.name=Fast Swimmer
+skill.improvableskills:fast_swimmer.name=Швидкий плавець
 skill.improvableskills:fast_swimmer.desc=Increases the swimming speed of the player in any liquid.
 
-skill.improvableskills:soul_speed.name=Soul Speed
+skill.improvableskills:soul_speed.name=Швидкість душі
 skill.improvableskills:soul_speed.desc=Increases movement speed on soul sand, without needing Soul Speed boots. As penalty, your boots will get damaged when walking on soul sand.
 
 skill.improvableskills:huckster.name=Huckster
@@ -107,10 +107,10 @@ pagelet.improvableskills:xp_bank=Сховище досвіду
 #ABILITIES#
 ability.improvableskills:enchanting.name=Зачаровування
 ability.improvableskills:crafter.name=Crafter
-ability.improvableskills:anvil.name=Blacksmith
-ability.improvableskills:magnetism.name=Magnetism
+ability.improvableskills:anvil.name=Коваль
+ability.improvableskills:magnetism.name=Магнетизм
 ability.improvableskills:auto_xp_bank.name=Auto XP Bank
-ability.improvableskills:cowboy.name=Cowboy
+ability.improvableskills:cowboy.name=Ковбой
 
 #BUTTONS#
 button.improvableskills:upgrade=Поліпшити
@@ -152,7 +152,7 @@ subtitles.improvableskills:skill_book_closed=Книжка статистик з�
 pagelet.improvableskills:update=Доступна нова версія!
 pagelet.improvableskills:news=Новини
 pagelet.improvableskills:discord1=Discord
-pagelet.improvableskills:discord2=Нужна помощь? Есть отличная идея? Не стесняйся, заходи на наш Дискорд сейчас! Нам важно ваше мнение по моду, и идеи, т.к. наже воображение не безграничное. Самые лучшие умения и/или способности будут выбраны надобавление голосованием. (Художники очень приветствуются!)
+pagelet.improvableskills:discord2=Потрібна допомога? Маєте чудову ідею? Не соромтеся, доєднуйтеся до нашого Discord сервера! Ми хочемо почути ваші думки та пропозиції, оскільки наша уява не безмежна. Найкращі навички та/або здібності будуть виставленні на голосування щодо подальшої реалізації. (Художникам також раді!)
 pagelet.improvableskills:skills=Навички
 pagelet.improvableskills:abilities=Здібності
 
