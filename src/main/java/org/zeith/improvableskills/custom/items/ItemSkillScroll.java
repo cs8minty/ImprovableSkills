@@ -2,11 +2,7 @@ package org.zeith.improvableskills.custom.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
@@ -21,6 +17,7 @@ import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.api.tooltip.SkillTooltip;
+import org.zeith.improvableskills.custom.items.data.StoredSkill;
 import org.zeith.improvableskills.data.PlayerDataManager;
 import org.zeith.improvableskills.init.ItemsIS;
 import org.zeith.improvableskills.net.PacketScrollLevelupSkill;
@@ -33,8 +30,6 @@ public class ItemSkillScroll
 		extends Item
 		implements ITabItem
 {
-	private static final Map<String, PlayerSkillBase> SKILL_MAP = new HashMap<>();
-	
 	public ItemSkillScroll()
 	{
 		super(new Properties().stacksTo(1));
@@ -45,27 +40,21 @@ public class ItemSkillScroll
 	public @Nullable String getCreatorModId(ItemStack stack)
 	{
 		var v = getSkillFromScroll(stack);
-		if(v != null) return ImprovableSkills.SKILLS().getKey(v).getNamespace();
+		if(v != null)
+		{
+			var k = ImprovableSkills.SKILLS.getKey(v);
+			if(k != null) return k.getNamespace();
+		}
 		return null;
 	}
 	
 	@Nullable
 	public static PlayerSkillBase getSkillFromScroll(ItemStack stack)
 	{
-		if(!stack.isEmpty() && stack.getItem() instanceof ItemSkillScroll && stack.hasTag() &&
-				stack.getTag().contains("Skill", Tag.TAG_STRING))
+		if(!stack.isEmpty() && stack.has(StoredSkill.TYPE))
 		{
-			String skill = stack.getTag().getString("Skill");
-			
-			if(SKILL_MAP.containsKey(skill))
-				return SKILL_MAP.get(skill);
-			
-			PlayerSkillBase b = ImprovableSkills.SKILLS()
-					.getValue(new ResourceLocation(stack.getTag().getString("Skill")));
-			
-			SKILL_MAP.put(skill, b);
-			
-			return b;
+			var ss = stack.get(StoredSkill.TYPE);
+			return ss != null ? ss.skill() : null;
 		}
 		return null;
 	}
@@ -75,18 +64,15 @@ public class ItemSkillScroll
 		if(base.getScrollState().hasScroll())
 		{
 			ItemStack stack = new ItemStack(ItemsIS.SKILL_SCROLL);
-			CompoundTag tag = new CompoundTag();
-			tag.putString("Skill", base.getRegistryName().toString());
-			stack.setTag(tag);
+			stack.set(StoredSkill.TYPE, new StoredSkill(base));
 			return stack;
 		}
 		return ItemStack.EMPTY;
 	}
 	
-	public static void getItems(NonNullList<ItemStack> items)
+	public static void getItems(Set<ItemStack> items)
 	{
-		ImprovableSkills.SKILLS()
-				.getValues()
+		ImprovableSkills.SKILLS
 				.stream()
 				.filter(skill -> skill.getScrollState().hasScroll())
 				.sorted(Comparator.comparing(PlayerSkillBase::getUnlocalizedName))
@@ -100,14 +86,14 @@ public class ItemSkillScroll
 	}
 	
 	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab tab, Set<ItemStack> items)
 	{
 		if(allowedIn(tab))
 			getItems(items);
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		PlayerSkillBase base = getSkillFromScroll(stack);
 		if(base == null)
@@ -142,7 +128,9 @@ public class ItemSkillScroll
 			if(!data.hasSkillScroll(base) && data.unlockSkillScroll(base, true))
 			{
 				ItemStack used = held.copy();
-				held.shrink(1);
+				
+				if(!playerIn.isCreative())
+					held.shrink(1);
 				
 				playerIn.swing(handIn);
 				worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 1F);
@@ -155,7 +143,9 @@ public class ItemSkillScroll
 			{
 				data.setSkillLevel(base, data.getSkillLevel(base) + 1);
 				ItemStack used = held.copy();
-				held.shrink(1);
+				
+				if(!playerIn.isCreative())
+					held.shrink(1);
 				
 				playerIn.swing(handIn);
 				worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 1F);

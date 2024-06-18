@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -35,11 +35,11 @@ public abstract class AbstractFurnaceBlockEntityMixin
 	{
 		var level = player.serverLevel();
 		var evt = new CalculateAdditionalFurnaceExperienceMultiplier(player, Cast.cast(this));
-		MinecraftForge.EVENT_BUS.post(evt);
+		NeoForge.EVENT_BUS.post(evt);
 		float mul = evt.getMultiplier();
 		if(mul > 0) for(var entry : this.recipesUsed.object2IntEntrySet())
 			level.getRecipeManager().byKey(entry.getKey()).ifPresent(recipe ->
-					createExperience(level, player.position(), entry.getIntValue(), ((AbstractCookingRecipe) recipe).getExperience() * mul)
+					createExperience(level, player.position(), entry.getIntValue(), ((AbstractCookingRecipe) recipe.value()).getExperience() * mul)
 			);
 	}
 }

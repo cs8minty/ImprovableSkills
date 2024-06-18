@@ -167,9 +167,9 @@ public class GuiUpdateBook
 	}
 	
 	@Override
-	public boolean mouseScrolled(double x, double y, double dWheel)
+	public boolean mouseScrolled(double x, double y, double xWheel, double yWheel)
 	{
-		int dw = (int) ((dWheel * 120) / -30);
+		int dw = (int) ((yWheel * 120) / -30);
 		if(dw != 0)
 		{
 			scroll += dw;

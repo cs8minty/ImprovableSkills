@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -55,10 +55,12 @@ public class SkillAcceleratedFurnace
 							a.setLitTime((int) Math.max(0, burnTime - add * .8F));
 							if(a.getCookingProgress() >= a.getCookingTotalTime())
 							{
-								Recipe<?> recipe = level.getRecipeManager().getRecipeFor(a.getRecipeType(), tef, level).orElse(null);
-								if(a.callBurn(level.registryAccess(), recipe, a.getItems(), tef.getMaxStackSize()))
-									tef.setRecipeUsed(recipe);
-								a.setCookingProgress(0);
+								a.getQuickCheck().getRecipeFor(new SingleRecipeInput(a.getItems().get(0)), level).ifPresent(recipe ->
+								{
+									if(AbstractFurnaceBlockEntityAccessor.callBurn(level.registryAccess(), recipe, a.getItems(), tef.getMaxStackSize(), tef))
+										tef.setRecipeUsed(recipe);
+									a.setCookingProgress(0);
+								});
 							}
 						} else if(a.getCookingProgress() < 1)
 						{

@@ -1,21 +1,40 @@
 package org.zeith.improvableskills.custom;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.*;
-import net.minecraft.world.level.storage.loot.entries.*;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import org.zeith.hammerlib.core.adapter.LootTableAdapter;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import org.zeith.hammerlib.event.data.DataPackRegistryLoadEvent;
+import org.zeith.hammerlib.mixins.LootTableAccessor;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.init.ItemsIS;
 
+@EventBusSubscriber
 public class LootTableLoader
 {
-	public static void loadTable(ResourceLocation id, LootTable table)
+	@SubscribeEvent
+	public static void inspectLootTables(DataPackRegistryLoadEvent e)
 	{
-		for(PlayerSkillBase skill : ImprovableSkills.SKILLS())
+		e.getRegistry(Registries.LOOT_TABLE).ifPresent(reg ->
+		{
+			for(var en : reg.entrySet())
+			{
+				loadTable(en.getKey(), en.getValue());
+			}
+		});
+	}
+	
+	public static void loadTable(ResourceKey<LootTable> id, LootTable table)
+	{
+		for(PlayerSkillBase skill : ImprovableSkills.SKILLS)
 		{
 			var lt = skill.getLoot();
 			if(lt == null) continue;
@@ -23,7 +42,7 @@ public class LootTableLoader
 			lt.apply(id, table);
 		}
 		
-		if(id.getPath().contains("chests/") && ConfigsIS.parchmentGeneration)
+		if(id.location().getPath().contains("chests/") && ConfigsIS.parchmentGeneration)
 		{
 			if(ConfigsIS.blockedParchmentChests.contains(id.toString()))
 			{
@@ -34,7 +53,7 @@ public class LootTableLoader
 			
 			try
 			{
-				var pools = LootTableAdapter.getPools(table);
+				var pools = ((LootTableAccessor) table).getPools();
 				
 				pools.add(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1F))
@@ -44,7 +63,7 @@ public class LootTableLoader
 								.setWeight(1)
 								.setQuality(60)
 						)
-//						.name("parchment_fragment")
+						.name("parchment_fragment")
 						.build());
 			} catch(Throwable err)
 			{

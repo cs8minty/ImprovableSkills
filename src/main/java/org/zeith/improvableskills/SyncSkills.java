@@ -2,8 +2,8 @@ package org.zeith.improvableskills;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.net.PacketOpenSkillsBook;
 import org.zeith.improvableskills.net.PacketSyncSkillData;
@@ -21,7 +21,7 @@ public class SyncSkills
 	{
 		if(localPlayer == null && CLIENT_DATA != null)
 		{
-			ImprovableSkills.LOG.info("Reset client skill data.");
+			ImprovableSkills.LOG.info("Reset client ability data.");
 			CLIENT_DATA = null;
 		}
 	}

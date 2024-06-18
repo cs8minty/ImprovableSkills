@@ -4,21 +4,23 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.resources.ResourceLocation;
+import org.zeith.hammerlib.core.RegistriesHL;
 import org.zeith.hammerlib.util.java.ResettableLazy;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
-import org.zeith.improvableskills.api.registry.PlayerSkillBase;
+import org.zeith.improvableskills.api.registry.*;
 
 public class SuggestionProvidersIS3
 {
-	public static final ResettableLazy<ResourceKeyArgument<PlayerSkillBase>> SKILL_ARGUMENT = ResettableLazy.of(() -> ResourceKeyArgument.key(ImprovableSkills.SKILLS().getRegistryKey()));
-	public static final ResettableLazy<ResourceKeyArgument<PlayerAbilityBase>> ABILITY_ARGUMENT = ResettableLazy.of(() -> ResourceKeyArgument.key(ImprovableSkills.ABILITIES().getRegistryKey()));
+	public static final ResourceKeyArgument<PlayerSkillBase> SKILL_ARGUMENT = ResourceKeyArgument.key(RegistriesIS3.SKILL);
+	public static final ResourceKeyArgument<PlayerAbilityBase> ABILITY_ARGUMENT = ResourceKeyArgument.key(RegistriesIS3.ABILITY);
 	
 	public static SuggestionProvider<CommandSourceStack> abilitySuggestions()
 	{
 		return (src, builder) ->
 		{
-			ImprovableSkills.ABILITIES().getKeys().stream()
+			ImprovableSkills.ABILITIES
+					.keySet()
+					.stream()
 					.map(ResourceLocation::toString)
 					.filter(s -> s.startsWith(builder.getRemaining()))
 					.forEach(builder::suggest);
@@ -30,7 +32,9 @@ public class SuggestionProvidersIS3
 	{
 		return (src, builder) ->
 		{
-			ImprovableSkills.SKILLS().getKeys().stream()
+			ImprovableSkills.SKILLS
+					.keySet()
+					.stream()
 					.map(ResourceLocation::toString)
 					.filter(s -> s.startsWith(builder.getRemaining()))
 					.forEach(builder::suggest);

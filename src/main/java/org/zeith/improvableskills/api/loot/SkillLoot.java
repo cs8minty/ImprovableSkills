@@ -1,31 +1,31 @@
 package org.zeith.improvableskills.api.loot;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import org.zeith.hammerlib.core.adapter.LootTableAdapter;
+import org.zeith.hammerlib.mixins.LootTableAccessor;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
-import org.zeith.improvableskills.custom.items.ItemSkillScroll;
+import org.zeith.improvableskills.custom.items.data.StoredSkill;
 import org.zeith.improvableskills.init.ItemsIS;
 import org.zeith.improvableskills.utils.loot.LootConditionSkillScroll;
 
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SkillLoot
 {
 	public final PlayerSkillBase skill;
-	public Predicate<ResourceLocation> lootTableChecker = r -> false;
+	private final Set<ResourceKey<LootTable>> lootTables = new HashSet<>();
 	public RandomBoolean chance = new RandomBoolean();
 	
 	/**
-	 * Setting this to true will remove any other loot from being generated if a skill scroll drops in a loot table.
+	 * Setting this to true will remove any other loot from being generated if a ability scroll drops in a loot table.
 	 */
 	public boolean exclusive;
 	
@@ -34,56 +34,55 @@ public class SkillLoot
 		this.skill = skill;
 	}
 	
-	public void setLootTable(ResourceLocation rl)
+	public void setLootTable(ResourceKey<LootTable> rl)
 	{
-		lootTableChecker = r -> r.equals(rl);
+		lootTables.clear();
+		lootTables.add(rl);
 	}
 	
-	public void setLootTables(ResourceLocation... rl)
+	@SafeVarargs
+	public final void setLootTables(ResourceKey<LootTable>... rl)
 	{
-		var rls = List.of(rl);
-		lootTableChecker = rls::contains;
+		lootTables.clear();
+		lootTables.addAll(Set.of(rl));
 	}
 	
-	public void addLootTable(ResourceLocation rl)
+	public void addLootTable(ResourceKey<LootTable> rl)
 	{
-		lootTableChecker = lootTableChecker.or(rl::equals);
+		lootTables.add(rl);
 	}
 	
-	public void addLootTables(ResourceLocation... rl)
+	@SafeVarargs
+	public final void addLootTables(ResourceKey<LootTable>... rl)
 	{
-		var rls = List.of(rl);
-		lootTableChecker = lootTableChecker.or(rls::contains);
+		lootTables.addAll(Set.of(rl));
 	}
 	
-	public void apply(ResourceLocation id, LootTable table)
+	public void apply(ResourceKey<LootTable> id, LootTable table)
 	{
-		if(lootTableChecker != null && lootTableChecker.test(id))
+		if(!lootTables.contains(id)) return;
+		ImprovableSkills.LOG.info("Injecting scroll for ability '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!");
+		
+		try
 		{
-			ImprovableSkills.LOG.info("Injecting scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!");
+			var entry = LootItem.lootTableItem(ItemsIS.SKILL_SCROLL)
+					.apply(SetComponentsFunction.setComponent(StoredSkill.TYPE.get(), new StoredSkill(skill)))
+					.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)));
 			
-			try
-			{
-				var entry =
-						LootItem.lootTableItem(ItemsIS.SKILL_SCROLL)
-								.apply(SetNbtFunction.setTag(ItemSkillScroll.of(skill).getTag()))
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)));
-				
-				var pools = LootTableAdapter.getPools(table);
-				
-				pools.add(LootPool.lootPool()
-						.when(() -> new LootConditionSkillScroll(1F, skill))
-						.setRolls(ConstantValue.exactly(1F))
-						.add(EmptyLootItem.emptyItem().setWeight(chance.n - 1))
-						.add(entry.setWeight(1).setQuality(60))
-						// .name(skill.getRegistryName().toString() + "_skill_scroll")
-						.build()
-				);
-			} catch(Throwable err)
-			{
-				ImprovableSkills.LOG.error("Failed to inject scroll for skill '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!!!");
-				err.printStackTrace();
-			}
+			var pools = ((LootTableAccessor) table).getPools();
+			
+			pools.add(LootPool.lootPool()
+					.when(() -> new LootConditionSkillScroll(ConstantValue.exactly(1F), skill))
+					.setRolls(ConstantValue.exactly(1F))
+					.add(EmptyLootItem.emptyItem().setWeight(chance.n - 1))
+					.add(entry.setWeight(1).setQuality(60))
+					.name(skill.getRegistryName().toString() + "_skill_scroll")
+					.build()
+			);
+		} catch(Throwable err)
+		{
+			ImprovableSkills.LOG.error("Failed to inject scroll for ability '" + skill.getRegistryName().toString() + "' into LootTable '" + table.getLootTableId() + "'!!!");
+			err.printStackTrace();
 		}
 	}
 }

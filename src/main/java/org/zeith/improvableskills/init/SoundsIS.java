@@ -11,9 +11,9 @@ import java.util.function.BiConsumer;
 
 public interface SoundsIS
 {
-	SoundEvent PAGE_TURNS = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "page_turns"));
-	SoundEvent TREASURE_FOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "treasure_found"));
-	SoundEvent CONNECT = SoundEvent.createVariableRangeEvent(new ResourceLocation(ImprovableSkills.MOD_ID, "connect"));
+	SoundEvent PAGE_TURNS = SoundEvent.createVariableRangeEvent(ImprovableSkills.id("page_turns"));
+	SoundEvent TREASURE_FOUND = SoundEvent.createVariableRangeEvent(ImprovableSkills.id("treasure_found"));
+	SoundEvent CONNECT = SoundEvent.createVariableRangeEvent(ImprovableSkills.id("connect"));
 	
 	@SimplyRegister
 	static void register(BiConsumer<ResourceLocation, SoundEvent> r)

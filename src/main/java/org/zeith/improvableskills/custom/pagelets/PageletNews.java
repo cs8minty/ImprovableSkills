@@ -1,12 +1,13 @@
 package org.zeith.improvableskills.custom.pagelets;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLLoader;
 import org.zeith.hammerlib.util.ZeithLinkRepository;
 import org.zeith.hammerlib.util.java.Hashers;
 import org.zeith.hammerlib.util.java.net.HttpRequest;
@@ -22,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 public class PageletNews
 		extends PageletBase
 {
-	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/news.png");
+	public final ResourceLocation texture = ImprovableSkills.id("textures/gui/news.png");
 	
 	{
 		setTitle(Component.translatable("pagelet." + ImprovableSkills.MOD_ID + ":news"));
@@ -45,12 +46,9 @@ public class PageletNews
 	}
 	
 	boolean popping = true;
-	String changes;
 	
-	public String getChanges()
-	{
-		return changes;
-	}
+	@Getter
+	String changes;
 	
 	@Override
 	public void reload()
@@ -63,7 +61,7 @@ public class PageletNews
 			
 			this.changes = new String(
 					HttpRequest.get(url)
-							.userAgent("ImprovableSkills v" + ModHelper.getModVersion(ImprovableSkills.MOD_ID)+ "; Minecraft v" + FMLLoader.versionInfo().mcVersion())
+							.userAgent("ImprovableSkills v" + ModHelper.getModVersion(ImprovableSkills.MOD_ID) + "; Minecraft v" + FMLLoader.versionInfo().mcVersion())
 							.connectTimeout(30000)
 							.bytes(),
 					StandardCharsets.UTF_8

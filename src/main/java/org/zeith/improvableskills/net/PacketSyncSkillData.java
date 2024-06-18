@@ -1,41 +1,43 @@
 package org.zeith.improvableskills.net;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.hammerlib.net.*;
 import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.hammerlib.util.mcf.LogicalSidePredictor;
-import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.IGuiSkillDataConsumer;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.data.PlayerDataManager;
 
+@Getter
 public class PacketSyncSkillData
 		implements IPacket
 {
-	public CompoundTag nbt;
+	private CompoundTag nbt;
 	
 	public static void sync(ServerPlayer mp)
 	{
 		try
 		{
 			if(mp != null)
-				PlayerDataManager.handleDataSafely(mp, data -> Network.sendTo(new PacketSyncSkillData(data), mp));
+				PlayerDataManager.handleDataSafely(mp, data -> Network.sendTo(new PacketSyncSkillData(mp.registryAccess(), data), mp));
 		} catch(NullPointerException npe)
 		{
 			// networking issues, pretty unsure how to prevent.
 		}
 	}
 	
-	private PacketSyncSkillData(PlayerSkillData data)
+	private PacketSyncSkillData(RegistryAccess access, PlayerSkillData data)
 	{
-		nbt = data.serializeNBT();
+		nbt = data.serializeNBT(access);
 		nbt.putInt("PlayerLocalXPLevel", data.player.experienceLevel);
 		nbt.putFloat("PlayerLocalXPProgress", data.player.experienceProgress);
 		nbt.putFloat("PlayerLocalHealth", data.player.getHealth());
@@ -43,13 +45,7 @@ public class PacketSyncSkillData
 	
 	public PacketSyncSkillData()
 	{
-		nbt = new CompoundTag();
-	}
-	
-	@Override
-	public void serverExecute(PacketContext ctx)
-	{
-		PlayerDataManager.handleDataSafely(ctx.getSender(), data -> ctx.withReply(new PacketSyncSkillData(data)));
+		this.nbt = new CompoundTag();
 	}
 	
 	@Override
@@ -78,14 +74,14 @@ public class PacketSyncSkillData
 			player.experienceProgress = nbt.getFloat("PlayerLocalXPProgress");
 		if(nbt.contains("PlayerLocalHealth"))
 			player.setHealth(nbt.getFloat("PlayerLocalHealth"));
-		
-		// This is not REQUIRED but preferred for mods that may use this tag
-		player.getPersistentData().put(ImprovableSkills.NBT_DATA_TAG, nbt);
 	}
 	
-	public CompoundTag getNbt()
+	@Override
+	public void serverExecute(PacketContext ctx)
 	{
-		return nbt;
+		PlayerDataManager.handleDataSafely(ctx.getSender(), data ->
+				ctx.withReply(new PacketSyncSkillData(ctx.registryAccess(), data))
+		);
 	}
 	
 	@Override

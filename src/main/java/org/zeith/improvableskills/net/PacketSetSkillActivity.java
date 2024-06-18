@@ -19,10 +19,6 @@ public class PacketSetSkillActivity
 		this.enabled = enabled;
 	}
 	
-	public PacketSetSkillActivity()
-	{
-	}
-	
 	@Override
 	public void write(FriendlyByteBuf buf)
 	{
@@ -42,7 +38,7 @@ public class PacketSetSkillActivity
 	{
 		PlayerDataManager.handleDataSafely(ctx.getSender(), data ->
 		{
-			var skill = ImprovableSkills.SKILLS().getValue(skillId);
+			var skill = ImprovableSkills.SKILLS.get(skillId);
 			if(skill != null) data.setSkillState(skill, enabled);
 		});
 	}

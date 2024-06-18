@@ -2,9 +2,9 @@ package org.zeith.improvableskills;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.hammerlib.util.java.tuples.Tuples;
 import org.zeith.improvableskills.api.IDigSpeedAffectorSkill;
@@ -12,7 +12,7 @@ import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.custom.items.ItemSkillsBook;
 import org.zeith.improvableskills.data.PlayerDataManager;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class SkillEvents
 {
 	@SubscribeEvent
@@ -27,7 +27,7 @@ public class SkillEvents
 			ItemStack item = p.getMainHandItem();
 			var tot = Tuples.mutable(1F);
 			
-			ImprovableSkills.SKILLS().getValues()
+			ImprovableSkills.SKILLS
 					.stream()
 					.flatMap(s -> Cast.optionally(s, IDigSpeedAffectorSkill.class).stream())
 					.filter(skill -> data.isSkillActive((PlayerSkillBase) skill))

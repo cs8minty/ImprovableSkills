@@ -22,7 +22,7 @@ public class GuiAutoXpBank
 		extends GuiCentered
 		implements IGuiSkillDataConsumer
 {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/auto_xp_bank.png");
+	public static final ResourceLocation TEXTURE = ImprovableSkills.id("textures/gui/auto_xp_bank.png");
 	
 	protected PlayerSkillData data;
 	
@@ -90,8 +90,8 @@ public class GuiAutoXpBank
 		var magnetic = data != null && data.autoXpBank;
 		var levels = "%.01f".formatted(range);
 		return !magnetic
-				? net.minecraft.network.chat.Component.translatable("text.improvableskills.auto_xp_bank.off")
-				: net.minecraft.network.chat.Component.translatable("text.improvableskills.auto_xp_bank.on", Component.literal(levels));
+			   ? net.minecraft.network.chat.Component.translatable("text.improvableskills.auto_xp_bank.off")
+			   : net.minecraft.network.chat.Component.translatable("text.improvableskills.auto_xp_bank.on", Component.literal(levels));
 	}
 	
 	@Override
@@ -100,7 +100,7 @@ public class GuiAutoXpBank
 		var pose = gfx.pose();
 		float value = data != null ? XPUtil.getLevelFromXPValue(data.autoXpBankThreshold) + XPUtil.getCurrentFromXPValue(data.autoXpBankThreshold) : 0;
 		
-		renderBackground(gfx);
+		renderTransparentBackground(gfx);
 		
 		toggleButton.active = data != null;
 		

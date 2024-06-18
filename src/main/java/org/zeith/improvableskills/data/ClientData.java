@@ -1,6 +1,6 @@
 package org.zeith.improvableskills.data;
 
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.improvableskills.ImprovableSkills;
 

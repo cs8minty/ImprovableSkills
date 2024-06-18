@@ -3,7 +3,6 @@ package org.zeith.improvableskills.proxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.network.chat.Component;
@@ -11,10 +10,9 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.common.NeoForge;
 import org.zeith.hammerlib.api.proxy.IClientProxy;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -49,12 +47,12 @@ public class ISClient
 	{
 		super.register(modBus);
 		modBus.addListener(this::registerOverlays);
-		modBus.addListener(this::clientSetup);
+		modBus.addListener(this::menuScreens);
 		modBus.addListener(this::registerItemColors);
 		modBus.addListener(this::registerParticles);
 		modBus.addListener(this::registerTooltipImages);
 		
-		var mcfBus = MinecraftForge.EVENT_BUS;
+		var mcfBus = NeoForge.EVENT_BUS;
 		mcfBus.addListener(this::addInvButtons);
 		mcfBus.addListener(this::renderInventory);
 	}
@@ -106,17 +104,17 @@ public class ISClient
 		}, ItemsIS.ABILITY_SCROLL);
 	}
 	
-	private void clientSetup(FMLClientSetupEvent e)
+	private void menuScreens(RegisterMenuScreensEvent e)
 	{
-		MenuScreens.register(GuiHooksIS.ENCH_POWER_BOOK_IO, GuiEnchPowBook::new);
-		MenuScreens.register(GuiHooksIS.REPAIR, AnvilScreen::new);
-		MenuScreens.register(GuiHooksIS.ENCHANTMENT, GuiPortableEnchantment::new);
-		MenuScreens.register(GuiHooksIS.CRAFTING, CraftingScreen::new);
+		e.register(GuiHooksIS.ENCH_POWER_BOOK_IO, GuiEnchPowBook::new);
+		e.register(GuiHooksIS.REPAIR, AnvilScreen::new);
+		e.register(GuiHooksIS.ENCHANTMENT, GuiPortableEnchantment::new);
+		e.register(GuiHooksIS.CRAFTING, CraftingScreen::new);
 	}
 	
-	private void registerOverlays(RegisterGuiOverlaysEvent e)
+	private void registerOverlays(RegisterGuiLayersEvent e)
 	{
-		e.registerAboveAll("ontop_effects", new OnTopEffects());
+		e.registerAboveAll(ImprovableSkills.id("ontop_effects"), new OnTopEffects());
 	}
 	
 	private Button openSkills;

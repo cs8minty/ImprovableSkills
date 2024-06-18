@@ -4,8 +4,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
@@ -31,7 +31,7 @@ public abstract class PageletBase
 	public ResourceLocation getRegistryName()
 	{
 		if(id == null)
-			id = ImprovableSkills.PAGELETS().getKey(this);
+			id = ImprovableSkills.PAGELETS.getKey(this);
 		return id;
 	}
 	

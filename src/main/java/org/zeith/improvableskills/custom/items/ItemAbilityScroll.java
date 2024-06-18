@@ -4,11 +4,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,17 +16,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.zeith.hammerlib.api.items.ITabItem;
 import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.net.Network;
+import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.hammerlib.util.java.Chars;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.recipe.RecipeParchmentFragment;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.api.tooltip.AbilityTooltip;
+import org.zeith.improvableskills.custom.items.data.StoredAbility;
 import org.zeith.improvableskills.data.PlayerDataManager;
 import org.zeith.improvableskills.init.ItemsIS;
 import org.zeith.improvableskills.init.RecipeTypesIS;
@@ -65,27 +67,17 @@ public class ItemAbilityScroll
 	public @Nullable String getCreatorModId(ItemStack stack)
 	{
 		var v = getAbilityFromScroll(stack);
-		if(v != null) return ImprovableSkills.ABILITIES().getKey(v).getNamespace();
+		if(v != null) return ImprovableSkills.ABILITIES.getKey(v).getNamespace();
 		return null;
 	}
 	
 	@Nullable
 	public static PlayerAbilityBase getAbilityFromScroll(ItemStack stack)
 	{
-		if(!stack.isEmpty() && stack.getItem() instanceof ItemAbilityScroll && stack.hasTag() &&
-				stack.getTag().contains("Ability", Tag.TAG_STRING))
+		if(!stack.isEmpty() && stack.has(StoredAbility.TYPE))
 		{
-			String skill = stack.getTag().getString("Ability");
-			
-			if(ABILITY_MAP.containsKey(skill))
-				return ABILITY_MAP.get(skill);
-			
-			PlayerAbilityBase b = ImprovableSkills.ABILITIES()
-					.getValue(new ResourceLocation(stack.getTag().getString("Ability")));
-			
-			ABILITY_MAP.put(skill, b);
-			
-			return b;
+			var ss = stack.get(StoredAbility.TYPE);
+			return ss != null ? ss.ability() : null;
 		}
 		return null;
 	}
@@ -93,16 +85,13 @@ public class ItemAbilityScroll
 	public static ItemStack of(PlayerAbilityBase base)
 	{
 		ItemStack stack = new ItemStack(ItemsIS.ABILITY_SCROLL);
-		CompoundTag tag = new CompoundTag();
-		tag.putString("Ability", base.getRegistryName().toString());
-		stack.setTag(tag);
+		stack.set(StoredAbility.TYPE, new StoredAbility(base));
 		return stack;
 	}
 	
-	public static void getItems(NonNullList<ItemStack> items)
+	public static void getItems(Set<ItemStack> items)
 	{
-		ImprovableSkills.ABILITIES()
-				.getValues()
+		ImprovableSkills.ABILITIES
 				.stream()
 				.sorted(Comparator.comparing(PlayerAbilityBase::getUnlocalizedName))
 				.forEach(skill -> items.add(ItemAbilityScroll.of(skill)));
@@ -115,14 +104,14 @@ public class ItemAbilityScroll
 	}
 	
 	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab tab, Set<ItemStack> items)
 	{
 		if(allowedIn(tab))
 			getItems(items);
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		PlayerAbilityBase base = getAbilityFromScroll(stack);
 		if(base == null)
@@ -131,65 +120,74 @@ public class ItemAbilityScroll
 		if(flagIn.isAdvanced())
 			tooltip.add(Component.literal(" - " + base.getRegistryName()).withStyle(ChatFormatting.DARK_GRAY));
 		
-		if(ImprovableSkills.PROXY.hasShiftDown())
+		if(!ImprovableSkills.PROXY.hasShiftDown())
 		{
-			boolean hasAdded = false;
-			var recipes = worldIn.getRecipeManager().getAllRecipesFor(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE);
-			for(RecipeParchmentFragment recipe : recipes)
-			{
-				var result = recipe.result();
-				if(result.getItem() != this) continue;
-				var match = getAbilityFromScroll(result);
-				if(match != base) continue;
-				
-				var comp = Component.literal("");
-				
-				int i = 0;
-				var it = Stream.concat(Stream.of(Ingredient.of(ItemsIS.PARCHMENT_FRAGMENT)), recipe.ingredients.stream())
-						.map(m ->
-						{
-							var st = RecipeHelper.cycleIngredientStack(m, 1000L);
-							return ((MutableComponent) st.getDisplayName())
-									.withStyle(Style.EMPTY.withColor(getCustomColor(st.getItem())));
-						})
-						.iterator();
-				
-				while(it.hasNext())
-				{
-					if(i > 0) comp.append(", ");
-					comp.append(it.next());
-					++i;
-				}
-				
-				tooltip.add(Component.translatable("recipe.improvableskills:ability", comp)
-						.withStyle(ChatFormatting.GRAY));
-				hasAdded = true;
-			}
-			
-			if(!hasAdded)
-			{
-				String ln = I18n.get("recipe." + base.getRegistryName().getNamespace() + ":ability." +
-						base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN);
-				int i, j;
-				while((i = ln.indexOf('<')) != -1 && (j = ln.indexOf('>', i + 1)) != -1)
-				{
-					String to = ln.substring(i + 1, j);
-					String t;
-					
-					Item it = ForgeRegistries.ITEMS.getValue(new ResourceLocation(to));
-					if(it != null)
-						t = it.getDefaultInstance().getDisplayName().getString();
-					else
-						t = Component.translatable("text.improvableskills:unresolved_item")
-								.withStyle(ChatFormatting.DARK_RED).getString();
-					
-					ln = ln.replaceAll("<" + to + ">", t);
-				}
-				tooltip.add(Component.literal(ln).withStyle(ChatFormatting.GRAY));
-			}
-		} else
 			tooltip.add(Component.literal(I18n.get("text.improvableskills:shiftfrecipe")
 					.replace('&', Chars.SECTION_SIGN)).withStyle(ChatFormatting.GRAY));
+			return;
+		}
+		
+		boolean hasAdded = false;
+		
+		var level = ImprovableSkills.PROXY.getClientLevel();
+		if(level == null) return;
+		
+		for(var holder : level.getRecipeManager().getAllRecipesFor(RecipeTypesIS.PARCHMENT_FRAGMENT_TYPE))
+		{
+			var recipe = holder.value();
+			var result = recipe.result();
+			if(result.getItem() != this) continue;
+			var match = getAbilityFromScroll(result);
+			if(match != base) continue;
+			
+			var comp = Component.literal("");
+			
+			int i = 0;
+			var it = Stream.concat(Stream.of(Ingredient.of(ItemsIS.PARCHMENT_FRAGMENT)), recipe.getIngredients().stream())
+					.map(m ->
+					{
+						var st = RecipeHelper.cycleIngredientStack(m, 1000L);
+						return ((MutableComponent) st.getDisplayName())
+								.withStyle(Style.EMPTY.withColor(getCustomColor(st.getItem())));
+					})
+					.iterator();
+			
+			while(it.hasNext())
+			{
+				if(i > 0) comp.append(", ");
+				comp.append(it.next());
+				++i;
+			}
+			
+			tooltip.add(Component.translatable("recipe.improvableskills:ability", comp)
+					.withStyle(ChatFormatting.GRAY));
+			hasAdded = true;
+		}
+		
+		if(!hasAdded)
+		{
+			String ln = I18n.get("recipe." + base.getRegistryName().getNamespace() + ":ability." +
+								 base.getRegistryName().getPath()).replace('&', Chars.SECTION_SIGN);
+			int i, j;
+			while((i = ln.indexOf('<')) != -1 && (j = ln.indexOf('>', i + 1)) != -1)
+			{
+				String to = ln.substring(i + 1, j);
+				String t;
+				
+				Item it = ctx.registries().lookupOrThrow(Registries.ITEM)
+						.get(ResourceKey.create(Registries.ITEM, Resources.location(to)))
+						.map(Holder::value)
+						.orElse(null);
+				if(it != null)
+					t = it.getDefaultInstance().getDisplayName().getString();
+				else
+					t = Component.translatable("text.improvableskills:unresolved_item")
+							.withStyle(ChatFormatting.DARK_RED).getString();
+				
+				ln = ln.replaceAll("<" + to + ">", t);
+			}
+			tooltip.add(Component.literal(ln).withStyle(ChatFormatting.GRAY));
+		}
 	}
 	
 	@Override

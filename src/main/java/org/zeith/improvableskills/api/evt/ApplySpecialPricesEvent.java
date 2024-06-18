@@ -2,7 +2,7 @@ package org.zeith.improvableskills.api.evt;
 
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
 public class ApplySpecialPricesEvent
 		extends LivingEvent

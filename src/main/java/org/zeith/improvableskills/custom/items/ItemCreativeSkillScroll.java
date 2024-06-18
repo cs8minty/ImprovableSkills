@@ -28,7 +28,7 @@ public class ItemCreativeSkillScroll
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip0").withStyle(ChatFormatting.GRAY));
 		tooltip.add(Component.translatable(getDescriptionId() + ".tooltip1").withStyle(ChatFormatting.GRAY));
@@ -43,7 +43,7 @@ public class ItemCreativeSkillScroll
 		
 		return PlayerDataManager.handleDataSafely(playerIn, data ->
 		{
-			var bases = ImprovableSkills.SKILLS().getValues();
+			var bases = ImprovableSkills.SKILLS;
 			
 			List<PlayerSkillBase> given = new ArrayList<>();
 			
@@ -63,7 +63,8 @@ public class ItemCreativeSkillScroll
 			if(!given.isEmpty())
 			{
 				ItemStack used = held.copy();
-				held.shrink(1);
+				if(!playerIn.isCreative())
+					held.shrink(1);
 				
 				playerIn.swing(handIn);
 				worldIn.playSound(null, playerIn.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 0.5F, 1F);

@@ -1,35 +1,31 @@
 package org.zeith.improvableskills.api.loot;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.common.loot.LootModifier;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
-import org.zeith.hammerlib.util.java.Cast;
-import org.zeith.improvableskills.ImprovableSkills;
+import org.zeith.hammerlib.annotations.RegistryName;
+import org.zeith.hammerlib.annotations.SimplyRegister;
+import org.zeith.hammerlib.api.registrars.Registrar;
 import org.zeith.improvableskills.custom.items.ItemSkillScroll;
 import org.zeith.improvableskills.init.ItemsIS;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@SimplyRegister
 public class GlobalSkillLootModifier
 		extends LootModifier
 {
-	public static final ResourceLocation EXCLUSIVE_SKILL_MODIFIERS = ImprovableSkills.id("exclusive_modifier");
-	public static final Codec<GlobalSkillLootModifier> CODEC = RecordCodecBuilder.create(inst ->
+	@RegistryName("exclusive_modifier")
+	public static final Registrar<MapCodec<GlobalSkillLootModifier>> CODEC = Registrar.globalLootModifier(RecordCodecBuilder.mapCodec(inst ->
 			codecStart(inst)
 					.apply(inst, GlobalSkillLootModifier::new)
-	);
+	));
 	
 	/**
 	 * Constructs a LootModifier.
@@ -61,14 +57,8 @@ public class GlobalSkillLootModifier
 	}
 	
 	@Override
-	public Codec<? extends IGlobalLootModifier> codec()
+	public MapCodec<? extends IGlobalLootModifier> codec()
 	{
-		return CODEC;
-	}
-	
-	@SubscribeEvent
-	public static void register(RegisterEvent e)
-	{
-		e.register(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, EXCLUSIVE_SKILL_MODIFIERS, Cast.constant(CODEC));
+		return CODEC.get();
 	}
 }

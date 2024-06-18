@@ -1,25 +1,26 @@
 package org.zeith.improvableskills.api.recipe;
 
-import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.abstractions.recipes.IRecipeVisualizer;
 import org.zeith.hammerlib.abstractions.recipes.IVisualizedRecipe;
 import org.zeith.hammerlib.abstractions.recipes.layout.ISlotBuilder.SlotRole;
 import org.zeith.hammerlib.abstractions.recipes.layout.IVisualizerBuilder;
 import org.zeith.hammerlib.api.items.ConsumableItem;
-import org.zeith.hammerlib.api.recipes.BaseRecipe;
-import org.zeith.hammerlib.api.recipes.SerializableRecipeType;
+import org.zeith.hammerlib.api.recipes.BaseCustomRecipe;
+import org.zeith.hammerlib.api.registrars.SerializableRecipeType;
 import org.zeith.hammerlib.client.render.IGuiDrawable;
 import org.zeith.hammerlib.client.utils.UV;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -30,15 +31,13 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class RecipeParchmentFragment
-		extends BaseRecipe<RecipeParchmentFragment>
+		extends BaseCustomRecipe<RecipeParchmentFragment>
 {
-	public final List<Ingredient> ingredients;
-	
-	public RecipeParchmentFragment(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients)
+	public RecipeParchmentFragment(String group, ItemStack result, List<Ingredient> ingredients)
 	{
-		super(id, group);
+		super(group);
 		this.vanillaResult = result;
-		this.ingredients = ingredients;
+		this.vanillaIngredients.addAll(ingredients);
 	}
 	
 	public ItemStack result()
@@ -48,7 +47,7 @@ public class RecipeParchmentFragment
 	
 	public List<ConsumableItem> getConsumableIngredients()
 	{
-		return ingredients
+		return vanillaIngredients
 				.stream()
 				.map(i -> new ConsumableItem(1, i))
 				.toList();
@@ -63,40 +62,39 @@ public class RecipeParchmentFragment
 	public static class Type
 			extends SerializableRecipeType<RecipeParchmentFragment>
 	{
+		public static final MapCodec<RecipeParchmentFragment> CODEC = RecordCodecBuilder.mapCodec(inst ->
+				inst.group(
+						Codec.STRING.lenientOptionalFieldOf("group", "").forGetter(RecipeParchmentFragment::getGroup),
+						ItemStack.CODEC.fieldOf("result").forGetter(RecipeParchmentFragment::result),
+						Ingredient.LIST_CODEC.fieldOf("ingredients").forGetter(RecipeParchmentFragment::getIngredients)
+				).apply(inst, RecipeParchmentFragment::new)
+		);
+		
 		@Override
-		public RecipeParchmentFragment fromJson(ResourceLocation id, JsonObject json)
+		public MapCodec<RecipeParchmentFragment> codec()
 		{
-			var items = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
-			if(items.isEmpty())
-			{
-				throw new JsonParseException("No ingredients for shapeless recipe");
-			} else
-			{
-				String s = GsonHelper.getAsString(json, "group", "");
-				ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-				return new RecipeParchmentFragment(id, s, result, items);
-			}
+			return CODEC;
 		}
 		
 		@Nullable
 		@Override
-		public RecipeParchmentFragment fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+		public RecipeParchmentFragment fromNetwork(RegistryFriendlyByteBuf buf)
 		{
 			String s = buf.readUtf();
 			int i = buf.readVarInt();
 			NonNullList<Ingredient> items = NonNullList.withSize(i, Ingredient.EMPTY);
-			for(int j = 0; j < items.size(); ++j) items.set(j, Ingredient.fromNetwork(buf));
-			ItemStack result = buf.readItem();
-			return new RecipeParchmentFragment(id, s, result, items);
+			for(int j = 0; j < items.size(); ++j) items.set(j, Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+			ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
+			return new RecipeParchmentFragment(s, result, items);
 		}
 		
 		@Override
-		public void toNetwork(FriendlyByteBuf buf, RecipeParchmentFragment r)
+		public void toNetwork(RegistryFriendlyByteBuf buf, RecipeParchmentFragment r)
 		{
 			buf.writeUtf(r.group);
-			buf.writeVarInt(r.ingredients.size());
-			for(var ingredient : r.ingredients) ingredient.toNetwork(buf);
-			buf.writeItem(r.vanillaResult);
+			buf.writeVarInt(r.getIngredients().size());
+			for(var ingredient : r.getIngredients()) Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
+			ItemStack.STREAM_CODEC.encode(buf, r.result());
 		}
 		
 		@Override
@@ -109,30 +107,19 @@ public class RecipeParchmentFragment
 							.icon(IGuiDrawable.ofItem(new ItemStack(ItemsIS.PARCHMENT_FRAGMENT)))
 							.catalyst(new ItemStack(ItemsIS.SKILLS_BOOK))
 							.build(),
-					VisualizedTestMachine::new));
-		}
-		
-		private static NonNullList<Ingredient> itemsFromJson(JsonArray arr)
-		{
-			NonNullList<Ingredient> lst = NonNullList.create();
-			for(int i = 0; i < arr.size(); ++i)
-			{
-				Ingredient ingredient = Ingredient.fromJson(arr.get(i));
-				if(!ingredient.isEmpty())
-					lst.add(ingredient);
-			}
-			return lst;
+					VisualizedTestMachine::new
+			));
 		}
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public record VisualizedTestMachine(RecipeParchmentFragment recipe)
+	public record VisualizedTestMachine(RecipeHolder<RecipeParchmentFragment> recipe)
 			implements IVisualizedRecipe<RecipeParchmentFragment>
 	{
 		public static final UV BACKGROUND = new UV(ImprovableSkills.id("textures/gui/jei.png"), 0, 0, 132, 34);
 		
 		@Override
-		public RecipeParchmentFragment getRecipe()
+		public RecipeHolder<RecipeParchmentFragment> getRecipe()
 		{
 			return recipe;
 		}
@@ -151,11 +138,11 @@ public class RecipeParchmentFragment
 					.build();
 			
 			builder.addSlot(SlotRole.OUTPUT, 107, 9)
-					.addItemStack(recipe.vanillaResult.copy())
+					.addItemStack(recipe.value().result())
 					.build();
 			
 			int j = 0;
-			for(var ci : recipe.ingredients)
+			for(var ci : recipe.value().getIngredients())
 			{
 				builder.addSlot(SlotRole.INPUT, j * 18 + 26, 9)
 						.addIngredients(ci);

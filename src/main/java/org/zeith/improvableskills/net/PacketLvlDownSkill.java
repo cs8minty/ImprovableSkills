@@ -20,10 +20,6 @@ public class PacketLvlDownSkill
 		this.skill = skill.getRegistryName();
 	}
 	
-	public PacketLvlDownSkill()
-	{
-	}
-	
 	@Override
 	public void write(FriendlyByteBuf buf)
 	{
@@ -43,7 +39,7 @@ public class PacketLvlDownSkill
 		
 		PlayerDataManager.handleDataSafely(player, data ->
 		{
-			PlayerSkillBase skill = ImprovableSkills.SKILLS().getValue(this.skill);
+			PlayerSkillBase skill = ImprovableSkills.SKILLS.get(this.skill);
 			if(skill == null) return;
 			
 			short lvl = data.getSkillLevel(skill);

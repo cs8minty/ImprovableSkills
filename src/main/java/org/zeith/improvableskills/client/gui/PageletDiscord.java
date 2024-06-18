@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PageletBase;
@@ -14,7 +14,7 @@ import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 public class PageletDiscord
 		extends PageletBase
 {
-	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/discord.png");
+	public final ResourceLocation texture = ImprovableSkills.id("textures/gui/discord.png");
 	
 	{
 		setTitle(Component.translatable("pagelet." + ImprovableSkills.MOD_ID + ":discord1"));

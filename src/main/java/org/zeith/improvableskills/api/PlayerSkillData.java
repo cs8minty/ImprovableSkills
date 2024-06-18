@@ -1,15 +1,16 @@
 package org.zeith.improvableskills.api;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeith.hammerlib.net.Network;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
@@ -70,10 +71,10 @@ public class PlayerSkillData
 		
 		Map<ResourceLocation, Long> updates = new HashMap<>();
 		
-		var skillReg = ImprovableSkills.SKILLS();
-		var abilsReg = ImprovableSkills.ABILITIES();
+		var skillReg = ImprovableSkills.SKILLS;
+		var abilsReg = ImprovableSkills.ABILITIES;
 		
-		for(var value : skillReg.getValues())
+		for(var value : skillReg)
 		{
 			var start0 = System.currentTimeMillis();
 			var rn = value.getRegistryName();
@@ -85,7 +86,7 @@ public class PlayerSkillData
 		{
 			long start0 = System.currentTimeMillis();
 			ResourceLocation key = abilities.get(i);
-			var value = abilsReg.getValue(key);
+			var value = abilsReg.get(key);
 			if(value != null)
 			{
 				value.tick(this);
@@ -262,7 +263,7 @@ public class PlayerSkillData
 	}
 	
 	@Override
-	public CompoundTag serializeNBT()
+	public CompoundTag serializeNBT(HolderLookup.Provider provider)
 	{
 		CompoundTag nbt = new CompoundTag();
 		
@@ -279,17 +280,17 @@ public class PlayerSkillData
 		
 		nbt.putBoolean("EnableXPBank", enableXPBank);
 		
-		IForgeRegistry<PlayerSkillBase> reg = ImprovableSkills.SKILLS();
+		var reg = ImprovableSkills.SKILLS;
 		nbt.put("Persisted", persistedData);
 		nbt.putFloat("EnchantPower", enchantPower);
 		ListTag list = new ListTag();
 		for(var skillKey : stats.keySet())
 		{
-			PlayerSkillBase stat = reg.getValue(skillKey);
+			PlayerSkillBase stat = reg.get(skillKey);
 			
 			if(stat == null)
 			{
-				LOG.warn("[SAVE] Skill '" + skillKey + "' wasn't found. Maybe you removed the addon? Skipping unregistered skill.");
+				LOG.warn("[SAVE] Skill '" + skillKey + "' wasn't found. Maybe you removed the addon? Skipping unregistered ability.");
 				continue;
 			}
 			
@@ -319,27 +320,27 @@ public class PlayerSkillData
 	}
 	
 	@Override
-	public void deserializeNBT(CompoundTag nbt)
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt)
 	{
 		isInIO = true;
 		enableXPBank = nbt.getBoolean("EnableXPBank");
 		
-		IForgeRegistry<PlayerSkillBase> reg = ImprovableSkills.SKILLS();
+		var reg = ImprovableSkills.SKILLS;
 		ListTag lvls = nbt.getList("Levels", Tag.TAG_COMPOUND);
 		for(int i = 0; i < lvls.size(); ++i)
 		{
 			CompoundTag tag = lvls.getCompound(i);
 			String sstat = tag.getString("Id");
 			
-			PlayerSkillBase stat = reg.getValue(new ResourceLocation(sstat));
+			var sk = reg.get(ResourceLocation.tryParse(sstat));
 			
-			if(stat == null)
+			if(sk == null)
 			{
-				LOG.warn("[LOAD] Skill '" + sstat + "' wasn't found. Maybe you removed the addon? Skipping unregistered skill.");
+				LOG.warn("[LOAD] Skill '" + sstat + "' wasn't found. Maybe you removed the addon? Skipping unregistered ability.");
 				continue;
 			}
 			
-			setSkillLevel(stat, tag.getShort("Lvl"));
+			setSkillLevel(sk, tag.getShort("Lvl"));
 		}
 		
 		skillScrolls.clear();
@@ -348,15 +349,15 @@ public class PlayerSkillData
 		
 		ListTag list = nbt.getList("Scrolls", Tag.TAG_STRING);
 		for(int i = 0; i < list.size(); ++i)
-			skillScrolls.add(new ResourceLocation(list.getString(i)));
+			skillScrolls.add(Resources.location(list.getString(i)));
 		
 		list = nbt.getList("DisabledSkills", Tag.TAG_STRING);
 		for(int i = 0; i < list.size(); ++i)
-			disabledSkills.add(new ResourceLocation(list.getString(i)));
+			disabledSkills.add(Resources.location(list.getString(i)));
 		
 		list = nbt.getList("Abilities", Tag.TAG_STRING);
 		for(int i = 0; i < list.size(); ++i)
-			abilities.add(new ResourceLocation(list.getString(i)));
+			abilities.add(Resources.location(list.getString(i)));
 		
 		enchantPower = nbt.getFloat("EnchantPower");
 		
@@ -387,7 +388,7 @@ public class PlayerSkillData
 	{
 		PlayerSkillData data = new PlayerSkillData(player);
 		data.prevDim = player.level().dimension().location();
-		data.deserializeNBT(nbt);
+		data.deserializeNBT(player.registryAccess(), nbt);
 		return data;
 	}
 }

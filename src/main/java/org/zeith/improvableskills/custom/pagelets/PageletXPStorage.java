@@ -2,8 +2,8 @@ package org.zeith.improvableskills.custom.pagelets;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.hammerlib.client.utils.UV;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
@@ -14,7 +14,7 @@ import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 public class PageletXPStorage
 		extends PageletBase
 {
-	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/xp_bank.png");
+	public final ResourceLocation texture = ImprovableSkills.id("textures/gui/xp_bank.png");
 	
 	{
 		setTitle(Component.translatable("pagelet." + ImprovableSkills.MOD_ID + ":xp_bank"));

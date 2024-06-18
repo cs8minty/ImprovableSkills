@@ -1,10 +1,12 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.hammerlib.client.utils.RenderUtils;
 import org.zeith.hammerlib.util.colors.ColorHelper;
@@ -12,6 +14,7 @@ import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.client.rendering.OTEffect;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class OTEConfetti
@@ -36,7 +39,7 @@ public class OTEConfetti
 	public static ItemStack getSkull(String player)
 	{
 		ItemStack stack = new ItemStack(Items.PLAYER_HEAD, 1);
-		stack.addTagElement("SkullOwner", StringTag.valueOf(player));
+		stack.set(DataComponents.PROFILE, new ResolvableProfile(Optional.ofNullable(player), Optional.empty(), new PropertyMap()));
 		return stack;
 	}
 	

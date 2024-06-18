@@ -34,7 +34,7 @@ public class GuiSkillsBook
 	@Override
 	protected void provideElements(Consumer<SkillTxInstance> handler)
 	{
-		ImprovableSkills.SKILLS().getValues()
+		ImprovableSkills.SKILLS
 				.stream()
 				.sorted(Comparator.comparing(t -> t.getLocalizedName(data).getString()))
 				.filter(skill -> skill.isVisible(data))

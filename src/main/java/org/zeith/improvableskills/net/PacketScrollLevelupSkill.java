@@ -2,15 +2,15 @@ package org.zeith.improvableskills.net;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.*;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.zeith.hammerlib.net.INBTPacket;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.zeith.hammerlib.net.IPacket;
 import org.zeith.hammerlib.net.PacketContext;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
@@ -23,7 +23,7 @@ import org.zeith.improvableskills.client.rendering.ote.OTEItemSkillScroll;
 import java.util.*;
 
 public class PacketScrollLevelupSkill
-		implements INBTPacket
+		implements IPacket
 {
 	private ResourceLocation skill;
 	private ItemStack used;
@@ -41,19 +41,19 @@ public class PacketScrollLevelupSkill
 	}
 	
 	@Override
-	public void write(CompoundTag nbt)
+	public void write(RegistryFriendlyByteBuf buf)
 	{
-		nbt.putString("s", skill.toString());
-		nbt.putInt("i", slot);
-		nbt.put("u", used.serializeNBT());
+		buf.writeResourceLocation(skill);
+		buf.writeInt(slot);
+		ItemStack.STREAM_CODEC.encode(buf, used);
 	}
 	
 	@Override
-	public void read(CompoundTag nbt)
+	public void read(RegistryFriendlyByteBuf buf)
 	{
-		skill = ResourceLocation.tryParse(nbt.getString("s"));
-		slot = nbt.getInt("i");
-		used = ItemStack.of(nbt.getCompound("u"));
+		skill = buf.readResourceLocation();
+		slot = buf.readInt();
+		used = ItemStack.STREAM_CODEC.decode(buf);
 	}
 	
 	@Override
@@ -63,7 +63,7 @@ public class PacketScrollLevelupSkill
 		Player sp = Minecraft.getInstance().player;
 		if(sp == null) return;
 		
-		PlayerSkillBase sk = ImprovableSkills.SKILLS().getValue(skill);
+		PlayerSkillBase sk = ImprovableSkills.SKILLS.get(skill);
 		if(sk == null) return;
 		
 		List<PlayerSkillBase> base = new ArrayList<>();

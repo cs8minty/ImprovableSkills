@@ -1,21 +1,22 @@
 package org.zeith.improvableskills.api.registry;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import org.zeith.hammerlib.api.fml.IRegisterListener;
+import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.OwnedTexture;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.client.IClientAbilityExtensions;
 
-import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 public class PlayerAbilityBase
 		implements IHasRegistryName, IRegisterListener
@@ -24,7 +25,7 @@ public class PlayerAbilityBase
 	
 	private ResourceLocation id;
 	
-	protected LazyOptional<Integer> color = LazyOptional.of(() -> getRegistryName().toString().hashCode());
+	protected Supplier<Integer> color = Suppliers.memoize(() -> getRegistryName().toString().hashCode());
 	
 	public PlayerAbilityBase()
 	{
@@ -48,7 +49,7 @@ public class PlayerAbilityBase
 	public ResourceLocation getRegistryName()
 	{
 		if(id == null)
-			id = ImprovableSkills.ABILITIES().getKey(this);
+			id = ImprovableSkills.ABILITIES.getKey(this);
 		return id;
 	}
 	
@@ -101,12 +102,12 @@ public class PlayerAbilityBase
 	
 	public void setColor(int color)
 	{
-		this.color = LazyOptional.of(() -> color);
+		this.color = Cast.constant(color);
 	}
 	
 	public int getColor()
 	{
-		return color.orElseThrow(NoSuchElementException::new);
+		return color.get();
 	}
 	
 	public void onUnlocked(PlayerSkillData data)
@@ -132,7 +133,7 @@ public class PlayerAbilityBase
 	
 	private void initClient()
 	{
-		if(FMLEnvironment.dist == Dist.CLIENT && !FMLLoader.getLaunchHandler().isData())
+		if(FMLEnvironment.dist == Dist.CLIENT && !DatagenModLoader.isRunningDataGen())
 		{
 			initializeClient(properties ->
 			{

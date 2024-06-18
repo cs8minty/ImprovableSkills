@@ -1,10 +1,11 @@
 package org.zeith.improvableskills.api.recipe;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import org.zeith.hammerlib.core.RecipeHelper;
 import org.zeith.hammerlib.core.adapter.recipe.RecipeBuilder;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.hammerlib.util.mcf.itf.IRecipeRegistrationEvent;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.custom.items.ItemAbilityScroll;
@@ -28,7 +29,7 @@ public class ParchmentFragmentBuilder
 			var id = abil.getRegistryName();
 			if(id == null) return this;
 			identifierSet = true;
-			id(new ResourceLocation(id.getNamespace(), "ability_scrolls/" + id.getPath()));
+			id(Resources.location(id.getNamespace(), "ability_scrolls/" + id.getPath()));
 		}
 		return result(ItemAbilityScroll.of(abil));
 	}
@@ -60,6 +61,6 @@ public class ParchmentFragmentBuilder
 		if(ingredients.isEmpty())
 			throw new IllegalStateException(getClass().getSimpleName() + " does not have any defined ingredients!");
 		var id = getIdentifier();
-		event.register(id, new RecipeParchmentFragment(id, group, result, ingredients));
+		event.register(id, new RecipeParchmentFragment(group, result, ingredients));
 	}
 }

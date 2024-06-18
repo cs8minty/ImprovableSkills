@@ -3,6 +3,7 @@ package org.zeith.improvableskills.client.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -45,7 +46,7 @@ public class GuiCentered
 		var pose = gfx.pose();
 		pose.pushPose();
 		pose.translate(0, 0, 100);
-		super.render(gfx, mouseX, mouseY, partialTicks);
+		for(Renderable renderable : this.renderables) renderable.render(gfx, mouseX, mouseY, partialTicks);
 		pose.popPose();
 	}
 	

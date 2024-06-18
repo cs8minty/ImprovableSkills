@@ -30,7 +30,7 @@ public class GuiSkillViewer
 		extends GuiCentered
 		implements IGuiSkillDataConsumer
 {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png");
+	public static final ResourceLocation TEXTURE = ImprovableSkills.id("textures/gui/skills_gui_overlay.png");
 	
 	public static final UV CROSS = new UV(TEXTURE, 196, 24, 20, 20);
 	public static final UV TICK = new UV(TEXTURE, 196, 44, 20, 20);
@@ -43,7 +43,7 @@ public class GuiSkillViewer
 	int mouseX, mouseY;
 	boolean forbidden;
 	
-	private static final ResourceLocation ALT_FONT = new ResourceLocation("minecraft", "alt");
+	private static final ResourceLocation ALT_FONT = ImprovableSkills.id("alt");
 	
 	public GuiSkillViewer(GuiSkillsBook parent, PlayerSkillBase skill)
 	{
@@ -158,7 +158,7 @@ public class GuiSkillViewer
 		var pose = gfx.pose();
 		var name = skill.getLocalizedName(data);
 		
-		renderBackground(gfx);
+		renderTransparentBackground(gfx);
 		gfx.setColor(1F, 1F, 1F, 1F);
 		pose.pushPose();
 		pose.translate(guiLeft, guiTop, 0);
@@ -166,7 +166,7 @@ public class GuiSkillViewer
 		RenderUtils.drawTexturedModalRect(pose, 0, 0, 0, 0, xSize, ySize);
 		gfx.setColor(1, 1, 1, 1);
 		
-		float lev = Mth.lerp(minecraft.getPartialTick(), prevLevel, currentLevel) / skill.getMaxLevel();
+		float lev = Mth.lerp(minecraft.getTimer().getGameTimeDeltaPartialTick(true), prevLevel, currentLevel) / skill.getMaxLevel();
 		
 		if(!IClientSkillExtensions.of(skill).slotRenderer().drawSlot(gfx, 10, 6, 32, 32, lev, partialTicks))
 		{

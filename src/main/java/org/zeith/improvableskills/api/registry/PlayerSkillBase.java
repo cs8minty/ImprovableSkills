@@ -1,23 +1,26 @@
 package org.zeith.improvableskills.api.registry;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import org.zeith.hammerlib.api.fml.IRegisterListener;
 import org.zeith.hammerlib.util.XPUtil;
+import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.*;
 import org.zeith.improvableskills.api.client.IClientSkillExtensions;
 import org.zeith.improvableskills.api.loot.SkillLoot;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PlayerSkillBase
 		implements IHasRegistryName, IRegisterListener
@@ -30,7 +33,7 @@ public class PlayerSkillBase
 	protected final int maxLvl;
 	protected boolean lockedWithScroll, generateScroll;
 	
-	protected LazyOptional<Integer> color = LazyOptional.of(() -> getRegistryName().toString().hashCode());
+	protected Supplier<Integer> color = Suppliers.memoize(() -> getRegistryName().toString().hashCode());
 	
 	public PlayerSkillBase(int maxLvl)
 	{
@@ -55,7 +58,7 @@ public class PlayerSkillBase
 	
 	public void setColor(int color)
 	{
-		this.color = LazyOptional.of(() -> color);
+		this.color = Cast.constant(color);
 	}
 	
 	public void tick(PlayerSkillData data, boolean isActive)
@@ -68,7 +71,7 @@ public class PlayerSkillBase
 	public ResourceLocation getRegistryName()
 	{
 		if(id == null)
-			id = ImprovableSkills.SKILLS().getKey(this);
+			id = ImprovableSkills.SKILLS.getKey(this);
 		return id;
 	}
 	
@@ -149,7 +152,7 @@ public class PlayerSkillBase
 	@Override
 	public void onPostRegistered()
 	{
-		for(var listener : forgeEvents) MinecraftForge.EVENT_BUS.addListener(listener);
+		for(var listener : forgeEvents) NeoForge.EVENT_BUS.addListener(listener);
 	}
 	
 	public <T extends Event> void addListener(Consumer<T> consumer)
@@ -174,7 +177,7 @@ public class PlayerSkillBase
 	
 	public int getColor()
 	{
-		return color.orElseThrow(NoSuchElementException::new);
+		return color.get();
 	}
 	
 	public void onUnlocked(PlayerSkillData data)
@@ -195,7 +198,7 @@ public class PlayerSkillBase
 	
 	private void initClient()
 	{
-		if(FMLEnvironment.dist == Dist.CLIENT && !FMLLoader.getLaunchHandler().isData())
+		if(FMLEnvironment.dist == Dist.CLIENT && !DatagenModLoader.isRunningDataGen())
 		{
 			initializeClient(properties ->
 			{
@@ -212,7 +215,9 @@ public class PlayerSkillBase
 	
 	public enum EnumScrollState
 	{
-		NONE, NORMAL, SPECIAL;
+		NONE,
+		NORMAL,
+		SPECIAL;
 		
 		public boolean hasScroll()
 		{

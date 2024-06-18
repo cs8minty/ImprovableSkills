@@ -148,12 +148,12 @@ public class CommandImprovableSkills
 		return Commands.literal("unlock")
 				.then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("only")
-								.then(Commands.argument("skill", SuggestionProvidersIS3.SKILL_ARGUMENT.get())
+								.then(Commands.argument("ability", SuggestionProvidersIS3.SKILL_ARGUMENT)
 										.suggests(SuggestionProvidersIS3.skillSuggestions())
 										.executes((src) ->
 										{
-											var key = src.getArgument("skill", ResourceKey.class);
-											var skill = ImprovableSkills.SKILLS().getValue(key.location());
+											var key = src.getArgument("ability", ResourceKey.class);
+											var skill = ImprovableSkills.SKILLS.get(key.location());
 											
 											if(skill == null)
 												throw new SimpleCommandExceptionType(Component.literal("Skill " + JSONObject.quote(key.location().toString()) + " not found.")).create();
@@ -184,7 +184,7 @@ public class CommandImprovableSkills
 										if(pd != null)
 										{
 											boolean anyUnlocked = false;
-											for(var skill : ImprovableSkills.SKILLS().getValues())
+											for(var skill : ImprovableSkills.SKILLS)
 												if(pd.unlockSkillScroll(skill, false))
 													anyUnlocked = true;
 											if(anyUnlocked)
@@ -208,12 +208,12 @@ public class CommandImprovableSkills
 		return Commands.literal("lock")
 				.then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("only")
-								.then(Commands.argument("skill", SuggestionProvidersIS3.SKILL_ARGUMENT.get())
+								.then(Commands.argument("ability", SuggestionProvidersIS3.SKILL_ARGUMENT)
 										.suggests(SuggestionProvidersIS3.skillSuggestions())
 										.executes((src) ->
 										{
-											var key = src.getArgument("skill", ResourceKey.class);
-											var skill = ImprovableSkills.SKILLS().getValue(key.location());
+											var key = src.getArgument("ability", ResourceKey.class);
+											var skill = ImprovableSkills.SKILLS.get(key.location());
 											
 											if(skill == null)
 												throw new SimpleCommandExceptionType(Component.literal("Skill " + JSONObject.quote(key.location().toString()) + " not found.")).create();
@@ -247,7 +247,7 @@ public class CommandImprovableSkills
 										if(pd != null)
 										{
 											boolean anyLocked = false;
-											for(var skill : ImprovableSkills.SKILLS().getValues())
+											for(var skill : ImprovableSkills.SKILLS)
 												if(pd.lockSkillScroll(skill, false))
 												{
 													pd.setSkillLevelNoSync(skill, 0);
@@ -274,12 +274,12 @@ public class CommandImprovableSkills
 		return Commands.literal("revoke")
 				.then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("only")
-								.then(Commands.argument("skill", SuggestionProvidersIS3.SKILL_ARGUMENT.get())
+								.then(Commands.argument("ability", SuggestionProvidersIS3.SKILL_ARGUMENT)
 										.suggests(SuggestionProvidersIS3.skillSuggestions())
 										.executes((src) ->
 										{
-											var key = src.getArgument("skill", ResourceKey.class);
-											var skill = ImprovableSkills.SKILLS().getValue(key.location());
+											var key = src.getArgument("ability", ResourceKey.class);
+											var skill = ImprovableSkills.SKILLS.get(key.location());
 											var level = 0;
 											
 											if(skill == null)
@@ -314,7 +314,7 @@ public class CommandImprovableSkills
 										var pd = PlayerDataManager.getDataFor(player);
 										if(pd != null)
 										{
-											for(var skill : ImprovableSkills.SKILLS().getValues())
+											for(var skill : ImprovableSkills.SKILLS)
 											{
 												pd.setSkillLevel(skill, 0);
 												pd.lockSkillScroll(skill, false);
@@ -337,20 +337,20 @@ public class CommandImprovableSkills
 		return Commands.literal("give")
 				.then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("only")
-								.then(Commands.argument("skill", SuggestionProvidersIS3.SKILL_ARGUMENT.get())
+								.then(Commands.argument("ability", SuggestionProvidersIS3.SKILL_ARGUMENT)
 										.suggests(SuggestionProvidersIS3.skillSuggestions())
 										.then(Commands.argument("level", IntegerArgumentType.integer(0))
 												.executes((src) ->
 												{
-													var key = src.getArgument("skill", ResourceKey.class);
-													var skill = ImprovableSkills.SKILLS().getValue(key.location());
+													var key = src.getArgument("ability", ResourceKey.class);
+													var skill = ImprovableSkills.SKILLS.get(key.location());
 													var level = IntegerArgumentType.getInteger(src, "level");
 													
 													if(skill == null)
 														throw new SimpleCommandExceptionType(Component.literal("Skill " + JSONObject.quote(key.location().toString()) + " not found.")).create();
 													
 													if(level > skill.getMaxLevel())
-														throw new SimpleCommandExceptionType(Component.literal("Unable to set skill level to " + level + ", as the max level for ").append(skill.getLocalizedName()).append(" is " + skill.getMaxLevel() + ".")).create();
+														throw new SimpleCommandExceptionType(Component.literal("Unable to set ability level to " + level + ", as the max level for ").append(skill.getLocalizedName()).append(" is " + skill.getMaxLevel() + ".")).create();
 													
 													var updated = 0;
 													
@@ -383,7 +383,7 @@ public class CommandImprovableSkills
 										var pd = PlayerDataManager.getDataFor(player);
 										if(pd != null)
 										{
-											for(var skill : ImprovableSkills.SKILLS().getValues())
+											for(var skill : ImprovableSkills.SKILLS)
 											{
 												pd.setSkillLevel(skill, skill.getMaxLevel());
 												if(skill.getScrollState().hasScroll())
@@ -407,12 +407,12 @@ public class CommandImprovableSkills
 		return Commands.literal("revoke")
 				.then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("only")
-								.then(Commands.argument("ability", SuggestionProvidersIS3.ABILITY_ARGUMENT.get())
+								.then(Commands.argument("ability", SuggestionProvidersIS3.ABILITY_ARGUMENT)
 										.suggests(SuggestionProvidersIS3.abilitySuggestions())
 										.executes((src) ->
 										{
 											var key = src.getArgument("ability", ResourceKey.class);
-											var abil = ImprovableSkills.ABILITIES().getValue(key.location());
+											var abil = ImprovableSkills.ABILITIES.get(key.location());
 											
 											if(abil == null)
 												throw new SimpleCommandExceptionType(Component.literal("Ability " + JSONObject.quote(key.location().toString()) + " not found.")).create();
@@ -446,7 +446,7 @@ public class CommandImprovableSkills
 										var pd = PlayerDataManager.getDataFor(player);
 										if(pd != null)
 										{
-											for(var skill : ImprovableSkills.ABILITIES().getValues())
+											for(var skill : ImprovableSkills.ABILITIES)
 												pd.lockAbility(skill, false);
 											++updated;
 											pd.sync();
@@ -466,12 +466,12 @@ public class CommandImprovableSkills
 		return Commands.literal("give")
 				.then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("only")
-								.then(Commands.argument("ability", SuggestionProvidersIS3.ABILITY_ARGUMENT.get())
+								.then(Commands.argument("ability", SuggestionProvidersIS3.ABILITY_ARGUMENT)
 										.suggests(SuggestionProvidersIS3.abilitySuggestions())
 										.executes((src) ->
 										{
 											var key = src.getArgument("ability", ResourceKey.class);
-											var abil = ImprovableSkills.ABILITIES().getValue(key.location());
+											var abil = ImprovableSkills.ABILITIES.get(key.location());
 											
 											if(abil == null)
 												throw new SimpleCommandExceptionType(Component.literal("Ability " + JSONObject.quote(key.location().toString()) + " not found.")).create();
@@ -505,7 +505,7 @@ public class CommandImprovableSkills
 										var pd = PlayerDataManager.getDataFor(player);
 										if(pd != null)
 										{
-											for(var skill : ImprovableSkills.ABILITIES().getValues())
+											for(var skill : ImprovableSkills.ABILITIES)
 												pd.unlockAbility(skill, false);
 											++updated;
 											pd.sync();

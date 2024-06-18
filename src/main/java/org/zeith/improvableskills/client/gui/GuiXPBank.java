@@ -1,6 +1,7 @@
 package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -8,6 +9,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import org.joml.Matrix4f;
 import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.hammerlib.client.utils.RenderUtils;
 import org.zeith.hammerlib.net.Network;
@@ -94,7 +96,7 @@ public class GuiXPBank
 		}
 	}
 	
-	public final ResourceLocation ICONS_TX = new ResourceLocation("improvableskills", "textures/gui/skills_gui_paper.png");
+	public final ResourceLocation ICONS_TX = ImprovableSkills.id("textures/gui/skills_gui_paper.png");
 	
 	@Override
 	protected void drawBack(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
@@ -117,7 +119,6 @@ public class GuiXPBank
 		
 		setWhiteColor(gfx);
 		
-		FXUtils.bindTexture("minecraft", "textures/gui/icons.png");
 		
 		double bx = xSize / 2 - 72.8D;
 		double by = ySize - 50;
@@ -127,8 +128,26 @@ public class GuiXPBank
 		pose.pushPose();
 		pose.translate(targetXP_X = guiLeft + bx, targetXP_Y = guiTop + by + 18, 0.0D);
 		pose.scale(0.8F, 0.8F, 0.8F);
-		RenderUtils.drawTexturedModalRect(pose, 0, 0, 0, 64, 182, 5);
-		RenderUtils.drawTexturedModalRect(pose, 0, 0, 0, 69, 182.0F * (prevXP + (currentXP - prevXP) * partialTicks), 5);
+		
+		gfx.blitSprite(ResourceLocation.withDefaultNamespace("hud/experience_bar_background"), 0, 0, 182, 5);
+		{
+			var textureSprite = minecraft.getGuiSprites().getSprite(ResourceLocation.withDefaultNamespace("hud/experience_bar_progress"));
+			float widthIn = 182 * (prevXP + (currentXP - prevXP) * partialTicks);
+			float heightIn = 5;
+			float minU = textureSprite.getU(0);
+			float maxU = textureSprite.getU(widthIn / 182);
+			float minV = textureSprite.getV0();
+			float maxV = textureSprite.getV1();
+			var pm = pose.last().pose();
+			Tesselator tess = Tesselator.getInstance();
+			BufferBuilder vb = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+			vb.addVertex(pm, 0, heightIn, 0).setUv(minU, maxV);
+			vb.addVertex(pm, widthIn, heightIn, 0).setUv(maxU, maxV);
+			vb.addVertex(pm, widthIn, 0, 0).setUv(maxU, minV);
+			vb.addVertex(pm, 0, 0, 0).setUv(minU, minV);
+			BufferUploader.drawWithShader(vb.buildOrThrow());
+		}
+		
 		pose.popPose();
 		
 		pose.pushPose();

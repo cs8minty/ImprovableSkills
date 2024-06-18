@@ -10,5 +10,5 @@ import org.zeith.improvableskills.custom.particles.ParticleTypeWithCodec;
 public interface ParticleTypesIS
 {
 	@RegistryName("sparkle")
-	ParticleType<ParticleDataSparkle> SPARKLE = new ParticleTypeWithCodec<>(false, ParticleDataSparkle.CODEC, ParticleDataSparkle.DESERIALIZER);
+	ParticleType<ParticleDataSparkle> SPARKLE = new ParticleTypeWithCodec<>(false, ParticleDataSparkle.CODEC, ParticleDataSparkle.STREAM_CODEC);
 }

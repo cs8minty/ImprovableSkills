@@ -2,13 +2,12 @@ package org.zeith.improvableskills.custom.abilities;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import org.zeith.hammerlib.api.fml.IRegisterListener;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.evt.CowboyStartEvent;
@@ -19,14 +18,20 @@ import org.zeith.improvableskills.net.PacketSetCowboyData;
 
 public class AbilityCowboy
 		extends PlayerAbilityBase
+		implements IRegisterListener
 {
 	public AbilityCowboy()
 	{
 		setColor(0xD19300);
-		MinecraftForge.EVENT_BUS.addListener(this::entityClick);
 	}
 	
-	@SubscribeEvent
+	@Override
+	public void onPostRegistered()
+	{
+		super.onPostRegistered();
+		NeoForge.EVENT_BUS.addListener(this::entityClick);
+	}
+	
 	public void entityClick(PlayerInteractEvent.EntityInteract e)
 	{
 		if(!(e.getTarget() instanceof LivingEntity le) || le.isDeadOrDying())
@@ -35,10 +40,10 @@ public class AbilityCowboy
 		PlayerDataManager.handleDataSafely(e.getEntity(), data ->
 		{
 			CowboyStartEvent evt;
-			if(data.cowboy && !(MinecraftForge.EVENT_BUS.post(evt = new CowboyStartEvent(data.player, le))))
+			if(data.cowboy && !(NeoForge.EVENT_BUS.post(evt = new CowboyStartEvent(data.player, le))).isCanceled())
 			{
-				if(evt.getResult() == Event.Result.DENY) return; // deny this action
-				if(evt.getResult() == Event.Result.DEFAULT)
+				if(evt.getResult() == CowboyStartEvent.Result.DENY) return; // deny this action
+				if(evt.getResult() == CowboyStartEvent.Result.DEFAULT)
 				{
 					if(le.getType().is(Tags.EntityTypes.BOSSES))
 						return; // prevent bosses

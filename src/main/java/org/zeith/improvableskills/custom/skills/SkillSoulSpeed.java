@@ -12,7 +12,7 @@ public class SkillSoulSpeed
 {
 	public SkillSoulSpeed()
 	{
-		super(Enchantments.SOUL_SPEED.getMaxLevel());
+		super(3);
 		setupScroll();
 		getLoot().chance.n = 7;
 		getLoot().setLootTable(BuiltInLootTables.PIGLIN_BARTERING);
@@ -24,9 +24,9 @@ public class SkillSoulSpeed
 	
 	private void hook(EntityEnchantmentLevelEvent e)
 	{
-		if(e.getEntity() instanceof Player player && e.getEnchantment() == Enchantments.SOUL_SPEED)
+		if(e.getEntity() instanceof Player player && e.enchantment().is(Enchantments.SOUL_SPEED))
 			e.max(PlayerDataManager.handleDataSafely(player, data ->
-							data.isSkillActive(this) ? Math.min(data.getSkillLevel(this), Enchantments.SOUL_SPEED.getMaxLevel()) : 0,
+							data.isSkillActive(this) ? Math.min(data.getSkillLevel(this), 3) : 0,
 					0
 			));
 	}

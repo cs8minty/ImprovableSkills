@@ -156,9 +156,9 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 	protected double dWheel;
 	
 	@Override
-	public boolean mouseScrolled(double x, double y, double dWheel)
+	public boolean mouseScrolled(double x, double y, double xWheel, double yWheel)
 	{
-		this.dWheel += dWheel;
+		this.dWheel += yWheel;
 		return true;
 	}
 	
@@ -233,7 +233,7 @@ public abstract class GuiBaseBookBrowser<TX extends GuiBaseBookBrowser.ITxInstan
 					var tex = texes.get(j);
 					
 					double x = (i % row) * 28 + guiLeft + 16;
-					double y = (i / row) * 28 - (prevScrolledPixels + (scrolledPixels - prevScrolledPixels) * minecraft.getPartialTick());
+					double y = (i / row) * 28 - (prevScrolledPixels + (scrolledPixels - prevScrolledPixels) * minecraft.getTimer().getGameTimeDeltaPartialTick(true));
 					
 					if(tex == skill)
 					{

@@ -1,16 +1,16 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
-
-import java.util.UUID;
 
 public class SkillGenericProtection
 		extends PlayerSkillBase
 {
-	public static final UUID PROTECTION_ID = UUID.fromString("8e56f8a6-a695-42d5-899b-89605f38cf80");
+	public static final ResourceLocation PROTECTION_ID = ImprovableSkills.id("protection_skill");
 	
 	public SkillGenericProtection()
 	{
@@ -32,7 +32,7 @@ public class SkillGenericProtection
 			{
 				armor.removeModifier(PROTECTION_ID);
 				if(isActive)
-					armor.addPermanentModifier(new AttributeModifier(PROTECTION_ID, "IS3 Protection", data.getSkillLevel(this), AttributeModifier.Operation.ADDITION));
+					armor.addPermanentModifier(new AttributeModifier(PROTECTION_ID, data.getSkillLevel(this), AttributeModifier.Operation.ADD_VALUE));
 			}
 		}
 	}

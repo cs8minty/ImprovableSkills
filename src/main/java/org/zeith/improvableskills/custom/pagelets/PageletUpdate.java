@@ -4,11 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.VersionChecker;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.VersionChecker;
+import net.neoforged.fml.loading.FMLLoader;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.zeith.hammerlib.util.java.Threading;
 import org.zeith.hammerlib.util.java.net.HttpRequest;
@@ -20,12 +20,12 @@ import org.zeith.improvableskills.api.registry.PageletBase;
 import org.zeith.improvableskills.client.gui.GuiUpdateBook;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 
-import static net.minecraftforge.fml.VersionChecker.Status.*;
+import static net.neoforged.fml.VersionChecker.Status.*;
 
 public class PageletUpdate
 		extends PageletBase
 {
-	public final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/update.png");
+	public final ResourceLocation texture = ImprovableSkills.id("textures/gui/update.png");
 	public static VersionChecker.Status level;
 	public static String changes, latest, homepage;
 	public static String liveURL, liveTitle;

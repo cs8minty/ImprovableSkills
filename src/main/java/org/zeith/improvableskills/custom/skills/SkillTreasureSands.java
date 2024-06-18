@@ -37,7 +37,7 @@ public class SkillTreasureSands
 		
 		PlayerDataManager.handleDataSafely(e.getEntity(), data ->
 		{
-			if(level instanceof ServerLevel mp && mp.getBlockState(pos).is(BlockTags.SAND) && mp.getBiome(pos).get().getBaseTemperature() >= 2F)
+			if(level instanceof ServerLevel mp && mp.getBlockState(pos).is(BlockTags.SAND) && mp.getBiome(pos).value().getBaseTemperature() >= 2F)
 			{
 				RandomSource rng = data.player.getRandom();
 				

@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class GuiCustomButton
 		extends Button
 {
-	protected static final ResourceLocation CBUTTON_TEXTURES = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/icons.png");
+	protected static final ResourceLocation CBUTTON_TEXTURES = ImprovableSkills.id("textures/gui/icons.png");
 	
 	public SoundEvent customClickSound;
 	
@@ -37,11 +37,11 @@ public class GuiCustomButton
 		this.id = id;
 	}
 	
-	private static final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/builtin/zeitheron.png");
+	private static final ResourceLocation texture = ImprovableSkills.id("textures/builtin/zeitheron.png");
 	
 	public static AbstractTexture getZeithAvatar()
 	{
-		return HttpTextureDownloader.create(texture, "https://h.zeith.org/discord/fetchAvatar/376091478142746625");
+		return HttpTextureDownloader.create(texture, "https://assets.zeith.org/icons/zeitheron.png");
 	}
 	
 	public GuiCustomButton setCustomClickSound(SoundEvent customClickSound)

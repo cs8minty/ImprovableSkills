@@ -1,19 +1,20 @@
 package org.zeith.improvableskills.data;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.zeith.hammerlib.event.player.PlayerLoadedInEvent;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
+import org.zeith.improvableskills.init.ComponentsIS;
 import org.zeith.improvableskills.net.NetSkillCalculator;
 import org.zeith.improvableskills.net.PacketSyncSkillData;
 
@@ -48,7 +49,7 @@ public class PlayerDataManager
 		if(player.level().isClientSide)
 		{
 			if(player.isLocalPlayer()) return SyncSkills.getData();
-			return PlayerSkillData.deserialize(player, player.getPersistentData().getCompound(ImprovableSkills.NBT_DATA_TAG));
+			return player.getData(ComponentsIS.SKILL_DATA);
 		}
 		
 		LPLAYER.set(player);
@@ -56,7 +57,7 @@ public class PlayerDataManager
 		
 		// Update player reference -- keep it up-to-date
 		if(data != null && data.getPlayer() != player)
-			DATAS.put(player.getGameProfile().getId(), data = PlayerSkillData.deserialize(player, data.serializeNBT()));
+			DATAS.put(player.getGameProfile().getId(), data = PlayerSkillData.deserialize(player, data.serializeNBT(player.registryAccess())));
 		
 		return data != null ? data.toCurrent(player) : null;
 	}
@@ -69,14 +70,10 @@ public class PlayerDataManager
 		Player epl = LPLAYER.get();
 		
 		// This should never happen, but if it does, we try to reconstruct player's data from the persistent tag in case it's there. (remote players, maybe?!)
-		if(epl instanceof ServerPlayer mp && mp.getPersistentData().contains(ImprovableSkills.NBT_DATA_TAG))
+		if(epl instanceof ServerPlayer mp)
 		{
-			var data = mp.getPersistentData().getCompound(ImprovableSkills.NBT_DATA_TAG);
-			if(!data.isEmpty())
-			{
-				var dat = PlayerSkillData.deserialize(mp, data);
-				DATAS.put(mp.getUUID(), dat);
-			}
+			var data = mp.hasData(ComponentsIS.SKILL_DATA) ? mp.getData(ComponentsIS.SKILL_DATA) : null;
+			if(data != null) DATAS.put(mp.getUUID(), data);
 		}
 		
 		return null;
@@ -85,16 +82,34 @@ public class PlayerDataManager
 	///////////////////// DATA LIFECYCLE EVENTS /////////////////////
 	
 	@SubscribeEvent
-	public static void playerTick(TickEvent.PlayerTickEvent e)
+	public static void playerTick(PlayerTickEvent.Pre e)
 	{
-		if(e.phase == TickEvent.Phase.START)
-			PlayerDataManager.handleDataSafely(e.player, PlayerSkillData::handleTick);
+		PlayerDataManager.handleDataSafely(e.getEntity(), PlayerSkillData::handleTick);
+	}
+	
+	@SubscribeEvent
+	public static void playerClone(PlayerEvent.Clone e)
+	{
+		if(e.isWasDeath()) return;
+		var oldPlayer = e.getOriginal();
+		var newPlayer = e.getEntity();
+		
+		var od = getDataFor(oldPlayer);
+		if(od == null) return;
+		
+		od.player = newPlayer;
+		
+		var nd = getDataFor(newPlayer);
+		
+		if(od == nd) return;
+		
+		nd.deserializeNBT(newPlayer.registryAccess(), od.serializeNBT(oldPlayer.registryAccess()));
 	}
 	
 	@SubscribeEvent
 	public static void playerLoadedIn(PlayerLoadedInEvent e)
 	{
-		ImprovableSkills.LOG.info("Sending skill data to {} ({})", e.getEntity().getGameProfile().getName(), e.getEntity().getGameProfile().getId());
+		ImprovableSkills.LOG.info("Sending ability data to {} ({})", e.getEntity().getGameProfile().getName(), e.getEntity().getGameProfile().getId());
 		PlayerDataManager.handleDataSafely(e.getEntity(), PlayerSkillData::sync);
 		NetSkillCalculator.pack().build().sendTo(e.getEntity());
 	}
@@ -107,20 +122,17 @@ public class PlayerDataManager
 	}
 	
 	@SubscribeEvent
-	public static void serverTick(TickEvent.ServerTickEvent e)
+	public static void serverTick(ServerTickEvent.Post e)
 	{
-		if(e.phase == TickEvent.Phase.END)
+		MinecraftServer mcs = e.getServer();
+		PlayerDataManager.DATAS.keySet().removeIf(uuid ->
 		{
-			MinecraftServer mcs = e.getServer();
-			PlayerDataManager.DATAS.keySet().removeIf(uuid ->
-			{
-				var mp = mcs.getPlayerList().getPlayer(uuid);
-				if(mp == null) return true;
-				PlayerSkillData data = PlayerDataManager.DATAS.get(uuid);
-				data.player = mp;
-				return false;
-			});
-		}
+			var mp = mcs.getPlayerList().getPlayer(uuid);
+			if(mp == null) return true;
+			PlayerSkillData data = PlayerDataManager.DATAS.get(uuid);
+			data.player = mp;
+			return false;
+		});
 	}
 	
 	@SubscribeEvent
@@ -133,7 +145,7 @@ public class PlayerDataManager
 			File mainFile = e.getPlayerFile(".is3.dat");
 			
 			if(mainFile.isFile())
-				nbt = NbtIo.readCompressed(new FileInputStream(mainFile));
+				nbt = NbtIo.readCompressed(new FileInputStream(mainFile), NbtAccounter.unlimitedHeap());
 		} catch(Exception error)
 		{
 			ImprovableSkills.LOG.warn("Failed to load player data for {}", e.getEntity().getName());
@@ -145,7 +157,7 @@ public class PlayerDataManager
 				ImprovableSkills.LOG.warn("Detected old data file forp layer {}, trying to read...", e.getEntity().getName());
 				try
 				{
-					nbt = NbtIo.readCompressed(new FileInputStream(oldFile));
+					nbt = NbtIo.readCompressed(new FileInputStream(oldFile), NbtAccounter.unlimitedHeap());
 				} catch(Exception error2)
 				{
 					ImprovableSkills.LOG.warn("Failed to load player backup data for {}", e.getEntity().getName());
@@ -166,7 +178,7 @@ public class PlayerDataManager
 			return;
 		try
 		{
-			CompoundTag nbt = data.serializeNBT();
+			CompoundTag nbt = data.serializeNBT(e.getEntity().registryAccess());
 			File tmp = e.getPlayerFile(".is3.dat.tmp");
 			File main = e.getPlayerFile(".is3.dat");
 			File mainOld = e.getPlayerFile(".is3.dat_old");

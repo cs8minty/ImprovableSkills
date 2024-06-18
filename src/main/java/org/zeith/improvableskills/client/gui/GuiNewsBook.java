@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.zeith.hammerlib.client.utils.Scissors;
@@ -39,7 +38,7 @@ public class GuiNewsBook
 	{
 		super(pagelet);
 		
-		gui1 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
+		gui1 = new UV(ImprovableSkills.id("textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
 		
 		reload();
 	}
@@ -125,7 +124,7 @@ public class GuiNewsBook
 		if(translated != null)
 		{
 			pose.pushPose();
-			pose.translate(0, Mth.lerp(minecraft.getPartialTick(), prevScroll, scroll), 0);
+			pose.translate(0, Mth.lerp(minecraft.getTimer().getGameTimeDeltaPartialTick(true), prevScroll, scroll), 0);
 			maxScroll = 0;
 			for(FormattedCharSequence formattedcharsequence : font.split(translated, (int) gui1.width - 22))
 			{
@@ -153,7 +152,7 @@ public class GuiNewsBook
 	public static void spawnLoading(float width, float height)
 	{
 		Minecraft mc = Minecraft.getInstance();
-		float partialTicks = mc.getPartialTick();
+		float partialTicks = mc.getTimer().getGameTimeDeltaPartialTick(true);
 		
 		int dots = 3;
 		float angle = 360 / dots;
@@ -187,9 +186,9 @@ public class GuiNewsBook
 	}
 	
 	@Override
-	public boolean mouseScrolled(double i, double j, double k)
+	public boolean mouseScrolled(double x, double y, double xScroll, double yScroll)
 	{
-		dScroll += k * font.lineHeight;
-		return super.mouseScrolled(i, j, k);
+		dScroll += yScroll * font.lineHeight;
+		return super.mouseScrolled(x, y, xScroll, yScroll);
 	}
 }

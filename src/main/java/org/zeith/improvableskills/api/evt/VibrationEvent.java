@@ -3,12 +3,12 @@ package org.zeith.improvableskills.api.evt;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.gameevent.vibrations.VibrationInfo;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
-@Cancelable
 public class VibrationEvent
 		extends Event
+		implements ICancellableEvent
 {
 	private final ServerLevel level;
 	private final VibrationSystem.Data data;

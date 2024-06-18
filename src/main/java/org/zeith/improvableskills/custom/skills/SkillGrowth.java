@@ -51,7 +51,7 @@ public class SkillGrowth
 					if(b instanceof BonemealableBlock gr)
 					{
 						if(state.is(TagsIS3.Blocks.GROWTH_SKILL_BLOCKLIST)) continue;
-						if(gr.isValidBonemealTarget(world, pos, state, world.isClientSide) && gr.isBonemealSuccess(world, world.random, pos, state))
+						if(gr.isValidBonemealTarget(world, pos, state) && gr.isBonemealSuccess(world, world.random, pos, state))
 							positions.add(pos);
 					}
 				}

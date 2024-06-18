@@ -1,17 +1,17 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
-
-import java.util.UUID;
 
 public class SkillFastSwimmer
 		extends PlayerSkillBase
 {
-	public static final UUID SWIM_ID = UUID.fromString("856d21d3-0086-4ccd-bdb0-a43d98f5104c");
+	public static final ResourceLocation SWIM_ID = ImprovableSkills.id("fast_swimmer");
 	
 	public SkillFastSwimmer()
 	{
@@ -24,17 +24,17 @@ public class SkillFastSwimmer
 	{
 		if(data.atTickRate(10) && !data.player.level().isClientSide)
 		{
-			AttributeInstance hp = data.player.getAttribute(ForgeMod.SWIM_SPEED.get());
+			AttributeInstance hp = data.player.getAttribute(NeoForgeMod.SWIM_SPEED);
 			
 			AttributeModifier mod = hp.getModifier(SWIM_ID);
 			
 			double val = isActive ? data.getSkillProgress(this) * 1.75F : 0;
 			
-			if(mod == null || mod.getAmount() != val)
+			if(mod == null || mod.amount() != val)
 			{
 				if(mod != null) hp.removeModifier(SWIM_ID);
 				if(val > 0)
-					hp.addPermanentModifier(new AttributeModifier(SWIM_ID, "IS3 Swim Speed", val, AttributeModifier.Operation.ADDITION));
+					hp.addPermanentModifier(new AttributeModifier(SWIM_ID, val, AttributeModifier.Operation.ADD_VALUE));
 			}
 		}
 	}

@@ -1,7 +1,9 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 
@@ -10,7 +12,7 @@ import java.util.UUID;
 public class SkillLuckOfTheSea
 		extends PlayerSkillBase
 {
-	public static final UUID LOTS_LUCK = UUID.fromString("d489061e-0b53-4aa3-a7f4-f1a9a726ef49");
+	public static final ResourceLocation LOTS_LUCK = ImprovableSkills.id("luck_of_the_sea");
 	
 	public SkillLuckOfTheSea()
 	{
@@ -34,7 +36,7 @@ public class SkillLuckOfTheSea
 		{
 			luck.removeModifier(LOTS_LUCK);
 			if(isActive && hook != null && !hook.isRemoved())
-				luck.addPermanentModifier(new AttributeModifier(LOTS_LUCK, "IS3 Fishing Luck", level * 2D, AttributeModifier.Operation.ADDITION));
+				luck.addPermanentModifier(new AttributeModifier(LOTS_LUCK, level * 2D, AttributeModifier.Operation.ADD_VALUE));
 		}
 	}
 }

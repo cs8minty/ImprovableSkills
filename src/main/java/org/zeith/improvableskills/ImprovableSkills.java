@@ -1,38 +1,37 @@
 package org.zeith.improvableskills;
 
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.*;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.zeith.api.registry.RegistryMapping;
 import org.zeith.hammerlib.api.items.CreativeTab;
 import org.zeith.hammerlib.api.proxy.IProxy;
 import org.zeith.hammerlib.core.adapter.LanguageAdapter;
-import org.zeith.hammerlib.core.adapter.LootTableAdapter;
 import org.zeith.hammerlib.event.fml.FMLFingerprintCheckEvent;
 import org.zeith.hammerlib.event.recipe.RegisterRecipesEvent;
 import org.zeith.hammerlib.proxy.HLConstants;
 import org.zeith.hammerlib.util.CommonMessages;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.improvableskills.api.recipe.Is3RecipeBuilderExtension;
 import org.zeith.improvableskills.api.registry.*;
 import org.zeith.improvableskills.cfg.ConfigsIS;
 import org.zeith.improvableskills.command.CommandImprovableSkills;
-import org.zeith.improvableskills.custom.LootTableLoader;
 import org.zeith.improvableskills.init.*;
 import org.zeith.improvableskills.proxy.ISClient;
 import org.zeith.improvableskills.proxy.ISServer;
-
-import java.util.function.Supplier;
 
 @Mod(ImprovableSkills.MOD_ID)
 public class ImprovableSkills
@@ -40,30 +39,27 @@ public class ImprovableSkills
 	public static final Logger LOG = LogManager.getLogger("ImprovableSkills");
 	public static final String MOD_ID = "improvableskills";
 	public static final String MOD_NAME = "Improvable Skills";
-	public static final String NBT_DATA_TAG = "ImprovableSkillsData";
 	
 	public static final ISServer PROXY = IProxy.create(() -> ISClient::new, () -> ISServer::new);
 	
 	@CreativeTab.RegisterTab
-	public static final CreativeTab TAB = new CreativeTab(new ResourceLocation(MOD_ID, "root"),
+	public static final CreativeTab TAB = new CreativeTab(id("root"),
 			b -> b.icon(ItemsIS.SKILLS_BOOK::getDefaultInstance)
 					.title(Component.translatable("itemGroup." + MOD_ID))
 					.withTabsBefore(HLConstants.HL_TAB.id())
 	);
 	
-	private static Supplier<IForgeRegistry<PlayerSkillBase>> SKILLS;
-	private static Supplier<IForgeRegistry<PlayerAbilityBase>> ABILITIES;
-	private static Supplier<IForgeRegistry<PageletBase>> PAGELETS;
+	public static final Registry<PlayerSkillBase> SKILLS = new RegistryBuilder<>(RegistriesIS3.SKILL).sync(false).create();
+	public static final Registry<PlayerAbilityBase> ABILITIES = new RegistryBuilder<>(RegistriesIS3.ABILITY).sync(false).create();
+	public static final Registry<PageletBase> PAGELETS = new RegistryBuilder<>(RegistriesIS3.PAGELET).sync(false).create();
 	
-	public ImprovableSkills()
+	public ImprovableSkills(IEventBus modBus)
 	{
 		CommonMessages.printMessageOnIllegalRedistribution(ImprovableSkills.class,
-				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
+				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills"
+		);
 		
 		LanguageAdapter.registerMod(MOD_ID);
-		LootTableAdapter.addLoadHook(LootTableLoader::loadTable);
-		
-		var modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		
 		modBus.addListener(this::newRegistries);
 		modBus.addListener(this::setup);
@@ -73,20 +69,21 @@ public class ImprovableSkills
 		
 		PROXY.register(modBus);
 		
-		var mcfBus = MinecraftForge.EVENT_BUS;
+		var mcfBus = NeoForge.EVENT_BUS;
 		
 		mcfBus.addListener(this::registerCommands);
 	}
 	
 	public static ResourceLocation id(String path)
 	{
-		return new ResourceLocation(MOD_ID, path);
+		return Resources.location(MOD_ID, path);
 	}
 	
 	private void fingerprintCheck(FMLFingerprintCheckEvent e)
 	{
 		CommonMessages.printMessageOnFingerprintViolation(e, "97e852e9b3f01b83574e8315f7e77651c6605f2b455919a7319e9869564f013c",
-				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills");
+				LOG, "ImprovableSkills", "https://www.curseforge.com/minecraft/mc-mods/improvable-skills"
+		);
 	}
 	
 	private void registerCommands(RegisterCommandsEvent e)
@@ -108,24 +105,20 @@ public class ImprovableSkills
 	
 	private void newRegistries(NewRegistryEvent e)
 	{
-		SKILLS = e.create(new RegistryBuilder<PlayerSkillBase>()
-				.setName(new ResourceLocation(MOD_ID, "skills"))
-				.disableSync(), reg -> RegistryMapping.report(PlayerSkillBase.class, reg, false));
+		RegistryMapping.report(PlayerSkillBase.class, SKILLS, false);
+		RegistryMapping.report(PlayerAbilityBase.class, ABILITIES, false);
+		RegistryMapping.report(PageletBase.class, PAGELETS, false);
 		
-		ABILITIES = e.create(new RegistryBuilder<PlayerAbilityBase>()
-				.setName(new ResourceLocation(MOD_ID, "abilities"))
-				.disableSync(), reg -> RegistryMapping.report(PlayerAbilityBase.class, reg, false));
-		
-		PAGELETS = e.create(new RegistryBuilder<PageletBase>()
-				.setName(new ResourceLocation(MOD_ID, "pagelets"))
-				.disableSync(), reg -> RegistryMapping.report(PageletBase.class, reg, false));
+		e.register(SKILLS);
+		e.register(ABILITIES);
+		e.register(PAGELETS);
 	}
 	
 	private void addRecipes(RegisterRecipesEvent e)
 	{
 		e.shaped()
 				.shape("lbl", "pgp", "lbl")
-				.map('l', Tags.Items.LEATHER)
+				.map('l', Tags.Items.LEATHERS)
 				.map('b', Items.BOOK)
 				.map('p', Items.PAPER)
 				.map('g', Tags.Items.INGOTS_GOLD)
@@ -194,20 +187,5 @@ public class ImprovableSkills
 						Items.SADDLE
 				)
 				.registerIf(AbilitiesIS.COWBOY::registered);
-	}
-	
-	public static IForgeRegistry<PlayerSkillBase> SKILLS()
-	{
-		return SKILLS.get();
-	}
-	
-	public static IForgeRegistry<PlayerAbilityBase> ABILITIES()
-	{
-		return ABILITIES.get();
-	}
-	
-	public static IForgeRegistry<PageletBase> PAGELETS()
-	{
-		return PAGELETS.get();
 	}
 }

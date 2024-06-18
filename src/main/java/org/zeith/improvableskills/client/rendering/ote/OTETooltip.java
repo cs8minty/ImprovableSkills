@@ -1,10 +1,8 @@
 package org.zeith.improvableskills.client.rendering.ote;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import org.zeith.hammerlib.client.utils.FXUtils;
 import org.zeith.improvableskills.client.rendering.OTEffect;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
 
@@ -30,11 +28,11 @@ public class OTETooltip
 		cinst.tooltip.addAll(tip);
 		cinst.time = 0;
 		
-		/** Always on top */
+		/* Always on top */
 		if(OnTopEffects.effects.indexOf(cinst) != OnTopEffects.effects.size() - 1)
 		{
 			OnTopEffects.effects.remove(cinst);
-			OnTopEffects.effects.add(cinst);
+			OnTopEffects.effects.addLast(cinst);
 		}
 	}
 	
@@ -51,11 +49,11 @@ public class OTETooltip
 		{
 			cinst = this;
 			
-			/** Always on top */
+			/* Always on top */
 			if(OnTopEffects.effects.indexOf(this) != OnTopEffects.effects.size() - 1)
 			{
 				OnTopEffects.effects.remove(this);
-				OnTopEffects.effects.add(this);
+				OnTopEffects.effects.addLast(this);
 			}
 		}
 	}
@@ -75,8 +73,6 @@ public class OTETooltip
 		{
 			pose.pushPose();
 			pose.translate(0, 0, 200);
-			FXUtils.setPositionTexShader();
-			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 			gfx.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);
 			pose.popPose();
 			tooltip.clear();

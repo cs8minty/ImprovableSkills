@@ -1,19 +1,23 @@
 package org.zeith.improvableskills.custom.particles;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.particles.*;
-import net.minecraft.network.FriendlyByteBuf;
+import lombok.Getter;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ScalableParticleOptionsBase;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import org.joml.Vector3f;
 import org.zeith.improvableskills.init.ParticleTypesIS;
 
+@Getter
 public class ParticleDataSparkle
-		extends DustParticleOptionsBase
+		extends ScalableParticleOptionsBase
 {
-	public static final Codec<ParticleDataSparkle> CODEC = RecordCodecBuilder.create((instance) ->
+	public static final MapCodec<ParticleDataSparkle> CODEC = RecordCodecBuilder.mapCodec((instance) ->
 			instance.group(
 					ExtraCodecs.VECTOR3F.fieldOf("color").forGetter(ParticleDataSparkle::getColor),
 					Codec.FLOAT.fieldOf("scale").forGetter(ParticleDataSparkle::getScale),
@@ -21,34 +25,20 @@ public class ParticleDataSparkle
 			).apply(instance, ParticleDataSparkle::new)
 	);
 	
-	public static final ParticleOptions.Deserializer<ParticleDataSparkle> DESERIALIZER = new Deserializer<>()
-	{
-		@Override
-		public ParticleDataSparkle fromCommand(ParticleType<ParticleDataSparkle> type, StringReader reader) throws CommandSyntaxException
-		{
-			var color = readVector3f(reader);
-			reader.expect(' ');
-			float scale = reader.readFloat();
-			reader.expect(' ');
-			int age = reader.readInt();
-			return new ParticleDataSparkle(color, scale, age);
-		}
-		
-		@Override
-		public ParticleDataSparkle fromNetwork(ParticleType<ParticleDataSparkle> type, FriendlyByteBuf buffer)
-		{
-			var color = readVector3f(buffer);
-			float scale = buffer.readFloat();
-			int age = buffer.readInt();
-			return new ParticleDataSparkle(color, scale, age);
-		}
-	};
+	public static final StreamCodec<RegistryFriendlyByteBuf, ParticleDataSparkle> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VECTOR3F, ParticleDataSparkle::getColor,
+			ByteBufCodecs.FLOAT, ParticleDataSparkle::getScale,
+			ByteBufCodecs.INT, ParticleDataSparkle::getAge,
+			ParticleDataSparkle::new
+	);
 	
 	private final int age;
+	private final Vector3f color;
 	
 	public ParticleDataSparkle(Vector3f color, float scale, int age)
 	{
-		super(color, scale);
+		super(scale);
+		this.color = color;
 		this.age = age;
 	}
 	
@@ -56,10 +46,5 @@ public class ParticleDataSparkle
 	public ParticleType<ParticleDataSparkle> getType()
 	{
 		return ParticleTypesIS.SPARKLE;
-	}
-	
-	public int getAge()
-	{
-		return age;
 	}
 }

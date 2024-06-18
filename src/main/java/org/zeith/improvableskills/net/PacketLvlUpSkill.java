@@ -19,10 +19,6 @@ public class PacketLvlUpSkill
 		this.skill = skill.getRegistryName();
 	}
 	
-	public PacketLvlUpSkill()
-	{
-	}
-	
 	@Override
 	public void write(FriendlyByteBuf buf)
 	{
@@ -42,7 +38,7 @@ public class PacketLvlUpSkill
 		
 		PlayerDataManager.handleDataSafely(player, data ->
 		{
-			PlayerSkillBase skill = ImprovableSkills.SKILLS().getValue(this.skill);
+			PlayerSkillBase skill = ImprovableSkills.SKILLS.get(this.skill);
 			if(skill == null) return;
 			
 			short lvl = data.getSkillLevel(skill);

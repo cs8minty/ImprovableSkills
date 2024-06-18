@@ -25,7 +25,7 @@ public class GuiAbilityBook
 	@Override
 	protected void provideElements(Consumer<AbilityTxInstance> handler)
 	{
-		ImprovableSkills.ABILITIES().getValues()
+		ImprovableSkills.ABILITIES
 				.stream()
 				.sorted(Comparator.comparing(t -> t.getLocalizedName(data).getString()))
 				.filter(data::hasAbility)

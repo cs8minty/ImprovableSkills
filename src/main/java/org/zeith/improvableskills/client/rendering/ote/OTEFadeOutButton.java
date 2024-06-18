@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.zeith.hammerlib.client.utils.UV;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.client.gui.base.GuiCustomButton;
 import org.zeith.improvableskills.client.rendering.OTEffect;
@@ -53,7 +54,7 @@ public class OTEFadeOutButton
 		
 		Minecraft mc = Minecraft.getInstance();
 		Font fontrenderer = mc.font;
-		ResourceLocation rl = uv instanceof GuiCustomButton ? new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/icons.png") : new ResourceLocation("minecraft", "textures/gui/widgets.png");
+		ResourceLocation rl = uv instanceof GuiCustomButton ? ImprovableSkills.id("textures/gui/icons.png") : Resources.location("textures/gui/widgets.png");
 		
 		float scale = 1F + (float) Math.sqrt(t);
 		int a = (int) ((1 - t / totTime) * .75F * 255);

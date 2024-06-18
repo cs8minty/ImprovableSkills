@@ -1,7 +1,6 @@
 package org.zeith.improvableskills.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -15,7 +14,6 @@ import org.zeith.hammerlib.util.ZeithLinkRepository;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.client.gui.base.GuiTabbable;
 import org.zeith.improvableskills.client.rendering.ote.OTEConfetti;
-import org.zeith.improvableskills.custom.pagelets.PageletUpdate;
 import org.zeith.improvableskills.init.SoundsIS;
 import org.zeith.improvableskills.utils.Sys;
 
@@ -28,7 +26,7 @@ public class GuiDiscord
 	public final UV gui1;
 	
 	
-	private static final ResourceLocation texture = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/builtin/discord.png");
+	private static final ResourceLocation texture = ImprovableSkills.id("textures/builtin/discord.png");
 	
 	public static AbstractTexture getDiscordServerIdTexture()
 	{
@@ -38,7 +36,7 @@ public class GuiDiscord
 	public GuiDiscord(PageletDiscord pagelet)
 	{
 		super(pagelet);
-		gui1 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
+		gui1 = new UV(ImprovableSkills.id("textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
 		getDiscordServerIdTexture();
 	}
 	

@@ -10,11 +10,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
 import net.minecraft.client.model.BookModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -23,21 +24,44 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import org.zeith.hammerlib.util.colors.ColorHelper;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.SyncSkills;
 import org.zeith.improvableskills.client.rendering.OnTopEffects;
 import org.zeith.improvableskills.client.rendering.ote.OTESparkle;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.zeith.improvableskills.client.gui.abil.ench.GuiEnchPowBook.DEFAULT_GLINT_COLOR;
 
 public class GuiPortableEnchantment
 		extends AbstractContainerScreen<ContainerPortableEnchantment>
 {
-	private static final ResourceLocation ENCHANTING_TABLE_LOCATION = new ResourceLocation("textures/gui/container/enchanting_table.png");
-	private static final ResourceLocation ENCHANTMENT_TABLE_BOOK_TEXTURE1 = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/enchanting_table_book_1.png");
-	private static final ResourceLocation ENCHANTMENT_TABLE_BOOK_TEXTURE2 = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/enchanting_table_book_2.png");
+	private static final ResourceLocation ENCHANTING_TABLE_LOCATION = Resources.location("textures/gui/container/enchanting_table.png");
+	private static final ResourceLocation ENCHANTMENT_TABLE_BOOK_TEXTURE1 = ImprovableSkills.id("textures/gui/enchanting_table_book_1.png");
+	private static final ResourceLocation ENCHANTMENT_TABLE_BOOK_TEXTURE2 = ImprovableSkills.id("textures/gui/enchanting_table_book_2.png");
+	
+	private static final ResourceLocation[] ENABLED_LEVEL_SPRITES = new ResourceLocation[] {
+			ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1"),
+			ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2"),
+			ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3")
+	};
+	private static final ResourceLocation[] DISABLED_LEVEL_SPRITES = new ResourceLocation[] {
+			ResourceLocation.withDefaultNamespace("container/enchanting_table/level_1_disabled"),
+			ResourceLocation.withDefaultNamespace("container/enchanting_table/level_2_disabled"),
+			ResourceLocation.withDefaultNamespace("container/enchanting_table/level_3_disabled")
+	};
+	private static final ResourceLocation ENCHANTMENT_SLOT_DISABLED_SPRITE = ResourceLocation.withDefaultNamespace(
+			"container/enchanting_table/enchantment_slot_disabled"
+	);
+	private static final ResourceLocation ENCHANTMENT_SLOT_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace(
+			"container/enchanting_table/enchantment_slot_highlighted"
+	);
+	private static final ResourceLocation ENCHANTMENT_SLOT_SPRITE = ResourceLocation.withDefaultNamespace("container/enchanting_table/enchantment_slot");
+	
+	
 	private final RandomSource random = RandomSource.create();
 	private BookModel bookModel;
 	public int time;
@@ -169,7 +193,9 @@ public class GuiPortableEnchantment
 			int k1 = (this.menu).costs[l];
 			if(k1 == 0)
 			{
-				gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 185, 108, 19);
+				RenderSystem.enableBlend();
+				gfx.blitSprite(ENCHANTMENT_SLOT_DISABLED_SPRITE, i1, topPos + 14 + 19 * l, 108, 19);
+				RenderSystem.disableBlend();
 			} else
 			{
 				String s = "" + k1;
@@ -177,9 +203,11 @@ public class GuiPortableEnchantment
 				FormattedText formattedtext = EnchantmentNames.getInstance().getRandomName(this.font, l1);
 				int i2 = 6839882;
 				if(((k < l + 1 || this.minecraft.player.experienceLevel < k1) && !this.minecraft.player.getAbilities().instabuild) || this.menu.enchantClue[l] == -1)
-				{ // Forge: render buttons as disabled when enchantable but enchantability not met on lower levels
-					gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 185, 108, 19);
-					gfx.blit(ENCHANTING_TABLE_LOCATION, i1 + 1, topPos + 15 + 19 * l, 16 * l, 239, 16, 16);
+				{
+					RenderSystem.enableBlend();
+					gfx.blitSprite(ENCHANTMENT_SLOT_DISABLED_SPRITE, i1, topPos + +14 + 19 * l, 108, 19);
+					gfx.blitSprite(DISABLED_LEVEL_SPRITES[l], i1 + 1, topPos + +15 + 19 * l, 16, 16);
+					RenderSystem.disableBlend();
 					gfx.drawWordWrap(this.font, formattedtext, j1, topPos + 16 + 19 * l, l1, (i2 & 16711422) >> 1);
 					i2 = 4226832;
 				} else
@@ -188,14 +216,15 @@ public class GuiPortableEnchantment
 					int k2 = mouseY - (topPos + 14 + 19 * l);
 					if(j2 >= 0 && k2 >= 0 && j2 < 108 && k2 < 19)
 					{
-						gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 204, 108, 19);
+						gfx.blitSprite(ENCHANTMENT_SLOT_HIGHLIGHTED_SPRITE, i1, topPos + 14 + 19 * l, 108, 19);
 						i2 = 16777088;
 					} else
 					{
-						gfx.blit(ENCHANTING_TABLE_LOCATION, i1, topPos + 14 + 19 * l, 0, 166, 108, 19);
+						gfx.blitSprite(ENCHANTMENT_SLOT_SPRITE, i1, topPos + 14 + 19 * l, 108, 19);
 					}
 					
-					gfx.blit(ENCHANTING_TABLE_LOCATION, i1 + 1, topPos + 15 + 19 * l, 16 * l, 223, 16, 16);
+					gfx.blitSprite(ENABLED_LEVEL_SPRITES[l], i1 + 1, topPos + 15 + 19 * l, 16, 16);
+					RenderSystem.disableBlend();
 					gfx.drawWordWrap(this.font, formattedtext, j1, topPos + 16 + 19 * l, l1, i2);
 					i2 = 8453920;
 				}
@@ -227,10 +256,10 @@ public class GuiPortableEnchantment
 		this.bookModel.setupAnim(0.0F, f4, f5, f);
 		
 		var vrtx = gfx.bufferSource().getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE1));
-		this.bookModel.renderToBuffer(pose, vrtx, 15728880, OverlayTexture.NO_OVERLAY, 0F, 136 / 255F, 1F, 1.0F);
+		this.bookModel.renderToBuffer(pose, vrtx, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ColorHelper.packARGB(1.0F, 0F, 136 / 255F, 1F));
 		
 		vrtx = gfx.bufferSource().getBuffer(RenderType.entityCutout(ENCHANTMENT_TABLE_BOOK_TEXTURE2));
-		this.bookModel.renderToBuffer(pose, vrtx, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.bookModel.renderToBuffer(pose, vrtx, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ColorHelper.packARGB(1.0F, 1.0F, 1.0F, 1.0F));
 		
 		gfx.flush();
 		
@@ -241,8 +270,8 @@ public class GuiPortableEnchantment
 	@Override
 	public void render(GuiGraphics gfx, int mouseX, int mouseY, float partial)
 	{
-		partial = this.minecraft.getFrameTime();
-		this.renderBackground(gfx);
+		partial = this.minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+		renderTransparentBackground(gfx);
 		super.render(gfx, mouseX, mouseY, partial);
 		this.renderTooltip(gfx, mouseX, mouseY);
 		boolean flag = this.minecraft.player.getAbilities().instabuild;
@@ -251,17 +280,23 @@ public class GuiPortableEnchantment
 		for(int j = 0; j < 3; ++j)
 		{
 			int k = (this.menu).costs[j];
-			Enchantment enchantment = Enchantment.byId((this.menu).enchantClue[j]);
+			
+			Optional<Holder.Reference<Enchantment>> optional = this.minecraft
+					.level
+					.registryAccess()
+					.registryOrThrow(Registries.ENCHANTMENT)
+					.getHolder(this.menu.enchantClue[j]);
+			
 			int l = (this.menu).levelClue[j];
 			int i1 = j + 1;
 			if(this.isHovering(60, 14 + 19 * j, 108, 17, mouseX, mouseY) && k > 0)
 			{
 				List<Component> list = Lists.newArrayList();
-				list.add((Component.translatable("container.enchant.clue", enchantment == null ? "" : enchantment.getFullname(l))).withStyle(ChatFormatting.WHITE));
-				if(enchantment == null)
+				list.add(Component.translatable("container.enchant.clue", optional.isEmpty() ? "" : Enchantment.getFullname(optional.get(), l)).withStyle(ChatFormatting.WHITE));
+				if(optional.isEmpty())
 				{
 					list.add(Component.literal(""));
-					list.add(Component.translatable("forge.container.enchant.limitedEnchantability").withStyle(ChatFormatting.RED));
+					list.add(Component.translatable("neoforge.container.enchant.limitedEnchantability").withStyle(ChatFormatting.RED));
 				} else if(!flag)
 				{
 					list.add(CommonComponents.EMPTY);

@@ -2,15 +2,15 @@ package org.zeith.improvableskills.net;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.*;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.hammerlib.net.INBTPacket;
 import org.zeith.hammerlib.net.PacketContext;
 import org.zeith.improvableskills.ImprovableSkills;
@@ -26,41 +26,35 @@ import java.util.*;
 public class PacketScrollUnlockedAbility
 		implements INBTPacket
 {
-	private ResourceLocation[] skills;
+	private ResourceLocation[] abilities;
 	private ItemStack used;
 	private int slot;
 	
-	public PacketScrollUnlockedAbility(int slot, ItemStack used, ResourceLocation... skills)
+	public PacketScrollUnlockedAbility(int slot, ItemStack used, ResourceLocation... abilities)
 	{
-		this.skills = skills;
+		this.abilities = abilities;
 		this.used = used;
 		this.slot = slot;
 	}
 	
-	public PacketScrollUnlockedAbility()
+	@Override
+	public void write(RegistryFriendlyByteBuf buf)
 	{
+		buf.writeVarInt(abilities.length);
+		for(var s : abilities) buf.writeResourceLocation(s);
+		ItemStack.STREAM_CODEC.encode(buf, used);
+		buf.writeVarInt(slot);
 	}
 	
 	@Override
-	public void write(CompoundTag nbt)
+	public void read(RegistryFriendlyByteBuf buf)
 	{
-		ListTag tags = new ListTag();
-		for(ResourceLocation s : skills)
-			tags.add(StringTag.valueOf(s.toString()));
-		nbt.put("s", tags);
-		nbt.putInt("i", slot);
-		nbt.put("u", used.serializeNBT());
-	}
-	
-	@Override
-	public void read(CompoundTag nbt)
-	{
-		ListTag tags = nbt.getList("s", Tag.TAG_STRING);
-		skills = new ResourceLocation[tags.size()];
-		for(int i = 0; i < skills.length; ++i)
-			skills[i] = new ResourceLocation(tags.getString(i));
-		slot = nbt.getInt("i");
-		used = ItemStack.of(nbt.getCompound("u"));
+		int l = buf.readVarInt();
+		abilities = new ResourceLocation[l];
+		for(int i = 0; i < l; i++)
+			abilities[i] = buf.readResourceLocation();
+		used = ItemStack.STREAM_CODEC.decode(buf);
+		slot = buf.readVarInt();
 	}
 	
 	@Override
@@ -68,12 +62,14 @@ public class PacketScrollUnlockedAbility
 	public void clientExecute(PacketContext net)
 	{
 		Player sp = Minecraft.getInstance().player;
+		if(sp == null) return;
 		
 		List<PlayerAbilityBase> base = new ArrayList<>();
 		
-		for(ResourceLocation skill : skills)
+		for(ResourceLocation skill : abilities)
 		{
-			PlayerAbilityBase sk = ImprovableSkills.ABILITIES().getValue(skill);
+			PlayerAbilityBase sk = ImprovableSkills.ABILITIES.get(skill);
+			if(sk == null) continue;
 			base.add(sk);
 			sp.sendSystemMessage(Component.translatable("chat.improvableskills.ability_unlocked", sk.getLocalizedName(SyncSkills.getData())));
 		}

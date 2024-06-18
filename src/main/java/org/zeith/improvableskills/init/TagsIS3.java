@@ -1,7 +1,6 @@
 package org.zeith.improvableskills.init;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -40,7 +39,7 @@ public interface TagsIS3
 		
 		private static TagKey<Block> tag(String name)
 		{
-			return BlockTags.create(new ResourceLocation(ImprovableSkills.MOD_ID, name));
+			return BlockTags.create(ImprovableSkills.id(name));
 		}
 	}
 }

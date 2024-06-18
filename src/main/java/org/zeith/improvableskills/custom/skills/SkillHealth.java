@@ -1,16 +1,16 @@
 package org.zeith.improvableskills.custom.skills;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import org.zeith.improvableskills.ImprovableSkills;
 import org.zeith.improvableskills.api.PlayerSkillData;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
-
-import java.util.UUID;
 
 public class SkillHealth
 		extends PlayerSkillBase
 {
-	public static final UUID HP_ID = UUID.fromString("a6c5d900-a39b-4e1f-9572-f48e174335f2");
+	public static final ResourceLocation HP_ID = ImprovableSkills.id("extra_health");
 	
 	public SkillHealth()
 	{
@@ -33,11 +33,11 @@ public class SkillHealth
 			
 			double val = isActive ? data.getSkillLevel(this) : 0;
 			
-			if(mod == null || mod.getAmount() != val)
+			if(mod == null || mod.amount() != val)
 			{
 				if(mod != null) hp.removeModifier(HP_ID);
 				if(val > 0)
-					hp.addPermanentModifier(new AttributeModifier(HP_ID, "IS3 Health", val, AttributeModifier.Operation.ADDITION));
+					hp.addPermanentModifier(new AttributeModifier(HP_ID, val, AttributeModifier.Operation.ADD_VALUE));
 			}
 			
 			if(data.player.getHealth() > hp.getValue()) data.player.setHealth(data.player.getHealth());

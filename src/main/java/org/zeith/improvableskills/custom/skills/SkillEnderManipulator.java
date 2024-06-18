@@ -1,7 +1,7 @@
 package org.zeith.improvableskills.custom.skills;
 
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
 
@@ -25,7 +25,7 @@ public class SkillEnderManipulator
 		
 		if(p != null)
 		{
-			int lvl = PlayerDataManager.handleDataSafely(p, data -> data.isSkillActive(this) ? data.getSkillLevel(this) : 0, 0).intValue();
+			int lvl = PlayerDataManager.handleDataSafely(p, data -> data.isSkillActive(this) ? (int) data.getSkillLevel(this) : 0, 0).intValue();
 			
 			if(lvl > 0)
 			{

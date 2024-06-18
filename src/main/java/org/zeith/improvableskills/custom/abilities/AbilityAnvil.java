@@ -4,10 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.net.Network;
+import org.zeith.hammerlib.util.mcf.Resources;
 import org.zeith.improvableskills.api.OwnedTexture;
 import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
 import org.zeith.improvableskills.net.PacketOpenPortableAnvil;
@@ -27,8 +28,8 @@ public class AbilityAnvil
 				if(texHov == null || texNorm == null)
 				{
 					ResourceLocation res = owner.getRegistryName();
-					this.texNorm = new ResourceLocation(res.getNamespace(), "textures/abilities/" + res.getPath() + "_normal.png");
-					this.texHov = new ResourceLocation(res.getNamespace(), "textures/abilities/" + res.getPath() + "_hovered.png");
+					this.texNorm = Resources.location(res.getNamespace(), "textures/abilities/" + res.getPath() + "_normal.png");
+					this.texHov = Resources.location(res.getNamespace(), "textures/abilities/" + res.getPath() + "_hovered.png");
 				}
 				
 				return hovered ? new UVMagma(texHov) : new UV(texNorm, 0, 0, 256, 256);
@@ -52,7 +53,7 @@ public class AbilityAnvil
 			super(path, 0, 0, 256, 256);
 		}
 		
-		final ResourceLocation tex = new ResourceLocation("minecraft:block/lava_flow");
+		final ResourceLocation tex = Resources.location("block/lava_flow");
 		
 		@Override
 		@OnlyIn(Dist.CLIENT)

@@ -38,7 +38,6 @@ public class ItemSkillsBook
 		return super.use(level, player, hand);
 	}
 	
-	
 	@Override
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{

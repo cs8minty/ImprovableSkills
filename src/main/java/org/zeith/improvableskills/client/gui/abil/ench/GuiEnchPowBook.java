@@ -28,8 +28,8 @@ public class GuiEnchPowBook
 		extends ScreenWTFMojang<ContainerEnchPowBook>
 {
 	public static final int DEFAULT_GLINT_COLOR = 0xFF8040CC;
-	protected static final ResourceLocation OVERLAY = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/book_slot_overlay.png");
-	protected static final ResourceLocation MAIN_GUI = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/enchanter_lvl.png");
+	protected static final ResourceLocation OVERLAY = ImprovableSkills.id("textures/gui/book_slot_overlay.png");
+	protected static final ResourceLocation MAIN_GUI = ImprovableSkills.id("textures/gui/enchanter_lvl.png");
 	
 	public GuiEnchPowBook(ContainerEnchPowBook ctr, Inventory inv, Component label)
 	{
@@ -51,7 +51,7 @@ public class GuiEnchPowBook
 		Cast.optionally(children().get(0), GuiCustomButton.class)
 				.ifPresent(b -> b.setMessage(Component.literal(hasShiftDown() ? "<-- *" : "--> *")));
 		
-		this.renderBackground(gfx);
+		this.renderBackground(gfx, partialTicks, mouseX, mouseY);
 		super.render(gfx, mouseX, mouseY, partialTicks);
 		this.renderTooltip(gfx, mouseX, mouseY);
 		

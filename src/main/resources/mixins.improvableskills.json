@@ -10,6 +10,8 @@
     "AbstractFurnaceBlockEntityMixin",
     "BrewingStandBlockEntityAccessor",
     "EnchantmentHelperMixin",
+    "EnchantmentMenuAccessor",
+    "ItemStackMixin",
     "ServerPlayerGameModeMixin",
     "Vec3Accessor",
     "VillagerMixin",

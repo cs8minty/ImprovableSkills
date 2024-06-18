@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.zeith.hammerlib.client.utils.*;
 import org.zeith.hammerlib.util.java.tuples.Tuple2;
 import org.zeith.hammerlib.util.shaded.json.JSONObject;
@@ -32,7 +31,7 @@ import java.util.*;
 public class GuiTabbable<P extends PageletBase>
 		extends GuiCentered
 {
-	public static final ResourceLocation ICONS = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/icons.png");
+	public static final ResourceLocation ICONS = ImprovableSkills.id("textures/gui/icons.png");
 	
 	public static PageletBase lastPagelet = PageletsIS.SKILLS;
 	public static final Map<ResourceLocation, Tuple2.Mutable2<Float, Float>> EXTENSIONS = new HashMap<>();
@@ -55,15 +54,14 @@ public class GuiTabbable<P extends PageletBase>
 		
 		lastPagelet = pagelet;
 		
-		IForgeRegistry<PageletBase> pgreg = ImprovableSkills.PAGELETS();
-		pagelets = new ArrayList<>(pgreg.getValues());
+		pagelets = new ArrayList<>(ImprovableSkills.PAGELETS.stream().toList());
 		pagelets.sort(Comparator.comparing(PageletBase::getRegistryName));
 		
 		xSize = 195;
 		ySize = 168;
 		
-		gui1 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
-		gui2 = new UV(new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/skills_gui_overlay.png"), 0, 0, xSize, ySize);
+		gui1 = new UV(ImprovableSkills.id("textures/gui/skills_gui_paper.png"), 0, 0, xSize, ySize);
+		gui2 = new UV(ImprovableSkills.id("textures/gui/skills_gui_overlay.png"), 0, 0, xSize, ySize);
 	}
 	
 	protected void drawBack(GuiGraphics pose, float partialTicks, int mouseX, int mouseY)
@@ -124,13 +122,13 @@ public class GuiTabbable<P extends PageletBase>
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics gfx, float partialTicks, int mouseX, int mouseY)
 	{
-		partialTicks = minecraft.getPartialTick(); // hardware acceleration LOL
+		partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(true); // hardware acceleration LOL
 		var pose = gfx.pose();
 		
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
 		
-		renderBackground(gfx);
+		renderTransparentBackground(gfx);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		
 		RenderSystem.enableDepthTest();

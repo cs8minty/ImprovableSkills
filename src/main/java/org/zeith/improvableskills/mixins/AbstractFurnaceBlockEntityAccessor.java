@@ -14,6 +14,9 @@ import javax.annotation.Nullable;
 @Mixin(AbstractFurnaceBlockEntity.class)
 public interface AbstractFurnaceBlockEntityAccessor
 {
+	@Invoker
+	static boolean callBurn(RegistryAccess access, @Nullable RecipeHolder<?> holder, NonNullList<ItemStack> items, int i, AbstractFurnaceBlockEntity furnace) {throw new UnsupportedOperationException();}
+	
 	@Accessor
 	int getLitTime();
 	
@@ -29,12 +32,12 @@ public interface AbstractFurnaceBlockEntityAccessor
 	@Accessor
 	int getCookingTotalTime();
 	
-	@Invoker
-	boolean callBurn(RegistryAccess access, @Nullable Recipe<?> recipe, NonNullList<ItemStack> items, int i);
-	
 	@Accessor
 	RecipeType<? extends AbstractCookingRecipe> getRecipeType();
 	
 	@Accessor
 	NonNullList<ItemStack> getItems();
+	
+	@Accessor
+	RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> getQuickCheck();
 }

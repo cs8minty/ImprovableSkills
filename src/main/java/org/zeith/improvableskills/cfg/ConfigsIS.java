@@ -1,16 +1,22 @@
 package org.zeith.improvableskills.cfg;
 
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.zeith.hammerlib.annotations.SetupConfigs;
-import org.zeith.hammerlib.util.configured.*;
+import org.zeith.hammerlib.util.configured.ConfigFile;
+import org.zeith.hammerlib.util.configured.ConfiguredLib;
 import org.zeith.hammerlib.util.configured.data.IntValueRange;
-import org.zeith.hammerlib.util.configured.types.*;
+import org.zeith.hammerlib.util.configured.types.ConfigCategory;
+import org.zeith.hammerlib.util.configured.types.ConfigString;
 import org.zeith.improvableskills.ImprovableSkills;
-import org.zeith.improvableskills.api.registry.*;
+import org.zeith.improvableskills.api.registry.PlayerAbilityBase;
+import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 
 import java.util.List;
+import java.util.Set;
 
 import static net.minecraft.world.level.storage.loot.BuiltInLootTables.*;
 
@@ -36,7 +42,7 @@ public class ConfigsIS
 		{
 			xpBank = gameplay.getElement(ConfiguredLib.BOOLEAN, "XP Storage")
 					.withDefault(true)
-					.withComment("Should XP Bank be active in the book? Disabling this only hides the skill from the player.")
+					.withComment("Should XP Bank be active in the book? Disabling this only hides the ability from the player.")
 					.getValue();
 			
 			var parchmentFragment = gameplay.getElement(ConfiguredLib.CATEGORY, "Parchment Fragment")
@@ -61,7 +67,7 @@ public class ConfigsIS
 				var lst = bc.getElements();
 				if(init)
 				{
-					ResourceLocation[] locs = {
+					Set<ResourceKey<LootTable>> locs = Set.of(
 							VILLAGE_WEAPONSMITH,
 							VILLAGE_TOOLSMITH,
 							VILLAGE_ARMORER,
@@ -78,10 +84,10 @@ public class ConfigsIS
 							VILLAGE_TAIGA_HOUSE,
 							VILLAGE_SNOWY_HOUSE,
 							VILLAGE_SAVANNA_HOUSE
-					};
+					);
 					
 					for(var i : locs)
-						lst.add(bc.createElement().withDefault(i.toString()));
+						lst.add(bc.createElement().withDefault(i.location().toString()));
 				}
 				
 				blockedParchmentChests = bc.getElements().stream().map(ConfigString::getValue).toList();
@@ -104,9 +110,9 @@ public class ConfigsIS
 	public static void reloadCosts()
 	{
 		ConfigCategory costs = gameplay.setupSubCategory("Costs")
-				.withComment("Configure how expensive each skill is");
+				.withComment("Configure how expensive each ability is");
 		
-		for(PlayerSkillBase skill : ImprovableSkills.SKILLS())
+		for(PlayerSkillBase skill : ImprovableSkills.SKILLS)
 		{
 			skill.xpCalculator.load(costs, skill.getRegistryName().toString().replace(":", "_"));
 		}

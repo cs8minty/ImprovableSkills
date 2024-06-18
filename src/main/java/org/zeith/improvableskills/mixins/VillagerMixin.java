@@ -5,7 +5,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,6 +27,6 @@ public abstract class VillagerMixin
 	)
 	private void updateSpecialPrices_IS3(Player forPlayer, CallbackInfo ci)
 	{
-		MinecraftForge.EVENT_BUS.post(new ApplySpecialPricesEvent(this, forPlayer));
+		NeoForge.EVENT_BUS.post(new ApplySpecialPricesEvent(this, forPlayer));
 	}
 }

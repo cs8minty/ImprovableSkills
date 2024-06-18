@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.CraftingInput;
 import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.api.inv.SimpleInventory;
 import org.zeith.hammerlib.api.items.ConsumableItem;
@@ -37,10 +37,10 @@ public class ItemParchmentFragment
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable TooltipContext ctx, List<Component> tooltip, TooltipFlag flag)
 	{
 		tooltip.add(CRAFTING_MATERIAL);
-		super.appendHoverText(stack, level, tooltip, flag);
+		super.appendHoverText(stack, ctx, tooltip, flag);
 	}
 	
 	@Override
@@ -73,11 +73,12 @@ public class ItemParchmentFragment
 				copy.add(ei.getItem().copy());
 				counts.add(ei.getItem().getCount());
 			}
+			
 			SimpleInventory id = new SimpleInventory(copy.size());
 			for(int i = 0; i < copy.size(); i++)
 				id.items.set(i, copy.get(i));
 			
-			for(var ci : r.getConsumableIngredients())
+			for(var ci : r.value().getConsumableIngredients())
 				if(!ci.consume(id))
 					continue rs;
 			
@@ -108,11 +109,11 @@ public class ItemParchmentFragment
 			minDist *= 5000;
 			
 			fx = true;
-			recipe = r;
+			recipe = r.value();
 			
 			nbt.putInt("IS3ParchCraft", nbt.getInt("IS3ParchCraft") + 1);
 			int v = nbt.getInt("IS3ParchCraft");
-			int mv = r.ingredients.size() * 40;
+			int mv = recipe.getIngredients().size() * 40;
 			
 			int time = v * 5 / mv;
 			
@@ -143,9 +144,10 @@ public class ItemParchmentFragment
 						for(int i = 0; i < origin.size(); i++)
 							id.items.set(i, origin.get(i));
 						
-						var resStack = r.assemble(id, e.level().registryAccess());
+						CraftingInput in = CraftingInput.of(origin.size(), 1, origin);
+						var resStack = recipe.assemble(in, e.level().registryAccess());
 						
-						for(ConsumableItem ci : r.getConsumableIngredients())
+						for(ConsumableItem ci : r.value().getConsumableIngredients())
 							if(!ci.consume(id))
 								continue rs;
 						
@@ -175,7 +177,7 @@ public class ItemParchmentFragment
 		
 		if(fx && recipe != null && e.tickCount % 2 == 0 && e.onGround())
 		{
-			int num = recipe.ingredients.size() + 3 + add;
+			int num = recipe.getIngredients().size() + 3 + add;
 			float deg = 360F / num;
 			
 			float coff = nbt.getFloat("IS3ParchDegree") % 360F;

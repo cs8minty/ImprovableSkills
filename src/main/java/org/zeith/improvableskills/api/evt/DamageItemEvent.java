@@ -1,9 +1,11 @@
 package org.zeith.improvableskills.api.evt;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -13,6 +15,8 @@ public class DamageItemEvent
 {
 	private final ItemStack item;
 	private final int originalDamage;
+	
+	@Setter @Getter
 	private int newDamage;
 	
 	public DamageItemEvent(ItemStack item, LivingEntity entity, int originalDamage)
@@ -30,16 +34,6 @@ public class DamageItemEvent
 	public int getOriginalDamage()
 	{
 		return originalDamage;
-	}
-	
-	public int getNewDamage()
-	{
-		return newDamage;
-	}
-	
-	public void setNewDamage(int newDamage)
-	{
-		this.newDamage = newDamage;
 	}
 	
 	public RandomSource getRandom()

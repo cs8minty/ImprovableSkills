@@ -8,10 +8,11 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
-import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
-import net.minecraftforge.event.entity.player.ItemFishedEvent;
-import net.minecraftforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
+import org.zeith.hammerlib.util.java.Cast;
 import org.zeith.improvableskills.api.evt.CalculateAdditionalFurnaceExperienceMultiplier;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
@@ -35,14 +36,14 @@ public class SkillXPPlus
 		addListener(this::furnaceExtra);
 	}
 	
-	private void blockBreak(BlockEvent.BreakEvent e)
+	private void blockBreak(BlockDropsEvent e)
 	{
-		PlayerDataManager.handleDataSafely(e.getPlayer(), data ->
+		PlayerDataManager.handleDataSafely(Cast.cast(e.getBreaker(), Player.class), data ->
 		{
-			var xp = e.getExpToDrop();
+			var xp = e.getDroppedExperience();
 			if(xp <= 0 || !data.isSkillActive(this)) return;
 			var xpp = data.getSkillProgress(this);
-			e.setExpToDrop(Mth.floor(xp + data.player.level().random.nextFloat() * xp * xpp));
+			e.setDroppedExperience(Mth.floor(xp + data.player.level().random.nextFloat() * xp * xpp));
 		});
 	}
 	

@@ -24,7 +24,7 @@ public class GuiMagnetism
 		extends GuiCentered
 		implements IGuiSkillDataConsumer
 {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(ImprovableSkills.MOD_ID, "textures/gui/magnetism.png");
+	public static final ResourceLocation TEXTURE = ImprovableSkills.id("textures/gui/magnetism.png");
 	
 	protected PlayerSkillData data;
 	
@@ -111,8 +111,8 @@ public class GuiMagnetism
 		var magnetic = data != null && data.magnetism;
 		var rangeS = "%.01f".formatted(range);
 		return !magnetic
-				? Component.translatable("text.improvableskills.magnetism.off")
-				: Component.translatable("text.improvableskills.magnetism.on", Component.literal(rangeS));
+			   ? Component.translatable("text.improvableskills.magnetism.off")
+			   : Component.translatable("text.improvableskills.magnetism.on", Component.literal(rangeS));
 	}
 	
 	@Override
@@ -121,7 +121,7 @@ public class GuiMagnetism
 		var pose = gfx.pose();
 		float value = data != null ? data.magnetismRange : 0;
 		
-		renderBackground(gfx);
+		renderTransparentBackground(gfx);
 		
 		toggleButton.active = data != null;
 		

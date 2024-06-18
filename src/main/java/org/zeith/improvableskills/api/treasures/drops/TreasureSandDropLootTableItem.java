@@ -1,6 +1,8 @@
 package org.zeith.improvableskills.api.treasures.drops;
 
-import net.minecraft.resources.ResourceLocation;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.*;
@@ -12,18 +14,19 @@ import org.zeith.improvableskills.api.treasures.TreasureContext;
 import org.zeith.improvableskills.api.treasures.TreasureDropBase;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TreasureSandDropLootTableItem
 		extends TreasureDropBase
 {
-	public ResourceLocation dropTable = BuiltInLootTables.DESERT_PYRAMID;
+	public ResourceKey<LootTable> dropTable = BuiltInLootTables.DESERT_PYRAMID;
 	public int minLvl;
 	
 	public TreasureSandDropLootTableItem()
 	{
 	}
 	
-	public TreasureSandDropLootTableItem(ResourceLocation table, int minLvl)
+	public TreasureSandDropLootTableItem(ResourceKey<LootTable> table, int minLvl)
 	{
 		this.dropTable = table;
 		this.minLvl = minLvl;
@@ -41,10 +44,12 @@ public class TreasureSandDropLootTableItem
 				.withLuck(data.player.getLuck())
 				.create(LootContextParamSets.CHEST);
 		
-		List<ItemStack> gen = srv.getServer()
-				.getLootData()
-				.getLootTable(dropTable)
-				.getRandomItems(lctx);
+		ObjectArrayList<ItemStack> gen = Optional.ofNullable(
+						srv.registryAccess()
+								.registryOrThrow(Registries.LOOT_TABLE)
+								.get(dropTable)
+				).map(lt -> lt.getRandomItems(lctx))
+				.orElse(ObjectArrayList.of());
 		
 		if(!gen.isEmpty())
 		{

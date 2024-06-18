@@ -18,7 +18,7 @@ public class SkillCostConfig
 	
 	public SkillCostConfig(int xpValue)
 	{
-		super("skill");
+		super("ability");
 		this.xpValue = xpValue;
 	}
 	
@@ -31,7 +31,7 @@ public class SkillCostConfig
 	{
 		serverFormula = cfg.getElement(ConfiguredLib.STRING, skill)
 				.withDefault(baseFormula)
-				.withComment("Cost calculator for this skill.\nAvailable variables:\n- %lvl% = the level we want to calculate XP value for.\n- %xpv% preset value (" + xpValue + ") for current skill.")
+				.withComment("Cost calculator for this ability.\nAvailable variables:\n- %lvl% = the level we want to calculate XP value for.\n- %xpv% preset value (" + xpValue + ") for current ability.")
 				.getValue();
 	}
 	
