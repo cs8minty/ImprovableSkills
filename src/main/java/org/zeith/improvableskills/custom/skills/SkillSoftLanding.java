@@ -5,9 +5,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
+
+import java.util.Objects;
 
 public class SkillSoftLanding
 		extends PlayerSkillBase
@@ -20,19 +22,23 @@ public class SkillSoftLanding
 		addListener(this::damageHook);
 	}
 	
-	private void damageHook(LivingHurtEvent e)
+	private void damageHook(LivingIncomingDamageEvent e)
 	{
 		DamageSource ds = e.getSource();
-		if(ds != null && e.getEntity() instanceof Player p)
+		if(e.getEntity() instanceof Player p)
 		{
-			var dmgReg = e.getEntity().level().registryAccess().registry(Registries.DAMAGE_TYPE).orElse(null);
-			if(dmgReg == null) return;
-			if(dmgReg.getKey(ds.type()).equals(DamageTypes.FALL.location()))
-				PlayerDataManager.handleDataSafely(p, data ->
-				{
-					if(data.isSkillActive(this) && data.getSkillLevel(this) >= getMaxLevel() && e.getAmount() >= p.getHealth())
-						e.setAmount(p.getHealth() - 1F);
-				});
+			var dmgReg = e.getEntity()
+					.level()
+					.registryAccess()
+					.registry(Registries.DAMAGE_TYPE)
+					.map(reg -> reg.getKey(ds.type()))
+					.orElse(null);
+			if(!Objects.equals(dmgReg, DamageTypes.FALL.location())) return;
+			PlayerDataManager.handleDataSafely(p, data ->
+			{
+				if(data.isSkillActive(this) && data.getSkillLevel(this) >= getMaxLevel() && e.getAmount() >= p.getHealth())
+					e.setAmount(p.getHealth() - 1F);
+			});
 		}
 	}
 	

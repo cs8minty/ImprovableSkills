@@ -4,7 +4,7 @@ import net.minecraft.world.damagesource.DamageEffects;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
 
@@ -22,10 +22,10 @@ public class SkillObsidianSkin
 		addListener(this::damageHook);
 	}
 	
-	private void damageHook(LivingHurtEvent e)
+	private void damageHook(LivingIncomingDamageEvent e)
 	{
 		DamageSource ds = e.getSource();
-		if(ds != null && ds.type().effects() == DamageEffects.BURNING && e.getEntity() instanceof Player p)
+		if(ds.type().effects() == DamageEffects.BURNING && e.getEntity() instanceof Player p)
 			PlayerDataManager.handleDataSafely(p, data ->
 			{
 				if(!data.isSkillActive(this)) return;

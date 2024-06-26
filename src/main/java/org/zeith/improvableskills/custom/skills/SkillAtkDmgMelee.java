@@ -2,7 +2,7 @@ package org.zeith.improvableskills.custom.skills;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.zeith.improvableskills.api.DamageSourceProcessor;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
@@ -17,18 +17,15 @@ public class SkillAtkDmgMelee
 		addListener(this::damageHook);
 	}
 	
-	private void damageHook(LivingHurtEvent e)
+	private void damageHook(LivingIncomingDamageEvent e)
 	{
 		DamageSource ds = e.getSource();
-		if(ds != null && DamageSourceProcessor.getDamageType(ds) == DamageSourceProcessor.DamageType.MELEE)
+		if(DamageSourceProcessor.getDamageType(ds) != DamageSourceProcessor.DamageType.MELEE) return;
+		PlayerDataManager.handleDataSafely(DamageSourceProcessor.getMeleeAttacker(ds), data ->
 		{
-			Player p = DamageSourceProcessor.getMeleeAttacker(ds);
-			PlayerDataManager.handleDataSafely(p, data ->
-			{
-				if(!data.isSkillActive(this)) return;
-				float pp = data.getSkillProgress(this);
-				e.setAmount(e.getAmount() + (e.getAmount() * pp / 2F) + pp * 7F);
-			});
-		}
+			if(!data.isSkillActive(this)) return;
+			float pp = data.getSkillProgress(this);
+			e.setAmount(e.getAmount() + (e.getAmount() * pp / 2F) + pp * 7F);
+		});
 	}
 }

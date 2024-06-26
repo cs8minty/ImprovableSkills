@@ -3,8 +3,8 @@ mod_version=21.0.1
 build_candidate=false
 
 # Mod dependencies (jei is not a requirement, but HammerLib is)
-hl_version=21.0.8
-jei_version=19.0.0.1
+hl_version=21.0.11
+jei_version=19.0.0.9
 
 # Persistent mod info
 mod_id=improvableskills
@@ -37,6 +37,9 @@ modrinth_project=9fT7HUaI
 
 # alpha, beta, release
 release_type=release
+
+# Keeping track of latest git commit for changelog generation!
+last_git_commit=07372027b8599b656cf5916e282446a4f877c3bd
 
 # List of mods separated by ;
 # If a specific mod for one platform is needed, @m: or @c: prefixes are used.

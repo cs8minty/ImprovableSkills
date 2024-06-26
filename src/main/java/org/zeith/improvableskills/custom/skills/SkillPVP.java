@@ -1,8 +1,7 @@
 package org.zeith.improvableskills.custom.skills;
 
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.zeith.improvableskills.api.registry.PlayerSkillBase;
 import org.zeith.improvableskills.data.PlayerDataManager;
 
@@ -16,10 +15,9 @@ public class SkillPVP
 		addListener(this::damageHook);
 	}
 	
-	private void damageHook(LivingHurtEvent e)
+	private void damageHook(LivingIncomingDamageEvent e)
 	{
-		DamageSource ds = e.getSource();
-		if(ds != null && e.getSource().getEntity() instanceof Player && e.getEntity() instanceof Player p)
+		if(e.getSource().getEntity() instanceof Player && e.getEntity() instanceof Player p)
 			PlayerDataManager.handleDataSafely(p, data ->
 			{
 				if(!data.isSkillActive(this)) return;
