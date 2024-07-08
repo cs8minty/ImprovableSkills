@@ -46,7 +46,7 @@ public class ItemSkillScroll
 	{
 		var v = getSkillFromScroll(stack);
 		if(v != null) return ImprovableSkills.SKILLS().getKey(v).getNamespace();
-		return null;
+		return ImprovableSkills.MOD_ID;
 	}
 	
 	@Nullable
@@ -83,7 +83,7 @@ public class ItemSkillScroll
 		return ItemStack.EMPTY;
 	}
 	
-	public static void getItems(NonNullList<ItemStack> items)
+	public static void getItems(Collection<ItemStack> items)
 	{
 		ImprovableSkills.SKILLS()
 				.getValues()
@@ -100,7 +100,7 @@ public class ItemSkillScroll
 	}
 	
 	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab tab, Set<ItemStack> items)
 	{
 		if(allowedIn(tab))
 			getItems(items);
