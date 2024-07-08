@@ -1,5 +1,5 @@
 # Mod Info
-mod_version=20.1.9
+mod_version=20.1.10
 build_candidate=false
 
 # Mod dependencies (jei is not a requirement, but HammerLib is)
@@ -38,7 +38,7 @@ modrinth_project=9fT7HUaI
 release_type=release
 
 # Keeping track of latest git commit for changelog generation!
-last_git_commit=28fd17e398af3e583c419ea74b6ae5e9e57fcec8
+last_git_commit=6ab3321007af74b
 
 # List of mods separated by ;
 # If a specific mod for one platform is needed, @m: or @c: prefixes are used.
@@ -48,4 +48,6 @@ last_git_commit=28fd17e398af3e583c419ea74b6ae5e9e57fcec8
 required_mods=hammer-lib;
 optional_mods=jei;
 incompatible_mods=
+embedded_mods=
+_mods=
 embedded_mods=
